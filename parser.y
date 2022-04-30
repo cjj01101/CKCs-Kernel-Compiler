@@ -21,34 +21,44 @@
 %token <str> ID
 %token ADD SUB MUL DIV MOD EQ LP RP SEM
 
-%type <node> statement exp term factor
+%type <node> statement exp arithexp term factor identifier integer
 
 %%
 
-   program : statement { if($1) $1->PrintInLevel(0); } program
-           | /* empty */
-           ;
+    program : statement { if($1) $1->PrintInLevel(0); } program
+            | /* empty */
+            ;
 
- statement : exp SEM { $$ = new ExpressionStatementNode($1); }
-           | SEM  { $$ = nullptr; }
-           ;
+  statement : exp SEM { $$ = new ExpressionStatementNode($1); }
+            | SEM  { $$ = nullptr; }
+            ;
 
-       exp : exp ADD term { $$ = new ArithOpNode('+', $1, $3); }
-           | exp SUB term { $$ = new ArithOpNode('-', $1, $3); }
-           | SUB term { $$ = new ArithOpNode('-', new IntegerNode(0), $2); }
-           | term { $$ = $1; }
-           ;
+        exp : identifier EQ exp { $$ = new AssignOpNode($1, $3); }
+            | arithexp { $$ = $1; }
+            ;
 
-      term : term MUL factor { $$ = new ArithOpNode('*', $1, $3); }
-           | term DIV factor { $$ = new ArithOpNode('/', $1, $3); }
-           | term MOD factor { $$ = new ArithOpNode('%', $1, $3); }
-           | factor { $$ = $1; }
-           ;
+   arithexp : arithexp ADD term { $$ = new ArithOpNode('+', $1, $3); }
+            | arithexp SUB term { $$ = new ArithOpNode('-', $1, $3); }
+            | SUB term { $$ = new ArithOpNode('-', new IntegerNode(0), $2); }
+            | term { $$ = $1; }
+            ;
 
-    factor : INT { $$ = new IntegerNode($1); }
-           | ID { $$ = new VariableNode($1); }
-           | LP exp RP { $$ = $2; }
-           ;
+       term : term MUL factor { $$ = new ArithOpNode('*', $1, $3); }
+            | term DIV factor { $$ = new ArithOpNode('/', $1, $3); }
+            | term MOD factor { $$ = new ArithOpNode('%', $1, $3); }
+            | factor { $$ = $1; }
+            ;
+
+     factor : identifier { $$ = $1; }
+            | integer { $$ = $1; }
+            | LP exp RP { $$ = $2; }
+            ;
+
+ identifier : ID { $$ = new VariableNode($1); }
+            ;
+ 
+    integer : INT { $$ = new IntegerNode($1); }
+            ;
 
 %%
 

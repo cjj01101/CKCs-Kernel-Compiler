@@ -23,7 +23,7 @@ public:
 private:
 	ASTNode *expression;
 
-	virtual void PrintContentInLevel(int level) override;
+	virtual void PrintContentInLevel(int level) const override;
 
 };
 

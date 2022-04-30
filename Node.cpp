@@ -7,7 +7,7 @@
 
 /*         PRINT FUNCTION         */
 
-void ASTNode::PrintInLevel(int level) {
+void ASTNode::PrintInLevel(int level) const {
 	for(int i = 0; i < level; i++) {
 		if(i == level - 1) printf("+-------");
 		else printf("|       ");
@@ -15,15 +15,15 @@ void ASTNode::PrintInLevel(int level) {
 	PrintContentInLevel(level);
 }
 
-void IntegerNode::PrintContentInLevel(int level) {
+void IntegerNode::PrintContentInLevel(int level) const {
 	printf("%d\n", num);
 }
 
-void VariableNode::PrintContentInLevel(int level) {
+void VariableNode::PrintContentInLevel(int level) const {
 	printf("[var]%s\n", id);
 }
 
-void ArithOpNode::PrintContentInLevel(int level) {
+void ArithOpNode::PrintContentInLevel(int level) const {
 
 	switch(op){
 	case '+': printf("ADD\n"); break;
@@ -37,8 +37,16 @@ void ArithOpNode::PrintContentInLevel(int level) {
 	if(rightOperand) rightOperand->PrintInLevel(level + 1);
 }
 
-void ExpressionStatementNode::PrintContentInLevel(int level) {
+void AssignOpNode::PrintContentInLevel(int level) const {
+	printf("Assign\n");
+
+	leftValue->PrintInLevel(level + 1);
+	rightValue->PrintInLevel(level + 1);
+}
+
+void ExpressionStatementNode::PrintContentInLevel(int level) const {
 	printf("Expression Statement\n");
+
 	expression->PrintInLevel(level + 1);
 }
 

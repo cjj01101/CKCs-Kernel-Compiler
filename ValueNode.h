@@ -13,7 +13,7 @@ public:
 private:
 	int num;
 
-	virtual void PrintContentInLevel(int level) override;
+	virtual void PrintContentInLevel(int level) const override;
 
 };
 
@@ -26,7 +26,7 @@ public:
 private:
 	char id[MAXVARLEN];
 
-	virtual void PrintContentInLevel(int level) override;
+	virtual void PrintContentInLevel(int level) const override;
 
 };
 

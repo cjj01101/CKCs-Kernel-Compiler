@@ -2,6 +2,7 @@
 #define _OPERATOR_NODE_H_
 
 #include "ASTNode.h"
+#include "ValueNode.h"
 
 class ArithOpNode : public ASTNode {
 
@@ -15,7 +16,22 @@ private:
 	ASTNode *rightOperand;
 	char op;
 
-	virtual void PrintContentInLevel(int level) override;
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class AssignOpNode : public ASTNode {
+
+public:
+	AssignOpNode(ASTNode *left, ASTNode *right) : ASTNode(), leftValue(left), rightValue(right)
+		{ assert(dynamic_cast<VariableNode*>(left) != nullptr); assert(right != nullptr); }
+	~AssignOpNode() { delete leftValue; delete rightValue; }
+
+private:
+	ASTNode *leftValue;
+	ASTNode *rightValue;
+
+	virtual void PrintContentInLevel(int level) const override;
 
 };
 

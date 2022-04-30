@@ -9,11 +9,11 @@ public:
 	ASTNode() {}
 	virtual ~ASTNode() {}
 
-	void PrintInLevel(int level);
+	void PrintInLevel(int level) const;
 
 protected:
 	
-	virtual void PrintContentInLevel(int level) = 0;
+	virtual void PrintContentInLevel(int level) const = 0;
 
 };
 

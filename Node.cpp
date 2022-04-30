@@ -5,6 +5,16 @@
 #include "OperatorNode.h"
 #include "StatementNode.h"
 
+/*        CONSTRUCT FUNCTION        */
+
+VariableNode::VariableNode(char *name) : ASTNode() {
+	assert(name != NULL);
+	strncpy(id, name, MAXVARLEN);
+	id[MAXVARLEN-1] = '\0';
+}
+
+/*      CONSTRUCT FUNCTION END      */
+
 /*         PRINT FUNCTION         */
 
 void ASTNode::PrintInLevel(int level) const {
@@ -23,6 +33,15 @@ void VariableNode::PrintContentInLevel(int level) const {
 	printf("[var]%s\n", id);
 }
 
+void TypeNode::PrintContentInLevel(int level) const {
+
+	switch(type){
+	case Type::INTEGER: printf("INTEGER\n"); break;
+	default: printf("UNDEFINED\n"); break;
+	}
+
+}
+
 void ArithOpNode::PrintContentInLevel(int level) const {
 
 	switch(op){
@@ -35,6 +54,7 @@ void ArithOpNode::PrintContentInLevel(int level) const {
 
 	if(leftOperand) leftOperand->PrintInLevel(level + 1);
 	if(rightOperand) rightOperand->PrintInLevel(level + 1);
+
 }
 
 void AssignOpNode::PrintContentInLevel(int level) const {
@@ -50,14 +70,17 @@ void ExpressionStatementNode::PrintContentInLevel(int level) const {
 	expression->PrintInLevel(level + 1);
 }
 
-/*        PRINT FUNCTION END        */
+void DeclarationNode::PrintContentInLevel(int level) const {
+	printf("Declaration\n");
 
-/*        CONSTRUCT FUNCTION        */
-
-VariableNode::VariableNode(char *name) : ASTNode() {
-	assert(name != NULL);
-	strncpy(id, name, MAXVARLEN);
-	id[MAXVARLEN-1] = '\0';
+	type->PrintInLevel(level + 1);
+	variable->PrintInLevel(level + 1);
 }
 
-/*      CONSTRUCT FUNCTION END      */
+/*        PRINT FUNCTION END        */
+
+/*        AUXILIARY FUNCTION        */
+
+
+
+/*      AUXILIARY FUNCTION END      */

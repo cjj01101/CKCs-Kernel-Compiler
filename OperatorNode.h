@@ -2,7 +2,10 @@
 #define _OPERATOR_NODE_H_
 
 #include "ASTNode.h"
-#include "ValueNode.h"
+
+/* Forward Declaration */
+class VariableNode;
+/* Forward Declaration */
 
 class ArithOpNode : public ASTNode {
 

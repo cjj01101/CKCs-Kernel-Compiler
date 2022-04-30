@@ -3,6 +3,10 @@
 
 #include "ASTNode.h"
 
+/* Forward Declaration */
+class VariableNode;
+/* Forward Declaration */
+
 class StatementNode : public ASTNode {
 
 public:
@@ -22,6 +26,23 @@ public:
 
 private:
 	ASTNode *expression;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class DeclarationNode : public StatementNode {
+
+public:
+	DeclarationNode(ASTNode *var, ASTNode *type) : StatementNode(), variable(var), type(type) {
+		assert(dynamic_cast<VariableNode*>(var) != nullptr);
+		assert(dynamic_cast<TypeNode*>(type) != nullptr);
+	}
+	~DeclarationNode() {}
+
+private:
+	ASTNode *type;
+	ASTNode *variable;
 
 	virtual void PrintContentInLevel(int level) const override;
 

@@ -3,4 +3,8 @@
 
 #define MAXVARLEN 64
 
+enum class Type : unsigned char {
+	INTEGER = 1,
+};
+
 #endif

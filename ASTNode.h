@@ -2,6 +2,7 @@
 #define _ASTNODE_H_
 
 #include <assert.h>
+#include "common.h"
 
 class ASTNode {
 

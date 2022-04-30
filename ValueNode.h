@@ -2,7 +2,6 @@
 #define _VALUE_NODE_H_
 
 #include "ASTNode.h"
-#include "common.h"
 
 class IntegerNode : public ASTNode {
 
@@ -25,6 +24,19 @@ public:
 
 private:
 	char id[MAXVARLEN];
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class TypeNode : public ASTNode {
+
+public:
+	TypeNode(Type type) : ASTNode(), type(type) { }
+	~TypeNode() {}
+
+private:
+	Type type;
 
 	virtual void PrintContentInLevel(int level) const override;
 

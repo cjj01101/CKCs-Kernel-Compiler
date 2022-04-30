@@ -1,3 +1,8 @@
+Terminals unused in grammar
+
+    COMMA
+
+
 Grammar
 
     0 $accept: program $end
@@ -7,441 +12,496 @@ Grammar
     2 program: statement $@1 program
     3        | %empty
 
-    4 statement: exp SEM
-    5          | SEM
+    4 statement: type idlist SEM
+    5          | exp SEM
+    6          | SEM
 
-    6 exp: identifier EQ exp
-    7    | arithexp
+    7 idlist: identifier
 
-    8 arithexp: arithexp ADD term
-    9         | arithexp SUB term
-   10         | SUB term
-   11         | term
+    8 exp: identifier EQ exp
+    9    | arithexp
 
-   12 term: term MUL factor
-   13     | term DIV factor
-   14     | term MOD factor
-   15     | factor
+   10 arithexp: arithexp ADD term
+   11         | arithexp SUB term
+   12         | SUB term
+   13         | term
 
-   16 factor: identifier
-   17       | integer
-   18       | LP exp RP
+   14 term: term MUL factor
+   15     | term DIV factor
+   16     | term MOD factor
+   17     | factor
 
-   19 identifier: ID
+   18 factor: identifier
+   19       | integer
+   20       | LP exp RP
 
-   20 integer: INT
+   21 type: TYPE_INT
+
+   22 identifier: ID
+
+   23 integer: INT
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    INT <intNum> (258) 20
-    ID <str> (259) 19
-    ADD (260) 8
-    SUB (261) 9 10
-    MUL (262) 12
-    DIV (263) 13
-    MOD (264) 14
-    EQ (265) 6
-    LP (266) 18
-    RP (267) 18
-    SEM (268) 4 5
+    INT <intNum> (258) 23
+    ID <str> (259) 22
+    ADD (260) 10
+    SUB (261) 11 12
+    MUL (262) 14
+    DIV (263) 15
+    MOD (264) 16
+    EQ (265) 8
+    LP (266) 20
+    RP (267) 20
+    SEM (268) 4 5 6
+    COMMA (269)
+    TYPE_INT (270) 21
 
 
 Nonterminals, with rules where they appear
 
-    $accept (14)
+    $accept (16)
         on left: 0
-    program (15)
+    program (17)
         on left: 2 3
         on right: 0 2
-    $@1 (16)
+    $@1 (18)
         on left: 1
         on right: 2
-    statement <node> (17)
-        on left: 4 5
+    statement <node> (19)
+        on left: 4 5 6
         on right: 2
-    exp <node> (18)
-        on left: 6 7
-        on right: 4 6 18
-    arithexp <node> (19)
-        on left: 8 9 10 11
-        on right: 7 8 9
-    term <node> (20)
-        on left: 12 13 14 15
-        on right: 8 9 10 11 12 13 14
-    factor <node> (21)
-        on left: 16 17 18
-        on right: 12 13 14 15
-    identifier <node> (22)
-        on left: 19
-        on right: 6 16
-    integer <node> (23)
-        on left: 20
-        on right: 17
+    idlist <node> (20)
+        on left: 7
+        on right: 4
+    exp <node> (21)
+        on left: 8 9
+        on right: 5 8 20
+    arithexp <node> (22)
+        on left: 10 11 12 13
+        on right: 9 10 11
+    term <node> (23)
+        on left: 14 15 16 17
+        on right: 10 11 12 13 14 15 16
+    factor <node> (24)
+        on left: 18 19 20
+        on right: 14 15 16 17
+    type <node> (25)
+        on left: 21
+        on right: 4
+    identifier <node> (26)
+        on left: 22
+        on right: 7 8 18
+    integer <node> (27)
+        on left: 23
+        on right: 19
 
 
 State 0
 
     0 $accept: . program $end
 
-    INT  shift, and go to state 1
-    ID   shift, and go to state 2
-    SUB  shift, and go to state 3
-    LP   shift, and go to state 4
-    SEM  shift, and go to state 5
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    SUB       shift, and go to state 3
+    LP        shift, and go to state 4
+    SEM       shift, and go to state 5
+    TYPE_INT  shift, and go to state 6
 
     $default  reduce using rule 3 (program)
 
-    program     go to state 6
-    statement   go to state 7
-    exp         go to state 8
-    arithexp    go to state 9
-    term        go to state 10
-    factor      go to state 11
-    identifier  go to state 12
-    integer     go to state 13
+    program     go to state 7
+    statement   go to state 8
+    exp         go to state 9
+    arithexp    go to state 10
+    term        go to state 11
+    factor      go to state 12
+    type        go to state 13
+    identifier  go to state 14
+    integer     go to state 15
 
 
 State 1
 
-   20 integer: INT .
+   23 integer: INT .
 
-    $default  reduce using rule 20 (integer)
+    $default  reduce using rule 23 (integer)
 
 
 State 2
 
-   19 identifier: ID .
+   22 identifier: ID .
 
-    $default  reduce using rule 19 (identifier)
+    $default  reduce using rule 22 (identifier)
 
 
 State 3
 
-   10 arithexp: SUB . term
+   12 arithexp: SUB . term
 
     INT  shift, and go to state 1
     ID   shift, and go to state 2
     LP   shift, and go to state 4
 
-    term        go to state 14
-    factor      go to state 11
-    identifier  go to state 15
-    integer     go to state 13
+    term        go to state 16
+    factor      go to state 12
+    identifier  go to state 17
+    integer     go to state 15
 
 
 State 4
 
-   18 factor: LP . exp RP
+   20 factor: LP . exp RP
 
     INT  shift, and go to state 1
     ID   shift, and go to state 2
     SUB  shift, and go to state 3
     LP   shift, and go to state 4
 
-    exp         go to state 16
-    arithexp    go to state 9
-    term        go to state 10
-    factor      go to state 11
-    identifier  go to state 12
-    integer     go to state 13
+    exp         go to state 18
+    arithexp    go to state 10
+    term        go to state 11
+    factor      go to state 12
+    identifier  go to state 14
+    integer     go to state 15
 
 
 State 5
 
-    5 statement: SEM .
+    6 statement: SEM .
 
-    $default  reduce using rule 5 (statement)
+    $default  reduce using rule 6 (statement)
 
 
 State 6
 
-    0 $accept: program . $end
+   21 type: TYPE_INT .
 
-    $end  shift, and go to state 17
+    $default  reduce using rule 21 (type)
 
 
 State 7
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 19
+
+
+State 8
 
     2 program: statement . $@1 program
 
     $default  reduce using rule 1 ($@1)
 
-    $@1  go to state 18
-
-
-State 8
-
-    4 statement: exp . SEM
-
-    SEM  shift, and go to state 19
+    $@1  go to state 20
 
 
 State 9
 
-    7 exp: arithexp .
-    8 arithexp: arithexp . ADD term
-    9         | arithexp . SUB term
+    5 statement: exp . SEM
 
-    ADD  shift, and go to state 20
-    SUB  shift, and go to state 21
-
-    $default  reduce using rule 7 (exp)
+    SEM  shift, and go to state 21
 
 
 State 10
 
-   11 arithexp: term .
-   12 term: term . MUL factor
-   13     | term . DIV factor
-   14     | term . MOD factor
+    9 exp: arithexp .
+   10 arithexp: arithexp . ADD term
+   11         | arithexp . SUB term
 
-    MUL  shift, and go to state 22
-    DIV  shift, and go to state 23
-    MOD  shift, and go to state 24
+    ADD  shift, and go to state 22
+    SUB  shift, and go to state 23
 
-    $default  reduce using rule 11 (arithexp)
+    $default  reduce using rule 9 (exp)
 
 
 State 11
 
-   15 term: factor .
+   13 arithexp: term .
+   14 term: term . MUL factor
+   15     | term . DIV factor
+   16     | term . MOD factor
 
-    $default  reduce using rule 15 (term)
+    MUL  shift, and go to state 24
+    DIV  shift, and go to state 25
+    MOD  shift, and go to state 26
+
+    $default  reduce using rule 13 (arithexp)
 
 
 State 12
 
-    6 exp: identifier . EQ exp
-   16 factor: identifier .
+   17 term: factor .
 
-    EQ  shift, and go to state 25
-
-    $default  reduce using rule 16 (factor)
+    $default  reduce using rule 17 (term)
 
 
 State 13
 
-   17 factor: integer .
+    4 statement: type . idlist SEM
 
-    $default  reduce using rule 17 (factor)
+    ID  shift, and go to state 2
+
+    idlist      go to state 27
+    identifier  go to state 28
 
 
 State 14
 
-   10 arithexp: SUB term .
-   12 term: term . MUL factor
-   13     | term . DIV factor
-   14     | term . MOD factor
+    8 exp: identifier . EQ exp
+   18 factor: identifier .
 
-    MUL  shift, and go to state 22
-    DIV  shift, and go to state 23
-    MOD  shift, and go to state 24
+    EQ  shift, and go to state 29
 
-    $default  reduce using rule 10 (arithexp)
+    $default  reduce using rule 18 (factor)
 
 
 State 15
 
-   16 factor: identifier .
+   19 factor: integer .
 
-    $default  reduce using rule 16 (factor)
+    $default  reduce using rule 19 (factor)
 
 
 State 16
 
-   18 factor: LP exp . RP
+   12 arithexp: SUB term .
+   14 term: term . MUL factor
+   15     | term . DIV factor
+   16     | term . MOD factor
 
-    RP  shift, and go to state 26
+    MUL  shift, and go to state 24
+    DIV  shift, and go to state 25
+    MOD  shift, and go to state 26
+
+    $default  reduce using rule 12 (arithexp)
 
 
 State 17
+
+   18 factor: identifier .
+
+    $default  reduce using rule 18 (factor)
+
+
+State 18
+
+   20 factor: LP exp . RP
+
+    RP  shift, and go to state 30
+
+
+State 19
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 18
+State 20
 
     2 program: statement $@1 . program
 
-    INT  shift, and go to state 1
-    ID   shift, and go to state 2
-    SUB  shift, and go to state 3
-    LP   shift, and go to state 4
-    SEM  shift, and go to state 5
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    SUB       shift, and go to state 3
+    LP        shift, and go to state 4
+    SEM       shift, and go to state 5
+    TYPE_INT  shift, and go to state 6
 
     $default  reduce using rule 3 (program)
 
-    program     go to state 27
-    statement   go to state 7
-    exp         go to state 8
-    arithexp    go to state 9
-    term        go to state 10
-    factor      go to state 11
-    identifier  go to state 12
-    integer     go to state 13
-
-
-State 19
-
-    4 statement: exp SEM .
-
-    $default  reduce using rule 4 (statement)
-
-
-State 20
-
-    8 arithexp: arithexp ADD . term
-
-    INT  shift, and go to state 1
-    ID   shift, and go to state 2
-    LP   shift, and go to state 4
-
-    term        go to state 28
-    factor      go to state 11
-    identifier  go to state 15
-    integer     go to state 13
+    program     go to state 31
+    statement   go to state 8
+    exp         go to state 9
+    arithexp    go to state 10
+    term        go to state 11
+    factor      go to state 12
+    type        go to state 13
+    identifier  go to state 14
+    integer     go to state 15
 
 
 State 21
 
-    9 arithexp: arithexp SUB . term
+    5 statement: exp SEM .
 
-    INT  shift, and go to state 1
-    ID   shift, and go to state 2
-    LP   shift, and go to state 4
-
-    term        go to state 29
-    factor      go to state 11
-    identifier  go to state 15
-    integer     go to state 13
+    $default  reduce using rule 5 (statement)
 
 
 State 22
 
-   12 term: term MUL . factor
+   10 arithexp: arithexp ADD . term
 
     INT  shift, and go to state 1
     ID   shift, and go to state 2
     LP   shift, and go to state 4
 
-    factor      go to state 30
-    identifier  go to state 15
-    integer     go to state 13
+    term        go to state 32
+    factor      go to state 12
+    identifier  go to state 17
+    integer     go to state 15
 
 
 State 23
 
-   13 term: term DIV . factor
+   11 arithexp: arithexp SUB . term
 
     INT  shift, and go to state 1
     ID   shift, and go to state 2
     LP   shift, and go to state 4
 
-    factor      go to state 31
-    identifier  go to state 15
-    integer     go to state 13
+    term        go to state 33
+    factor      go to state 12
+    identifier  go to state 17
+    integer     go to state 15
 
 
 State 24
 
-   14 term: term MOD . factor
+   14 term: term MUL . factor
 
     INT  shift, and go to state 1
     ID   shift, and go to state 2
     LP   shift, and go to state 4
 
-    factor      go to state 32
-    identifier  go to state 15
-    integer     go to state 13
+    factor      go to state 34
+    identifier  go to state 17
+    integer     go to state 15
 
 
 State 25
 
-    6 exp: identifier EQ . exp
+   15 term: term DIV . factor
+
+    INT  shift, and go to state 1
+    ID   shift, and go to state 2
+    LP   shift, and go to state 4
+
+    factor      go to state 35
+    identifier  go to state 17
+    integer     go to state 15
+
+
+State 26
+
+   16 term: term MOD . factor
+
+    INT  shift, and go to state 1
+    ID   shift, and go to state 2
+    LP   shift, and go to state 4
+
+    factor      go to state 36
+    identifier  go to state 17
+    integer     go to state 15
+
+
+State 27
+
+    4 statement: type idlist . SEM
+
+    SEM  shift, and go to state 37
+
+
+State 28
+
+    7 idlist: identifier .
+
+    $default  reduce using rule 7 (idlist)
+
+
+State 29
+
+    8 exp: identifier EQ . exp
 
     INT  shift, and go to state 1
     ID   shift, and go to state 2
     SUB  shift, and go to state 3
     LP   shift, and go to state 4
 
-    exp         go to state 33
-    arithexp    go to state 9
-    term        go to state 10
-    factor      go to state 11
-    identifier  go to state 12
-    integer     go to state 13
+    exp         go to state 38
+    arithexp    go to state 10
+    term        go to state 11
+    factor      go to state 12
+    identifier  go to state 14
+    integer     go to state 15
 
 
-State 26
+State 30
 
-   18 factor: LP exp RP .
+   20 factor: LP exp RP .
 
-    $default  reduce using rule 18 (factor)
+    $default  reduce using rule 20 (factor)
 
 
-State 27
+State 31
 
     2 program: statement $@1 program .
 
     $default  reduce using rule 2 (program)
 
 
-State 28
-
-    8 arithexp: arithexp ADD term .
-   12 term: term . MUL factor
-   13     | term . DIV factor
-   14     | term . MOD factor
-
-    MUL  shift, and go to state 22
-    DIV  shift, and go to state 23
-    MOD  shift, and go to state 24
-
-    $default  reduce using rule 8 (arithexp)
-
-
-State 29
-
-    9 arithexp: arithexp SUB term .
-   12 term: term . MUL factor
-   13     | term . DIV factor
-   14     | term . MOD factor
-
-    MUL  shift, and go to state 22
-    DIV  shift, and go to state 23
-    MOD  shift, and go to state 24
-
-    $default  reduce using rule 9 (arithexp)
-
-
-State 30
-
-   12 term: term MUL factor .
-
-    $default  reduce using rule 12 (term)
-
-
-State 31
-
-   13 term: term DIV factor .
-
-    $default  reduce using rule 13 (term)
-
-
 State 32
 
-   14 term: term MOD factor .
+   10 arithexp: arithexp ADD term .
+   14 term: term . MUL factor
+   15     | term . DIV factor
+   16     | term . MOD factor
 
-    $default  reduce using rule 14 (term)
+    MUL  shift, and go to state 24
+    DIV  shift, and go to state 25
+    MOD  shift, and go to state 26
+
+    $default  reduce using rule 10 (arithexp)
 
 
 State 33
 
-    6 exp: identifier EQ exp .
+   11 arithexp: arithexp SUB term .
+   14 term: term . MUL factor
+   15     | term . DIV factor
+   16     | term . MOD factor
 
-    $default  reduce using rule 6 (exp)
+    MUL  shift, and go to state 24
+    DIV  shift, and go to state 25
+    MOD  shift, and go to state 26
+
+    $default  reduce using rule 11 (arithexp)
+
+
+State 34
+
+   14 term: term MUL factor .
+
+    $default  reduce using rule 14 (term)
+
+
+State 35
+
+   15 term: term DIV factor .
+
+    $default  reduce using rule 15 (term)
+
+
+State 36
+
+   16 term: term MOD factor .
+
+    $default  reduce using rule 16 (term)
+
+
+State 37
+
+    4 statement: type idlist SEM .
+
+    $default  reduce using rule 4 (statement)
+
+
+State 38
+
+    8 exp: identifier EQ exp .
+
+    $default  reduce using rule 8 (exp)

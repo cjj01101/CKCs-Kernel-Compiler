@@ -14,8 +14,6 @@ blank [ \f\n\r\t\v]+
 
 %%
 
-{integer}    { yylval.intNum = atoi(yytext); return INT; }
-{identifier} { strncpy(yylval.str, yytext, 64); return ID; }
 "+"          return ADD;
 "-"          return SUB;
 "*"          return MUL;
@@ -25,6 +23,10 @@ blank [ \f\n\r\t\v]+
 "("          return LP;
 ")"          return RP;
 ";"          return SEM;
+","          return COMMA;
+"int"        return TYPE_INT;
+{identifier} { strncpy(yylval.str, yytext, 64); return ID; }
+{integer}    { yylval.intNum = atoi(yytext); return INT; }
 {blank}      ;
 .            { printf("Input parsing failure: %s.\n", yytext); }
 

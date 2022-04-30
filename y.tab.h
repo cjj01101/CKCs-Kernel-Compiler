@@ -64,7 +64,9 @@ extern int yydebug;
     EQ = 265,                      /* EQ  */
     LP = 266,                      /* LP  */
     RP = 267,                      /* RP  */
-    SEM = 268                      /* SEM  */
+    SEM = 268,                     /* SEM  */
+    COMMA = 269,                   /* COMMA  */
+    TYPE_INT = 270                 /* TYPE_INT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -84,18 +86,20 @@ extern int yydebug;
 #define LP 266
 #define RP 267
 #define SEM 268
+#define COMMA 269
+#define TYPE_INT 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "parser.y"
+#line 16 "parser.y"
 
     int intNum;
     char str[MAXVARLEN];
     ASTNode *node;
 
-#line 99 "y.tab.h"
+#line 103 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

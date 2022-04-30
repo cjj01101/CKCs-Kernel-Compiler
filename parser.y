@@ -7,6 +7,8 @@
 
     int yylex(void);
     void yyerror(char *);
+    
+    enum class type;
 
     ASTNode *root = nullptr;
 %}
@@ -19,9 +21,10 @@
 
 %token <intNum> INT
 %token <str> ID
-%token ADD SUB MUL DIV MOD EQ LP RP SEM
+%token ADD SUB MUL DIV MOD EQ LP RP SEM COMMA
+%token TYPE_INT
 
-%type <node> statement exp arithexp term factor identifier integer
+%type <node> statement idlist exp arithexp term factor type identifier integer
 
 %%
 
@@ -29,8 +32,12 @@
             | /* empty */
             ;
 
-  statement : exp SEM { $$ = new ExpressionStatementNode($1); }
+  statement : type idlist SEM { $$ = new DeclarationNode($2, $1); }
+            | exp SEM { $$ = new ExpressionStatementNode($1); }
             | SEM  { $$ = nullptr; }
+            ;
+
+     idlist : identifier { $$ = $1; }
             ;
 
         exp : identifier EQ exp { $$ = new AssignOpNode($1, $3); }
@@ -52,6 +59,9 @@
      factor : identifier { $$ = $1; }
             | integer { $$ = $1; }
             | LP exp RP { $$ = $2; }
+            ;
+
+       type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
             ;
 
  identifier : ID { $$ = new VariableNode($1); }

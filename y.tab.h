@@ -56,17 +56,22 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     INT = 258,                     /* INT  */
     ID = 259,                      /* ID  */
-    ADD = 260,                     /* ADD  */
-    SUB = 261,                     /* SUB  */
-    MUL = 262,                     /* MUL  */
-    DIV = 263,                     /* DIV  */
-    MOD = 264,                     /* MOD  */
-    EQ = 265,                      /* EQ  */
-    LP = 266,                      /* LP  */
-    RP = 267,                      /* RP  */
-    SEM = 268,                     /* SEM  */
-    COMMA = 269,                   /* COMMA  */
-    TYPE_INT = 270                 /* TYPE_INT  */
+    TYPE_INT = 260,                /* TYPE_INT  */
+    ADD = 261,                     /* ADD  */
+    SUB = 262,                     /* SUB  */
+    MUL = 263,                     /* MUL  */
+    DIV = 264,                     /* DIV  */
+    MOD = 265,                     /* MOD  */
+    EQ = 266,                      /* EQ  */
+    LP = 267,                      /* LP  */
+    RP = 268,                      /* RP  */
+    SEM = 269,                     /* SEM  */
+    COMMA = 270,                   /* COMMA  */
+    IF = 271,                      /* IF  */
+    ELSE = 272,                    /* ELSE  */
+    WHILE = 273,                   /* WHILE  */
+    FOR = 274,                     /* FOR  */
+    IFX = 275                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -77,29 +82,34 @@ extern int yydebug;
 #define YYUNDEF 257
 #define INT 258
 #define ID 259
-#define ADD 260
-#define SUB 261
-#define MUL 262
-#define DIV 263
-#define MOD 264
-#define EQ 265
-#define LP 266
-#define RP 267
-#define SEM 268
-#define COMMA 269
-#define TYPE_INT 270
+#define TYPE_INT 260
+#define ADD 261
+#define SUB 262
+#define MUL 263
+#define DIV 264
+#define MOD 265
+#define EQ 266
+#define LP 267
+#define RP 268
+#define SEM 269
+#define COMMA 270
+#define IF 271
+#define ELSE 272
+#define WHILE 273
+#define FOR 274
+#define IFX 275
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "parser.y"
+#line 17 "parser.y"
 
     int intNum;
     char str[MAXVARLEN];
     ASTNode *node;
 
-#line 103 "y.tab.h"
+#line 113 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

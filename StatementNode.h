@@ -3,10 +3,6 @@
 
 #include "ASTNode.h"
 
-/* Forward Declaration */
-class VariableNode;
-/* Forward Declaration */
-
 class StatementNode : public ASTNode {
 
 public:
@@ -14,6 +10,17 @@ public:
 	virtual ~StatementNode() {}
 
 protected:
+
+};
+
+class EmptyStatementNode : public StatementNode {
+
+public:
+	EmptyStatementNode() : StatementNode() {}
+	~EmptyStatementNode() {}	
+
+private:
+	virtual void PrintContentInLevel(int level) const override;
 
 };
 
@@ -31,18 +38,61 @@ private:
 
 };
 
-class DeclarationNode : public StatementNode {
+class IfStatementNode : public StatementNode {
 
 public:
-	DeclarationNode(ASTNode *var, ASTNode *type) : StatementNode(), variable(var), type(type) {
-		assert(dynamic_cast<VariableNode*>(var) != nullptr);
-		assert(dynamic_cast<TypeNode*>(type) != nullptr);
+	IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt) :
+		StatementNode(), condition(condition), thenStmt(thenStmt), elseStmt(elseStmt)
+	{
+		assert(dynamic_cast<StatementNode*>(thenStmt) != nullptr);
+		assert(dynamic_cast<StatementNode*>(elseStmt) != nullptr);
 	}
-	~DeclarationNode() {}
+	~IfStatementNode() { delete condition; delete thenStmt; delete thenStmt; }	
 
 private:
-	ASTNode *type;
-	ASTNode *variable;
+	ASTNode *condition;
+	ASTNode *thenStmt;
+	ASTNode *elseStmt;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class WhileStatementNode : public StatementNode {
+
+public:
+	WhileStatementNode(ASTNode *condition, ASTNode *body) :
+		StatementNode(), condition(condition), body(body)
+	{
+		assert(dynamic_cast<StatementNode*>(body) != nullptr);
+	}
+	~WhileStatementNode() { delete condition; delete body; }
+
+private:
+	ASTNode *condition;
+	ASTNode *body;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class ForStatementNode : public StatementNode {
+
+public:
+	ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body) :
+		StatementNode(), init(init), condition(cond), loop(loop), body(body)
+	{
+		assert(dynamic_cast<StatementNode*>(init) != nullptr);
+		assert(dynamic_cast<StatementNode*>(cond) != nullptr);
+		assert(dynamic_cast<StatementNode*>(body) != nullptr);
+	}
+	~ForStatementNode() { delete init; delete condition; delete loop; delete body; }
+
+private:
+	ASTNode *init;
+	ASTNode *condition;
+	ASTNode *loop;
+	ASTNode *body;
 
 	virtual void PrintContentInLevel(int level) const override;
 

@@ -3,6 +3,17 @@
 
 #include "ASTNode.h"
 
+class EmptyExpressionNode : public ASTNode {
+
+public:
+	EmptyExpressionNode() : ASTNode() {}
+	~EmptyExpressionNode() {}
+
+private:
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
 class IntegerNode : public ASTNode {
 
 public:

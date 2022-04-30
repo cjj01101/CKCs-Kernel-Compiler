@@ -3,7 +3,7 @@
 #include "ASTNode.h"
 #include "ValueNode.h"
 #include "OperatorNode.h"
-#include "StatementNode.h"
+#include "DeclarationNode.h"
 
 /*        CONSTRUCT FUNCTION        */
 
@@ -25,12 +25,16 @@ void ASTNode::PrintInLevel(int level) const {
 	PrintContentInLevel(level);
 }
 
+void EmptyExpressionNode::PrintContentInLevel(int level) const {
+	printf("Empty Expression\n");
+}
+
 void IntegerNode::PrintContentInLevel(int level) const {
 	printf("%d\n", num);
 }
 
 void VariableNode::PrintContentInLevel(int level) const {
-	printf("[var]%s\n", id);
+	printf("[var] %s\n", id);
 }
 
 void TypeNode::PrintContentInLevel(int level) const {
@@ -62,12 +66,6 @@ void AssignOpNode::PrintContentInLevel(int level) const {
 
 	leftValue->PrintInLevel(level + 1);
 	rightValue->PrintInLevel(level + 1);
-}
-
-void ExpressionStatementNode::PrintContentInLevel(int level) const {
-	printf("Expression Statement\n");
-
-	expression->PrintInLevel(level + 1);
 }
 
 void DeclarationNode::PrintContentInLevel(int level) const {

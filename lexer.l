@@ -1,6 +1,5 @@
 %{
     #include <stdio.h>
-    #include "common.h"
     #include "ASTNode.h"
     #include "y.tab.h"
 
@@ -24,6 +23,10 @@ blank [ \f\n\r\t\v]+
 ")"          return RP;
 ";"          return SEM;
 ","          return COMMA;
+"if"         return IF;
+"else"       return ELSE;
+"while"      return WHILE;
+"for"        return FOR;
 "int"        return TYPE_INT;
 {identifier} { strncpy(yylval.str, yytext, 64); return ID; }
 {integer}    { yylval.intNum = atoi(yytext); return INT; }

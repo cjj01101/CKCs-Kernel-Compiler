@@ -6,7 +6,7 @@
 class StatementNode : public ASTNode {
 
 public:
-	StatementNode() {}
+	StatementNode() : ASTNode() {}
 	virtual ~StatementNode() {}
 
 protected:
@@ -23,10 +23,7 @@ public:
 private:
 	ASTNode *expression;
 
-	virtual void PrintContentInLevel(int level) override {
-		cout << "Expression Statement" << endl;
-		expression->PrintInLevel(level + 1);
-	}
+	virtual void PrintContentInLevel(int level) override;
 
 };
 

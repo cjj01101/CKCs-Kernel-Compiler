@@ -1,6 +1,6 @@
 %{
     #include <stdio.h>
-    #include <stdlib.h>
+    #include "common.h"
     #include "ASTNode.h"
     #include "y.tab.h"
 

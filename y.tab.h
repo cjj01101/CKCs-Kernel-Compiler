@@ -92,7 +92,7 @@ union YYSTYPE
 #line 14 "parser.y"
 
     int intNum;
-    char str[64];
+    char str[MAXVARLEN];
     ASTNode *node;
 
 #line 99 "y.tab.h"

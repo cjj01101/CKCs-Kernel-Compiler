@@ -13,7 +13,7 @@
 
 %union {
     int intNum;
-    char str[64];
+    char str[MAXVARLEN];
     ASTNode *node;
 }
 
@@ -46,6 +46,7 @@
            ;
 
     factor : INT { $$ = new IntegerNode($1); }
+           | ID { $$ = new VariableNode($1); }
            | LP exp RP { $$ = $2; }
            ;
 

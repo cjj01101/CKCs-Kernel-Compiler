@@ -454,7 +454,7 @@ char *yytext;
 #line 1 "lexer.l"
 #line 2 "lexer.l"
     #include <stdio.h>
-    #include <stdlib.h>
+    #include "common.h"
     #include "ASTNode.h"
     #include "y.tab.h"
 

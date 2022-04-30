@@ -15,19 +15,7 @@ private:
 	ASTNode *rightOperand;
 	char op;
 
-	virtual void PrintContentInLevel(int level) override {
-
-		switch(op){
-		case '+': cout << "ADD" << endl; break;
-		case '-': cout << "SUB" << endl; break;
-		case '*': cout << "MUL" << endl; break;
-		case '/': cout << "DIV" << endl; break;
-		case '%': cout << "MOD" << endl; break;
-		}
-
-		if(leftOperand) leftOperand->PrintInLevel(level + 1);
-		if(rightOperand) rightOperand->PrintInLevel(level + 1);
-	}
+	virtual void PrintContentInLevel(int level) override;
 
 };
 

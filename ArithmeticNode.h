@@ -6,14 +6,13 @@
 class IntegerNode : public ASTNode {
 
 public:
-	IntegerNode(int num, ASTNode *left = nullptr, ASTNode *right = nullptr) :
-		ASTNode(left, right), num(num) {}
+	IntegerNode(int num) : ASTNode(), num(num) {}
 	~IntegerNode() {}
 
 private:
 	int num;
 
-	void PrintContent() { cout << num << endl; }
+	virtual void PrintContent() override { cout << num << endl; }
 
 };
 
@@ -21,13 +20,15 @@ class ArithOpNode : public ASTNode {
 
 public:
 	ArithOpNode(char op, ASTNode *left = nullptr, ASTNode *right = nullptr) :
-		ASTNode(left, right), op(op) {}
+		ASTNode(), leftChild(left), rightChild(right), op(op) {}
 	~ArithOpNode() {}
 
 private:
+	ASTNode *leftChild;
+	ASTNode *rightChild;
 	char op;
 
-	void PrintContent() {
+	virtual void PrintContent() override {
 		switch(op){
 		case '+':
 			cout << "ADD" << endl;
@@ -42,7 +43,11 @@ private:
 			cout << "DIV" << endl;
 			break;
 		}
-		
+	}
+
+	virtual void PrintChildren(int level) override {
+		if(leftChild) leftChild->PrintInLevel(level + 1);
+		if(rightChild) rightChild->PrintInLevel(level + 1);
 	}
 
 };

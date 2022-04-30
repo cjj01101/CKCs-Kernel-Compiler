@@ -7,12 +7,8 @@ using namespace std;
 class ASTNode {
 
 public:
-	ASTNode(ASTNode *left = nullptr, ASTNode *right = nullptr) :
-		leftChild(left), rightChild(right) {}
-	~ASTNode() {
-		delete leftChild;
-		delete rightChild;
-	}
+	ASTNode() {}
+	virtual ~ASTNode() {}
 
 	void PrintInLevel(int level) {
 		for(int i = 0; i < level; i++) {
@@ -20,15 +16,14 @@ public:
 			else cout << "|       ";
 		}
 		PrintContent();
-		if(leftChild) leftChild->PrintInLevel(level + 1);
-		if(rightChild) rightChild->PrintInLevel(level + 1);
+		PrintChildren(level);
 	}
 
 protected:
-	ASTNode *leftChild;
-	ASTNode *rightChild;
-
+	
 	virtual void PrintContent() = 0;
+	virtual void PrintChildren(int level) {}
+
 };
 
 #endif

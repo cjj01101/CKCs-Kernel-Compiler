@@ -1,7 +1,9 @@
 %{
     #include <stdio.h>
     #include "AbstractSyntaxTree.h"
-    #include "ArithmeticNode.h"
+    #include "ValueNode.h"
+    #include "OperatorNode.h"
+    #include "StatementNode.h"
 
     int yylex(void);
     void yyerror(char *);
@@ -11,22 +13,24 @@
 
 %union {
     int intNum;
+    char str[64];
     ASTNode *node;
 }
 
 %token <intNum> INT
-%token ADD SUB MUL DIV EQ LP RP SEM
+%token <str> ID
+%token ADD SUB MUL DIV MOD EQ LP RP SEM
 
-%type <node> exp term factor
+%type <node> statement exp term factor
 
 %%
 
-   program : statement program
+   program : statement { if($1) $1->PrintInLevel(0); } program
            | /* empty */
            ;
 
- statement : exp SEM { $1->PrintInLevel(0); }
-           | SEM 
+ statement : exp SEM { $$ = new ExpressionStatementNode($1); }
+           | SEM  { $$ = nullptr; }
            ;
 
        exp : exp ADD term { $$ = new ArithOpNode('+', $1, $3); }
@@ -37,6 +41,7 @@
 
       term : term MUL factor { $$ = new ArithOpNode('*', $1, $3); }
            | term DIV factor { $$ = new ArithOpNode('/', $1, $3); }
+           | term MOD factor { $$ = new ArithOpNode('%', $1, $3); }
            | factor { $$ = $1; }
            ;
 

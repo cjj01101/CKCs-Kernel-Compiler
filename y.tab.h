@@ -55,14 +55,16 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     INT = 258,                     /* INT  */
-    ADD = 259,                     /* ADD  */
-    SUB = 260,                     /* SUB  */
-    MUL = 261,                     /* MUL  */
-    DIV = 262,                     /* DIV  */
-    EQ = 263,                      /* EQ  */
-    LP = 264,                      /* LP  */
-    RP = 265,                      /* RP  */
-    SEM = 266                      /* SEM  */
+    ID = 259,                      /* ID  */
+    ADD = 260,                     /* ADD  */
+    SUB = 261,                     /* SUB  */
+    MUL = 262,                     /* MUL  */
+    DIV = 263,                     /* DIV  */
+    MOD = 264,                     /* MOD  */
+    EQ = 265,                      /* EQ  */
+    LP = 266,                      /* LP  */
+    RP = 267,                      /* RP  */
+    SEM = 268                      /* SEM  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -72,25 +74,28 @@ extern int yydebug;
 #define YYerror 256
 #define YYUNDEF 257
 #define INT 258
-#define ADD 259
-#define SUB 260
-#define MUL 261
-#define DIV 262
-#define EQ 263
-#define LP 264
-#define RP 265
-#define SEM 266
+#define ID 259
+#define ADD 260
+#define SUB 261
+#define MUL 262
+#define DIV 263
+#define MOD 264
+#define EQ 265
+#define LP 266
+#define RP 267
+#define SEM 268
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 12 "parser.y"
+#line 14 "parser.y"
 
     int intNum;
+    char str[64];
     ASTNode *node;
 
-#line 94 "y.tab.h"
+#line 99 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

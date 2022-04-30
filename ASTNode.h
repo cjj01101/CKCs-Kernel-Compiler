@@ -2,6 +2,7 @@
 #define _ASTNODE_H_
 
 #include <iostream>
+#include <assert.h>
 using namespace std;
 
 class ASTNode {
@@ -15,14 +16,12 @@ public:
 			if(i == level - 1) cout << "+-------";
 			else cout << "|       ";
 		}
-		PrintContent();
-		PrintChildren(level);
+		PrintContentInLevel(level);
 	}
 
 protected:
 	
-	virtual void PrintContent() = 0;
-	virtual void PrintChildren(int level) {}
+	virtual void PrintContentInLevel(int level) = 0;
 
 };
 

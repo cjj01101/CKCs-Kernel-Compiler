@@ -10,6 +10,14 @@ void EmptyStatementNode::PrintContentInLevel(int level) const {
 	printf("Empty Statement\n");
 }
 
+void CompoundStatementNode::PrintContentInLevel(int level) const {
+	printf("Compound Statement\n");
+
+	for(auto stmt : statements) {
+		stmt->PrintInLevel(level + 1);
+	}
+}
+
 void ExpressionStatementNode::PrintContentInLevel(int level) const {
 	printf("Expression Statement\n");
 	

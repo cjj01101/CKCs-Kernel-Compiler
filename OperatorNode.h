@@ -7,17 +7,17 @@
 class VariableNode;
 /* Forward Declaration */
 
-class ArithOpNode : public ASTNode {
+class BinaryOpNode : public ASTNode {
 
 public:
-	ArithOpNode(char op, ASTNode *left, ASTNode *right) :
+	BinaryOpNode(Operator op, ASTNode *left, ASTNode *right) :
 		ASTNode(), leftOperand(left), rightOperand(right), op(op) {}
-	~ArithOpNode() { delete leftOperand; delete rightOperand; }
+	~BinaryOpNode() { delete leftOperand; delete rightOperand; }
 
 private:
 	ASTNode *leftOperand;
 	ASTNode *rightOperand;
-	char op;
+	Operator op;
 
 	virtual void PrintContentInLevel(int level) const override;
 

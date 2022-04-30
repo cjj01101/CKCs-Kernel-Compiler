@@ -1,6 +1,7 @@
 #ifndef _STATEMENT_NODE_H_
 #define _STATEMENT_NODE_H_
 
+#include <vector>
 #include "ASTNode.h"
 
 class StatementNode : public ASTNode {
@@ -20,6 +21,26 @@ public:
 	~EmptyStatementNode() {}	
 
 private:
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class CompoundStatementNode : public StatementNode {
+
+public:
+	CompoundStatementNode() : StatementNode(), statements() {}
+	~CompoundStatementNode() {
+		for(auto stmt : statements) delete stmt;
+	}
+
+	void AppendStatement(ASTNode *stmt) {
+		//assert(dynamic_cast<StatementNode*>(stmt) != nullptr);
+		statements.push_back(stmt);
+	}
+
+private:
+	std::vector<ASTNode*> statements;
+
 	virtual void PrintContentInLevel(int level) const override;
 
 };

@@ -46,15 +46,15 @@ void TypeNode::PrintContentInLevel(int level) const {
 
 }
 
-void ArithOpNode::PrintContentInLevel(int level) const {
+void BinaryOpNode::PrintContentInLevel(int level) const {
 
-	switch(op){
-	case '+': printf("ADD\n"); break;
-	case '-': printf("SUB\n"); break;
-	case '*': printf("MUL\n"); break;
-	case '/': printf("DIV\n"); break;
-	case '%': printf("MOD\n"); break;
-	}
+	const static char *OperatorName[] = {
+		#define OP(op) #op,
+		OPERATORS
+		#undef OP
+	};
+
+	printf("%s\n", OperatorName[static_cast<int>(op)]);
 
 	if(leftOperand) leftOperand->PrintInLevel(level + 1);
 	if(rightOperand) rightOperand->PrintInLevel(level + 1);

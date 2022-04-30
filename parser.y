@@ -15,17 +15,17 @@
 }
 
 %token <intNum> INT
-%token ADD SUB MUL DIV LP RP SEM
+%token ADD SUB MUL DIV EQ LP RP SEM
 
 %type <node> exp term factor
 
 %%
 
-   command : sentence
-           | command sentence
+   program : statement program
+           | /* empty */
            ;
 
-  sentence : exp SEM { $1->PrintInLevel(0); }
+ statement : exp SEM { $1->PrintInLevel(0); }
            | SEM 
            ;
 

@@ -18,6 +18,7 @@ blank [ \f\n\r\t\v]+
 "-"          return SUB;
 "*"          return MUL;
 "/"          return DIV;
+"="          return EQ;
 "("          return LP;
 ")"          return RP;
 ";"          return SEM;

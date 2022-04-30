@@ -59,9 +59,10 @@ extern int yydebug;
     SUB = 260,                     /* SUB  */
     MUL = 261,                     /* MUL  */
     DIV = 262,                     /* DIV  */
-    LP = 263,                      /* LP  */
-    RP = 264,                      /* RP  */
-    SEM = 265                      /* SEM  */
+    EQ = 263,                      /* EQ  */
+    LP = 264,                      /* LP  */
+    RP = 265,                      /* RP  */
+    SEM = 266                      /* SEM  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -75,9 +76,10 @@ extern int yydebug;
 #define SUB 260
 #define MUL 261
 #define DIV 262
-#define LP 263
-#define RP 264
-#define SEM 265
+#define EQ 263
+#define LP 264
+#define RP 265
+#define SEM 266
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -88,7 +90,7 @@ union YYSTYPE
     int intNum;
     ASTNode *node;
 
-#line 92 "y.tab.h"
+#line 94 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

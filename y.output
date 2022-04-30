@@ -1,12 +1,17 @@
+Terminals unused in grammar
+
+    EQ
+
+
 Grammar
 
-    0 $accept: command $end
+    0 $accept: program $end
 
-    1 command: sentence
-    2        | command sentence
+    1 program: statement program
+    2        | %empty
 
-    3 sentence: exp SEM
-    4         | SEM
+    3 statement: exp SEM
+    4          | SEM
 
     5 exp: exp ADD term
     6    | exp SUB term
@@ -30,46 +35,49 @@ Terminals, with rules where they appear
     SUB (260) 6 7
     MUL (261) 9
     DIV (262) 10
-    LP (263) 13
-    RP (264) 13
-    SEM (265) 3 4
+    EQ (263)
+    LP (264) 13
+    RP (265) 13
+    SEM (266) 3 4
 
 
 Nonterminals, with rules where they appear
 
-    $accept (11)
+    $accept (12)
         on left: 0
-    command (12)
+    program (13)
         on left: 1 2
-        on right: 0 2
-    sentence (13)
+        on right: 0 1
+    statement (14)
         on left: 3 4
-        on right: 1 2
-    exp <node> (14)
+        on right: 1
+    exp <node> (15)
         on left: 5 6 7 8
         on right: 3 5 6 13
-    term <node> (15)
+    term <node> (16)
         on left: 9 10 11
         on right: 5 6 7 8 9 10
-    factor <node> (16)
+    factor <node> (17)
         on left: 12 13
         on right: 9 10 11
 
 
 State 0
 
-    0 $accept: . command $end
+    0 $accept: . program $end
 
     INT  shift, and go to state 1
     SUB  shift, and go to state 2
     LP   shift, and go to state 3
     SEM  shift, and go to state 4
 
-    command   go to state 5
-    sentence  go to state 6
-    exp       go to state 7
-    term      go to state 8
-    factor    go to state 9
+    $default  reduce using rule 2 (program)
+
+    program    go to state 5
+    statement  go to state 6
+    exp        go to state 7
+    term       go to state 8
+    factor     go to state 9
 
 
 State 1
@@ -105,38 +113,39 @@ State 3
 
 State 4
 
-    4 sentence: SEM .
+    4 statement: SEM .
 
-    $default  reduce using rule 4 (sentence)
+    $default  reduce using rule 4 (statement)
 
 
 State 5
 
-    0 $accept: command . $end
-    2 command: command . sentence
+    0 $accept: program . $end
 
     $end  shift, and go to state 12
-    INT   shift, and go to state 1
-    SUB   shift, and go to state 2
-    LP    shift, and go to state 3
-    SEM   shift, and go to state 4
-
-    sentence  go to state 13
-    exp       go to state 7
-    term      go to state 8
-    factor    go to state 9
 
 
 State 6
 
-    1 command: sentence .
+    1 program: statement . program
 
-    $default  reduce using rule 1 (command)
+    INT  shift, and go to state 1
+    SUB  shift, and go to state 2
+    LP   shift, and go to state 3
+    SEM  shift, and go to state 4
+
+    $default  reduce using rule 2 (program)
+
+    program    go to state 13
+    statement  go to state 6
+    exp        go to state 7
+    term       go to state 8
+    factor     go to state 9
 
 
 State 7
 
-    3 sentence: exp . SEM
+    3 statement: exp . SEM
     5 exp: exp . ADD term
     6    | exp . SUB term
 
@@ -189,16 +198,16 @@ State 11
 
 State 12
 
-    0 $accept: command $end .
+    0 $accept: program $end .
 
     $default  accept
 
 
 State 13
 
-    2 command: command sentence .
+    1 program: statement program .
 
-    $default  reduce using rule 2 (command)
+    $default  reduce using rule 1 (program)
 
 
 State 14
@@ -225,9 +234,9 @@ State 15
 
 State 16
 
-    3 sentence: exp SEM .
+    3 statement: exp SEM .
 
-    $default  reduce using rule 3 (sentence)
+    $default  reduce using rule 3 (statement)
 
 
 State 17

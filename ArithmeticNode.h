@@ -20,12 +20,12 @@ class ArithOpNode : public ASTNode {
 
 public:
 	ArithOpNode(char op, ASTNode *left = nullptr, ASTNode *right = nullptr) :
-		ASTNode(), leftChild(left), rightChild(right), op(op) {}
+		ASTNode(), leftOperand(left), rightOperand(right), op(op) {}
 	~ArithOpNode() {}
 
 private:
-	ASTNode *leftChild;
-	ASTNode *rightChild;
+	ASTNode *leftOperand;
+	ASTNode *rightOperand;
 	char op;
 
 	virtual void PrintContent() override {
@@ -46,8 +46,8 @@ private:
 	}
 
 	virtual void PrintChildren(int level) override {
-		if(leftChild) leftChild->PrintInLevel(level + 1);
-		if(rightChild) rightChild->PrintInLevel(level + 1);
+		if(leftOperand) leftOperand->PrintInLevel(level + 1);
+		if(rightOperand) rightOperand->PrintInLevel(level + 1);
 	}
 
 };

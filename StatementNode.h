@@ -28,18 +28,15 @@ private:
 class CompoundStatementNode : public StatementNode {
 
 public:
-	CompoundStatementNode() : StatementNode(), statements() {}
+	CompoundStatementNode() : StatementNode(), items() {}
 	~CompoundStatementNode() {
-		for(auto stmt : statements) delete stmt;
+		for(auto item : items) delete item;
 	}
 
-	void AppendStatement(ASTNode *stmt) {
-		//assert(dynamic_cast<StatementNode*>(stmt) != nullptr);
-		statements.push_back(stmt);
-	}
+	void AppendStatement(ASTNode *item);
 
 private:
-	std::vector<ASTNode*> statements;
+	std::vector<ASTNode*> items;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -103,8 +100,9 @@ public:
 	ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body) :
 		StatementNode(), init(init), condition(cond), loop(loop), body(body)
 	{
-		assert(dynamic_cast<StatementNode*>(init) != nullptr);
-		assert(dynamic_cast<StatementNode*>(cond) != nullptr);
+		assert(dynamic_cast<ExpressionStatementNode*>(init) != nullptr ||
+			   dynamic_cast<DeclarationNode*>(init) != nullptr);
+		assert(dynamic_cast<ExpressionStatementNode*>(cond) != nullptr);
 		assert(dynamic_cast<StatementNode*>(body) != nullptr);
 	}
 	~ForStatementNode() { delete init; delete condition; delete loop; delete body; }

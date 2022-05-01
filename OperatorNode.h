@@ -2,10 +2,7 @@
 #define _OPERATOR_NODE_H_
 
 #include "ASTNode.h"
-
-/* Forward Declaration */
-class VariableNode;
-/* Forward Declaration */
+#include "ValueNode.h"
 
 class BinaryOpNode : public ASTNode {
 
@@ -26,8 +23,10 @@ private:
 class AssignOpNode : public ASTNode {
 
 public:
-	AssignOpNode(ASTNode *left, ASTNode *right) : ASTNode(), leftValue(left), rightValue(right)
-		{ assert(dynamic_cast<VariableNode*>(left) != nullptr); assert(right != nullptr); }
+	AssignOpNode(ASTNode *left, ASTNode *right) : ASTNode(), leftValue(left), rightValue(right) { 
+		assert(dynamic_cast<VariableNode*>(left) != nullptr);
+		assert(right != nullptr);
+	}
 	~AssignOpNode() { delete leftValue; delete rightValue; }
 
 private:

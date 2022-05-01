@@ -2,6 +2,7 @@
 #define _DECLARATION_NODE_H_
 
 #include "ASTNode.h"
+#include "ValueNode.h"
 
 class DeclarationNode : public ASTNode {
 

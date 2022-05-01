@@ -30,8 +30,8 @@
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR
 
-%type <node> declarations declaration type idlist
-%type <node> statement compoundstmt exprstmt ctrlstmt
+%type <node> items item declaration type idlist
+%type <node> statement compoundstmt exprstmt ctrlstmt initstmt
 %type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr arithexpr
 %type <node> term factor identifier variable integer
 
@@ -40,12 +40,11 @@
 
 %%
 
-        program : declaration { if($1) $1->PrintInLevel(0); } program
+        program : item { if($1) $1->PrintInLevel(0); } program
                 | /* empty */
                 ;
 
     declaration : type idlist SEM { $$ = new DeclarationNode($2, $1); }
-                | statement { $$ = $1; }
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
@@ -59,11 +58,15 @@
                 | ctrlstmt { $$ = $1; }
                 ;
 
-   compoundstmt : LBR declarations RBR { $$ = $2; }
+   compoundstmt : LBR items RBR { $$ = $2; }
                 ;
 
-   declarations : declarations declaration { $$ = $1; dynamic_cast<CompoundStatementNode*>($$)->AppendStatement($2); }
-                | declaration { auto node = new CompoundStatementNode(); node->AppendStatement($1); $$ = node; }
+          items : items item { $$ = $1; dynamic_cast<CompoundStatementNode*>($$)->AppendStatement($2); }
+                | item { auto node = new CompoundStatementNode(); node->AppendStatement($1); $$ = node; }
+                ;
+
+           item : declaration { $$ = $1; }
+                | statement { $$ = $1; }
                 ;
 
        exprstmt : expr SEM { $$ = new ExpressionStatementNode($1); }
@@ -136,8 +139,12 @@
                 | IF LP expr RP statement ELSE statement { $$ = new IfStatementNode($3, $5, $7); }
                 // | DO statement WHILE LP expr RP {  }
                 | WHILE LP expr RP statement { $$ = new WhileStatementNode($3, $5); }
-                | FOR LP exprstmt exprstmt expr RP statement { $$ = new ForStatementNode($3, $4, $5, $7); }
-                | FOR LP exprstmt exprstmt RP statement { $$ = new ForStatementNode($3, $4, new EmptyExpressionNode() ,$6); }
+                | FOR LP initstmt exprstmt expr RP statement { $$ = new ForStatementNode($3, $4, $5, $7); }
+                | FOR LP initstmt exprstmt RP statement { $$ = new ForStatementNode($3, $4, new EmptyExpressionNode() ,$6); }
+                ;
+
+       initstmt : exprstmt { $$ = $1; }
+                | declaration { $$ = $1; }
                 ;
 
 %%

@@ -4,6 +4,7 @@
     #include "ExpressionNode.h"
     #include "StatementNode.h"
     #include "DeclarationNode.h"
+    #include "TranslationUnitNode.h"
     #include "y.tab.h"
 
     void yyerror(char *);

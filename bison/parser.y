@@ -5,14 +5,14 @@
     #include "ExpressionNode.h"
     #include "DeclarationNode.h"
     #include "StatementNode.h"
-    #include "ProgramNode.h"
+    #include "TranslationUnitNode.h"
 
     int yylex(void);
     void yyerror(char *);
     
     enum class type;
 
-    ASTNode *root = nullptr;
+    extern ASTNode *root;
 %}
 
 %union {
@@ -22,6 +22,7 @@
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
+    TranslationUnitNode *unit;
     struct {
         ASTNode *type;
         ASTNode *name;
@@ -43,6 +44,7 @@
 %type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr
 %type <node> factor constant identifier type
 
+%type <unit> program
 %type <compound> items
 %type <parameters> parameters
 %type <arguments> arguments
@@ -53,8 +55,8 @@
 
 %%
 
-        program : externdef { if($1) $1->PrintInLevel(0); } program
-                | /* empty */
+        program : program externdef { $$ = $1; $$->AppendDefinition($2); }
+                | /* empty */ { $$ = new TranslationUnitNode(); root = $$; } 
                 ;
 
       externdef : function { $$ = $1; }
@@ -192,7 +194,7 @@ int yywrap(){
     return 1;
 }
 
-void GenerateSyntaxTree(FILE *input, AbstractSyntaxTree &tree){
+void GenerateSyntaxTree(FILE *input){
     extern FILE *yyin;
     yyin = input;
     yyparse();

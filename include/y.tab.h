@@ -143,12 +143,13 @@ union YYSTYPE
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
+    TranslationUnitNode *unit;
     struct {
         ASTNode *type;
         ASTNode *name;
     } declarator;
 
-#line 152 "./include/y.tab.h"
+#line 153 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

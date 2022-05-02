@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "AbstractSyntaxTree.h"
 
-extern void GenerateSyntaxTree(FILE *input, AbstractSyntaxTree &tree);
+ASTNode *root = nullptr;
+
+extern void GenerateSyntaxTree(FILE *input);
 
 int main(int argc, char ** argv){
 
@@ -12,8 +14,10 @@ int main(int argc, char ** argv){
         if(fp != NULL) input_file = fp;
     }
 
-    AbstractSyntaxTree synTree;
-    GenerateSyntaxTree(input_file, synTree);
+    GenerateSyntaxTree(input_file);
+    AbstractSyntaxTree synTree(root);
+
+    synTree.Print();
 
     return 0;
 }

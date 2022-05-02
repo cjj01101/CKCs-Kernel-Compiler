@@ -5,6 +5,7 @@
     #include "ExpressionNode.h"
     #include "DeclarationNode.h"
     #include "StatementNode.h"
+    #include "ProgramNode.h"
 
     int yylex(void);
     void yyerror(char *);
@@ -19,11 +20,16 @@
     char str[MAXVARLEN];
     ASTNode *node;
     CompoundStatementNode *compound;
+    ParameterListNode *parameters;
+    struct {
+        ASTNode *type;
+        ASTNode *name;
+    } declarator;
 }
 
 %token <intNum> INT
 %token <str> ID
-%token TYPE_INT
+%token TYPE_INT TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_LOGAND OP_LOGOR
@@ -31,34 +37,48 @@
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR
 
-%type <node> item declaration type
-%type <node> statement compoundstmt exprstmt ctrlstmt initstmt
-%type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr
-%type <node> mulexpr factor identifier variable constant
+%type <node> externdef function item declaration statement 
+%type <node> compoundstmt exprstmt ctrlstmt initstmt
+%type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr
+%type <node> factor constant identifier type
 
 %type <compound> items
+%type <parameters> parameters
+%type <declarator> declarator
 
 %nonassoc IFX
 %nonassoc ELSE
 
 %%
 
-        program : item { if($1) $1->PrintInLevel(0); } program
+        program : externdef { if($1) $1->PrintInLevel(0); } program
                 | /* empty */
                 ;
 
-           item : declaration { $$ = $1; }
-                | statement { $$ = $1; }
+      externdef : function { $$ = $1; }
+                | declaration { $$ = $1; }
                 ;
 
-    declaration : type identifier SEM { $$ = new DeclarationNode($2, $1); }
-                | type identifier OP_ASSIGN expr SEM { $$ = new DeclarationNode($2, $1, $4); }
+       function : declarator LP parameters RP compoundstmt { $$ = new FunctionNode($1.name, $1.type, $3, $5); }
+                ;
+
+     parameters : parameters COMMA declarator { $$ = $1; $1->AppendParameter(new DeclarationNode($3.name, $3.type)); }
+                | declarator { $$ = new ParameterListNode(); $$->AppendParameter(new DeclarationNode($1.name, $1.type)); }
+                | TYPE_VOID { $$ = new ParameterListNode(); }
+                | /* empty */ { $$ = new ParameterListNode(); }
+                ;
+
+    declaration : declarator SEM { $$ = new DeclarationNode($1.name, $1.type); }
+                | declarator OP_ASSIGN expr SEM { $$ = new DeclarationNode($1.name, $1.type, $3); }
+                ;
+
+     declarator : type identifier { $$ = { $1, $2 }; }
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
                 ;
 
-     identifier : ID { $$ = new VariableNode($1); }
+     identifier : ID { $$ = new IdentifierNode($1); }
                 ;
 
       statement : compoundstmt { $$ = $1; }
@@ -73,15 +93,16 @@
                 | /* empty */ { $$ = new CompoundStatementNode(); }
                 ;
 
+           item : declaration { $$ = $1; }
+                | statement { $$ = $1; }
+                ;
+
        exprstmt : expr SEM { $$ = new ExpressionStatementNode($1); }
                 | SEM  { $$ = new ExpressionStatementNode(); }
                 ;
 
-           expr : variable OP_ASSIGN expr { $$ = new AssignOpNode($1, $3); }
+           expr : identifier OP_ASSIGN expr { $$ = new AssignOpNode($1, $3); }
                 | logorexpr { $$ = $1; }
-                ;
-
-       variable : identifier { $$ = $1; }
                 ;
 
       logorexpr : logorexpr OP_LOGOR logandexpr { $$ = new BinaryOpNode(Operator::LOGOR, $1, $3); }
@@ -128,7 +149,7 @@
                 | factor { $$ = $1; }
                 ;
 
-         factor : variable { $$ = $1; }
+         factor : identifier { $$ = $1; }
                 | constant { $$ = $1; }
                 | LP expr RP { $$ = $2; }
                 ;

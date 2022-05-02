@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include "ASTNode.h"
     #include "StatementNode.h"
+    #include "DeclarationNode.h"
     #include "y.tab.h"
 
     void yyerror(char *);
@@ -42,6 +43,7 @@ blank [ \f\n\r\t\v]+
 "while"         return WHILE;
 "for"           return FOR;
 "int"           return TYPE_INT;
+"void"          return TYPE_VOID;
 {identifier}    { strncpy(yylval.str, yytext, 64); return ID; }
 {integer}       { yylval.intNum = atoi(yytext); return INT; }
 {blank}         ;

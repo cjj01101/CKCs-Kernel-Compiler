@@ -16,11 +16,11 @@ private:
 
 };
 
-class VariableNode : public ExpressionNode {
+class IdentifierNode : public ExpressionNode {
 
 public:
-	VariableNode(char *name);
-	~VariableNode() {}
+	IdentifierNode(char *name);
+	~IdentifierNode() {}
 
 private:
 	char id[MAXVARLEN];

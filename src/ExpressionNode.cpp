@@ -13,7 +13,7 @@ BinaryOpNode::BinaryOpNode(Operator op, ASTNode *left, ASTNode *right)
 
 AssignOpNode::AssignOpNode(ASTNode *left, ASTNode *right) : ExpressionNode(), leftValue(left), rightValue(right)
 { 
-	assert(NOT_NULL_OF_TYPE(left, VariableNode*));
+	assert(NOT_NULL_OF_TYPE(left, IdentifierNode*));
 	assert(NOT_NULL_OF_TYPE(right, ExpressionNode*));
 }
 

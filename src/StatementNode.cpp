@@ -87,8 +87,8 @@ void ForStatementNode::PrintContentInLevel(int level) const {
 /*        AUXILIARY FUNCTION        */
 
 void CompoundStatementNode::AppendStatement(ASTNode *item) {
-	assert(dynamic_cast<StatementNode*>(item) != nullptr ||
-		   dynamic_cast<DeclarationNode*>(item) != nullptr);
+	assert(NOT_NULL_OF_TYPE(item, StatementNode*) ||
+		   NOT_NULL_OF_TYPE(item, DeclarationNode*));
 	items.push_back(item);
 }
 

@@ -4,7 +4,7 @@
 
 /*        CONSTRUCT FUNCTION        */
 
-VariableNode::VariableNode(char *name) : ExpressionNode() {
+IdentifierNode::IdentifierNode(char *name) : ExpressionNode() {
 	assert(name != NULL);
 	strncpy(id, name, MAXVARLEN);
 	id[MAXVARLEN-1] = '\0';
@@ -18,8 +18,8 @@ void IntegerNode::PrintContentInLevel(int level) const {
 	printf("[int] %d\n", num);
 }
 
-void VariableNode::PrintContentInLevel(int level) const {
-	printf("[var] %s\n", id);
+void IdentifierNode::PrintContentInLevel(int level) const {
+	printf("[ID] %s\n", id);
 }
 
 void TypeNode::PrintContentInLevel(int level) const {

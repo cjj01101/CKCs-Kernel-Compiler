@@ -1,43 +1,61 @@
 #include <stdio.h>
+#include "ExpressionNode.h"
 #include "DeclarationNode.h"
 #include "StatementNode.h"
 
-#define PRINT_CHILD_WITH_HINT(child, hint) \
-	for(int i = 0; i < level; i++) printf("|       "); \
-	printf("| [" hint "]\n"); \
-	child->PrintInLevel(level + 1);
-
 /*        CONSTRUCT FUNCTION        */
 
-ForStatementNode::ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body) :
-	StatementNode(), init(init), condition(cond), loop(loop), body(body)
+ExpressionStatementNode::ExpressionStatementNode(ASTNode *exp)
+	: StatementNode(), expression(exp)
 {
-	assert(dynamic_cast<ExpressionStatementNode*>(init) != nullptr ||
-		   dynamic_cast<DeclarationNode*>(init) != nullptr);
-	assert(dynamic_cast<ExpressionStatementNode*>(cond) != nullptr);
-	assert(dynamic_cast<StatementNode*>(body) != nullptr);
+	assert(NULLABLE_OF_TYPE(exp, ExpressionNode*));
+}
+
+IfStatementNode::IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt)
+	: StatementNode(), condition(condition), thenStmt(thenStmt), elseStmt(elseStmt)
+{
+	assert(NOT_NULL_OF_TYPE(condition, ExpressionNode*));
+	assert(NOT_NULL_OF_TYPE(thenStmt, StatementNode*));
+	assert(NOT_NULL_OF_TYPE(elseStmt, StatementNode*));
+}
+
+WhileStatementNode::WhileStatementNode(ASTNode *condition, ASTNode *body)
+	: StatementNode(), condition(condition), body(body)
+{
+	assert(NOT_NULL_OF_TYPE(condition, ExpressionNode*));
+	assert(NOT_NULL_OF_TYPE(body, StatementNode*));
+}
+
+ForStatementNode::ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body)
+	: StatementNode(), init(init), condition(cond), loop(loop), body(body)
+{
+	assert(NOT_NULL_OF_TYPE(init, ExpressionStatementNode*) || 
+		   NOT_NULL_OF_TYPE(init, DeclarationNode*));
+	assert(NOT_NULL_OF_TYPE(cond, ExpressionStatementNode*));
+	assert(NOT_NULL_OF_TYPE(loop, ExpressionNode*));
+	assert(NOT_NULL_OF_TYPE(body, StatementNode*));
 }
 
 /*      CONSTRUCT FUNCTION END      */
 
 /*         PRINT FUNCTION         */
 
-void EmptyStatementNode::PrintContentInLevel(int level) const {
-	printf("Empty Statement\n");
-}
-
 void CompoundStatementNode::PrintContentInLevel(int level) const {
 	printf("Compound Statement\n");
 
 	for(auto item : items) {
-		item->PrintInLevel(level + 1);
+		PRINT_CHILD_WITH_HINT(item, "ITEM");
 	}
 }
 
 void ExpressionStatementNode::PrintContentInLevel(int level) const {
-	printf("Expression Statement\n");
-	
-	expression->PrintInLevel(level + 1);
+	if(expression == nullptr) {
+		printf("Empty Statement\n");
+	} else {
+		printf("Expression Statement\n");
+
+		PRINT_CHILD_WITH_HINT(expression, "EXPR");
+	}
 }
 
 void IfStatementNode::PrintContentInLevel(int level) const {

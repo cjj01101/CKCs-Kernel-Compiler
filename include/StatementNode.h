@@ -14,17 +14,6 @@ protected:
 
 };
 
-class EmptyStatementNode : public StatementNode {
-
-public:
-	EmptyStatementNode() : StatementNode() {}
-	~EmptyStatementNode() {}	
-
-private:
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
 class CompoundStatementNode : public StatementNode {
 
 public:
@@ -45,8 +34,7 @@ private:
 class ExpressionStatementNode : public StatementNode {
 
 public:
-	ExpressionStatementNode(ASTNode *exp) : StatementNode(), expression(exp)
-		{ assert(exp != nullptr); }
+	ExpressionStatementNode(ASTNode *exp = nullptr);
 	~ExpressionStatementNode() { delete expression; }
 
 private:
@@ -59,12 +47,7 @@ private:
 class IfStatementNode : public StatementNode {
 
 public:
-	IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt) :
-		StatementNode(), condition(condition), thenStmt(thenStmt), elseStmt(elseStmt)
-	{
-		assert(dynamic_cast<StatementNode*>(thenStmt) != nullptr);
-		assert(dynamic_cast<StatementNode*>(elseStmt) != nullptr);
-	}
+	IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt);
 	~IfStatementNode() { delete condition; delete thenStmt; delete thenStmt; }	
 
 private:
@@ -79,11 +62,7 @@ private:
 class WhileStatementNode : public StatementNode {
 
 public:
-	WhileStatementNode(ASTNode *condition, ASTNode *body) :
-		StatementNode(), condition(condition), body(body)
-	{
-		assert(dynamic_cast<StatementNode*>(body) != nullptr);
-	}
+	WhileStatementNode(ASTNode *condition, ASTNode *body);
 	~WhileStatementNode() { delete condition; delete body; }
 
 private:

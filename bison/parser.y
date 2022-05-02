@@ -2,7 +2,7 @@
     #include <stdio.h>
     #include "AbstractSyntaxTree.h"
     #include "ValueNode.h"
-    #include "OperatorNode.h"
+    #include "ExpressionNode.h"
     #include "DeclarationNode.h"
     #include "StatementNode.h"
 
@@ -31,10 +31,10 @@
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR
 
-%type <node> item declaration type declarators
+%type <node> item declaration type
 %type <node> statement compoundstmt exprstmt ctrlstmt initstmt
-%type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr arithexpr
-%type <node> term factor identifier variable integer
+%type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr
+%type <node> mulexpr factor identifier variable constant
 
 %type <compound> items
 
@@ -51,13 +51,11 @@
                 | statement { $$ = $1; }
                 ;
 
-    declaration : type declarators SEM { $$ = new DeclarationNode($2, $1); }
+    declaration : type identifier SEM { $$ = new DeclarationNode($2, $1); }
+                | type identifier OP_ASSIGN expr SEM { $$ = new DeclarationNode($2, $1, $4); }
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
-                ;
-
-    declarators : identifier { $$ = $1; }
                 ;
 
      identifier : ID { $$ = new VariableNode($1); }
@@ -72,11 +70,11 @@
                 ;
 
           items : items item { $$ = $1; $$->AppendStatement($2); }
-                | item { $$ = new CompoundStatementNode(); $$->AppendStatement($1);; }
+                | /* empty */ { $$ = new CompoundStatementNode(); }
                 ;
 
        exprstmt : expr SEM { $$ = new ExpressionStatementNode($1); }
-                | SEM  { $$ = new EmptyStatementNode(); }
+                | SEM  { $$ = new ExpressionStatementNode(); }
                 ;
 
            expr : variable OP_ASSIGN expr { $$ = new AssignOpNode($1, $3); }
@@ -111,34 +109,34 @@
                 | cmprexpr { $$ = $1; }
                 ;
 
-       cmprexpr : cmprexpr OP_GT arithexpr { $$ = new BinaryOpNode(Operator::GT, $1, $3); }
-                | cmprexpr OP_LT arithexpr { $$ = new BinaryOpNode(Operator::LT, $1, $3); }
-                | cmprexpr OP_GTE arithexpr { $$ = new BinaryOpNode(Operator::GTE, $1, $3); }
-                | cmprexpr OP_LTE arithexpr { $$ = new BinaryOpNode(Operator::LTE, $1, $3); }
-                | arithexpr { $$ = $1; }
+       cmprexpr : cmprexpr OP_GT addexpr { $$ = new BinaryOpNode(Operator::GT, $1, $3); }
+                | cmprexpr OP_LT addexpr { $$ = new BinaryOpNode(Operator::LT, $1, $3); }
+                | cmprexpr OP_GTE addexpr { $$ = new BinaryOpNode(Operator::GTE, $1, $3); }
+                | cmprexpr OP_LTE addexpr { $$ = new BinaryOpNode(Operator::LTE, $1, $3); }
+                | addexpr { $$ = $1; }
                 ;
 
-      arithexpr : arithexpr OP_ADD term { $$ = new BinaryOpNode(Operator::ADD, $1, $3); }
-                | arithexpr OP_SUB term { $$ = new BinaryOpNode(Operator::SUB, $1, $3); }
-                | term { $$ = $1; }
+        addexpr : addexpr OP_ADD mulexpr { $$ = new BinaryOpNode(Operator::ADD, $1, $3); }
+                | addexpr OP_SUB mulexpr { $$ = new BinaryOpNode(Operator::SUB, $1, $3); }
+                | mulexpr { $$ = $1; }
                 ;
 
-           term : term OP_MUL factor { $$ = new BinaryOpNode(Operator::MUL, $1, $3); }
-                | term OP_DIV factor { $$ = new BinaryOpNode(Operator::DIV, $1, $3); }
-                | term OP_MOD factor { $$ = new BinaryOpNode(Operator::MOD, $1, $3); }
+        mulexpr : mulexpr OP_MUL factor { $$ = new BinaryOpNode(Operator::MUL, $1, $3); }
+                | mulexpr OP_DIV factor { $$ = new BinaryOpNode(Operator::DIV, $1, $3); }
+                | mulexpr OP_MOD factor { $$ = new BinaryOpNode(Operator::MOD, $1, $3); }
                 | OP_SUB factor { $$ = new BinaryOpNode(Operator::MUL, new IntegerNode(-1), $2); }
                 | factor { $$ = $1; }
                 ;
 
          factor : variable { $$ = $1; }
-                | integer { $$ = $1; }
+                | constant { $$ = $1; }
                 | LP expr RP { $$ = $2; }
                 ;
      
-        integer : INT { $$ = new IntegerNode($1); }
+       constant : INT { $$ = new IntegerNode($1); }
                 ;
 
-       ctrlstmt : IF LP expr RP statement %prec IFX { $$ = new IfStatementNode($3, $5, new EmptyStatementNode()); }
+       ctrlstmt : IF LP expr RP statement %prec IFX { $$ = new IfStatementNode($3, $5, new ExpressionStatementNode()); }
                 | IF LP expr RP statement ELSE statement { $$ = new IfStatementNode($3, $5, $7); }
                 // | DO statement WHILE LP expr RP {  }
                 | WHILE LP expr RP statement { $$ = new WhileStatementNode($3, $5); }

@@ -4,7 +4,7 @@
 
 /*        CONSTRUCT FUNCTION        */
 
-VariableNode::VariableNode(char *name) : ASTNode() {
+VariableNode::VariableNode(char *name) : ExpressionNode() {
 	assert(name != NULL);
 	strncpy(id, name, MAXVARLEN);
 	id[MAXVARLEN-1] = '\0';
@@ -13,10 +13,6 @@ VariableNode::VariableNode(char *name) : ASTNode() {
 /*      CONSTRUCT FUNCTION END      */
 
 /*         PRINT FUNCTION         */
-
-void EmptyExpressionNode::PrintContentInLevel(int level) const {
-	printf("Empty Expression\n");
-}
 
 void IntegerNode::PrintContentInLevel(int level) const {
 	printf("[int] %d\n", num);
@@ -28,10 +24,13 @@ void VariableNode::PrintContentInLevel(int level) const {
 
 void TypeNode::PrintContentInLevel(int level) const {
 
-	switch(type){
-	case Type::INTEGER: printf("INTEGER\n"); break;
-	default: printf("UNDEFINED\n"); break;
-	}
+	const static char *typeName[] = {
+		#define TYPE(type) #type,
+		TYPES
+		#undef TYPE
+	};
+
+	printf("%s\n", typeName[static_cast<int>(type)]);
 
 }
 

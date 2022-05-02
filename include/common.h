@@ -3,6 +3,9 @@
 
 #define MAXVARLEN 64
 
+#define TYPES \
+	TYPE(INTEGER)
+
 #define OPERATORS \
 	OP(LOGOR) OP(LOGAND) \
 	OP(OR) OP(XOR) OP(AND) \
@@ -11,7 +14,9 @@
 	OP(ADD) OP(SUB) OP(MUL) OP(DIV) OP(MOD)
 
 enum class Type : unsigned char {
-	INTEGER = 1,
+	#define TYPE(type) type,
+	TYPES
+	#undef TYPE
 };
 
 enum class Operator : unsigned char {

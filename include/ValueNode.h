@@ -1,23 +1,12 @@
 #ifndef _VALUE_NODE_H_
 #define _VALUE_NODE_H_
 
-#include "ASTNode.h"
+#include "ExpressionNode.h"
 
-class EmptyExpressionNode : public ASTNode {
-
-public:
-	EmptyExpressionNode() : ASTNode() {}
-	~EmptyExpressionNode() {}
-
-private:
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
-class IntegerNode : public ASTNode {
+class IntegerNode : public ExpressionNode {
 
 public:
-	IntegerNode(int num) : ASTNode(), num(num) {}
+	IntegerNode(int num) : ExpressionNode(), num(num) {}
 	~IntegerNode() {}
 
 private:
@@ -27,7 +16,7 @@ private:
 
 };
 
-class VariableNode : public ASTNode {
+class VariableNode : public ExpressionNode {
 
 public:
 	VariableNode(char *name);

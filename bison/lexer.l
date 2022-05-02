@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include "ASTNode.h"
+    #include "ExpressionNode.h"
     #include "StatementNode.h"
     #include "DeclarationNode.h"
     #include "y.tab.h"
@@ -29,6 +30,7 @@ blank [ \f\n\r\t\v]+
 "&"             return OP_AND;
 "^"             return OP_XOR;
 "|"             return OP_OR;
+"!"             return OP_NOT;
 "&&"            return OP_LOGAND;
 "||"            return OP_LOGOR;
 "="             return OP_ASSIGN;
@@ -42,6 +44,7 @@ blank [ \f\n\r\t\v]+
 "else"          return ELSE;
 "while"         return WHILE;
 "for"           return FOR;
+"return"        return RETURN;
 "int"           return TYPE_INT;
 "void"          return TYPE_VOID;
 {identifier}    { strncpy(yylval.str, yytext, 64); return ID; }

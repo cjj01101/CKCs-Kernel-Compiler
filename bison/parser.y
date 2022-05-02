@@ -21,6 +21,7 @@
     ASTNode *node;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
+    ArgumentListNode *arguments;
     struct {
         ASTNode *type;
         ASTNode *name;
@@ -32,18 +33,19 @@
 %token TYPE_INT TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
-%token OP_AND OP_XOR OP_OR OP_LOGAND OP_LOGOR
+%token OP_AND OP_XOR OP_OR OP_NOT OP_LOGAND OP_LOGOR
 %token OP_ASSIGN
 %token LP RP LBR RBR SEM COMMA
-%token IF ELSE WHILE FOR
+%token IF ELSE WHILE FOR RETURN
 
 %type <node> externdef function item declaration statement 
-%type <node> compoundstmt exprstmt ctrlstmt initstmt
+%type <node> compoundstmt exprstmt ctrlstmt jumpstmt initstmt
 %type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr
 %type <node> factor constant identifier type
 
 %type <compound> items
 %type <parameters> parameters
+%type <arguments> arguments
 %type <declarator> declarator
 
 %nonassoc IFX
@@ -84,6 +86,7 @@
       statement : compoundstmt { $$ = $1; }
                 | exprstmt { $$ = $1; }
                 | ctrlstmt { $$ = $1; }
+                | jumpstmt { $$ = $1; }
                 ;
 
    compoundstmt : LBR items RBR { $$ = $2; }
@@ -145,16 +148,23 @@
         mulexpr : mulexpr OP_MUL factor { $$ = new BinaryOpNode(Operator::MUL, $1, $3); }
                 | mulexpr OP_DIV factor { $$ = new BinaryOpNode(Operator::DIV, $1, $3); }
                 | mulexpr OP_MOD factor { $$ = new BinaryOpNode(Operator::MOD, $1, $3); }
-                | OP_SUB factor { $$ = new BinaryOpNode(Operator::MUL, new IntegerNode(-1), $2); }
                 | factor { $$ = $1; }
                 ;
 
          factor : identifier { $$ = $1; }
                 | constant { $$ = $1; }
                 | LP expr RP { $$ = $2; }
+                | identifier LP arguments RP { $$ = new FunctionCallNode($1, $3); }
+                | OP_SUB factor { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
+                | OP_NOT factor { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
                 ;
      
        constant : INT { $$ = new IntegerNode($1); }
+                ;
+
+      arguments : arguments COMMA expr { $$ = $1; $1->AppendArgument($3); }
+                | expr { $$ = new ArgumentListNode(); $$->AppendArgument($1); }
+                | /* empty */ { $$ = new ArgumentListNode(); }
                 ;
 
        ctrlstmt : IF LP expr RP statement %prec IFX { $$ = new IfStatementNode($3, $5, new ExpressionStatementNode()); }
@@ -167,6 +177,9 @@
 
        initstmt : exprstmt { $$ = $1; }
                 | declaration { $$ = $1; }
+                ;
+
+       jumpstmt : RETURN exprstmt { $$ = new ReturnStatementNode($2); }
                 ;
 
 %%

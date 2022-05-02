@@ -14,6 +14,19 @@ protected:
 
 };
 
+class ExpressionStatementNode : public StatementNode {
+
+public:
+	ExpressionStatementNode(ASTNode *exp = nullptr);
+	~ExpressionStatementNode() { delete expression; }
+
+private:
+	ASTNode *expression;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
 class CompoundStatementNode : public StatementNode {
 
 public:
@@ -26,19 +39,6 @@ public:
 
 private:
 	std::vector<ASTNode*> items;
-
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
-class ExpressionStatementNode : public StatementNode {
-
-public:
-	ExpressionStatementNode(ASTNode *exp = nullptr);
-	~ExpressionStatementNode() { delete expression; }
-
-private:
-	ASTNode *expression;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -84,6 +84,19 @@ private:
 	ASTNode *condition;
 	ASTNode *loop;
 	ASTNode *body;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class ReturnStatementNode : public StatementNode {
+
+public:
+	ReturnStatementNode(ASTNode *exp);
+	~ReturnStatementNode() { delete exprStmt; }
+
+private:
+	ASTNode *exprStmt;
 
 	virtual void PrintContentInLevel(int level) const override;
 

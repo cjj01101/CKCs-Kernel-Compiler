@@ -72,20 +72,22 @@ extern int yydebug;
     OP_AND = 273,                  /* OP_AND  */
     OP_XOR = 274,                  /* OP_XOR  */
     OP_OR = 275,                   /* OP_OR  */
-    OP_LOGAND = 276,               /* OP_LOGAND  */
-    OP_LOGOR = 277,                /* OP_LOGOR  */
-    OP_ASSIGN = 278,               /* OP_ASSIGN  */
-    LP = 279,                      /* LP  */
-    RP = 280,                      /* RP  */
-    LBR = 281,                     /* LBR  */
-    RBR = 282,                     /* RBR  */
-    SEM = 283,                     /* SEM  */
-    COMMA = 284,                   /* COMMA  */
-    IF = 285,                      /* IF  */
-    ELSE = 286,                    /* ELSE  */
-    WHILE = 287,                   /* WHILE  */
-    FOR = 288,                     /* FOR  */
-    IFX = 289                      /* IFX  */
+    OP_NOT = 276,                  /* OP_NOT  */
+    OP_LOGAND = 277,               /* OP_LOGAND  */
+    OP_LOGOR = 278,                /* OP_LOGOR  */
+    OP_ASSIGN = 279,               /* OP_ASSIGN  */
+    LP = 280,                      /* LP  */
+    RP = 281,                      /* RP  */
+    LBR = 282,                     /* LBR  */
+    RBR = 283,                     /* RBR  */
+    SEM = 284,                     /* SEM  */
+    COMMA = 285,                   /* COMMA  */
+    IF = 286,                      /* IF  */
+    ELSE = 287,                    /* ELSE  */
+    WHILE = 288,                   /* WHILE  */
+    FOR = 289,                     /* FOR  */
+    RETURN = 290,                  /* RETURN  */
+    IFX = 291                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -112,20 +114,22 @@ extern int yydebug;
 #define OP_AND 273
 #define OP_XOR 274
 #define OP_OR 275
-#define OP_LOGAND 276
-#define OP_LOGOR 277
-#define OP_ASSIGN 278
-#define LP 279
-#define RP 280
-#define LBR 281
-#define RBR 282
-#define SEM 283
-#define COMMA 284
-#define IF 285
-#define ELSE 286
-#define WHILE 287
-#define FOR 288
-#define IFX 289
+#define OP_NOT 276
+#define OP_LOGAND 277
+#define OP_LOGOR 278
+#define OP_ASSIGN 279
+#define LP 280
+#define RP 281
+#define LBR 282
+#define RBR 283
+#define SEM 284
+#define COMMA 285
+#define IF 286
+#define ELSE 287
+#define WHILE 288
+#define FOR 289
+#define RETURN 290
+#define IFX 291
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -138,12 +142,13 @@ union YYSTYPE
     ASTNode *node;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
+    ArgumentListNode *arguments;
     struct {
         ASTNode *type;
         ASTNode *name;
     } declarator;
 
-#line 147 "./include/y.tab.h"
+#line 152 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

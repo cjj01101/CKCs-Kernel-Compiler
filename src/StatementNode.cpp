@@ -36,17 +36,15 @@ ForStatementNode::ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, 
 	assert(NOT_NULL_OF_TYPE(body, StatementNode*));
 }
 
+ReturnStatementNode::ReturnStatementNode(ASTNode *exprStmt)
+	: StatementNode(), exprStmt(exprStmt)
+{
+	assert(NOT_NULL_OF_TYPE(exprStmt, ExpressionStatementNode*));
+}
+
 /*      CONSTRUCT FUNCTION END      */
 
 /*         PRINT FUNCTION         */
-
-void CompoundStatementNode::PrintContentInLevel(int level) const {
-	printf("Compound Statement\n");
-
-	for(auto item : items) {
-		PRINT_CHILD_WITH_HINT(item, "ITEM");
-	}
-}
 
 void ExpressionStatementNode::PrintContentInLevel(int level) const {
 	if(expression == nullptr) {
@@ -55,6 +53,14 @@ void ExpressionStatementNode::PrintContentInLevel(int level) const {
 		printf("Expression Statement\n");
 
 		PRINT_CHILD_WITH_HINT(expression, "EXPR");
+	}
+}
+
+void CompoundStatementNode::PrintContentInLevel(int level) const {
+	printf("Compound Statement\n");
+
+	for(auto item : items) {
+		PRINT_CHILD_WITH_HINT(item, "ITEM");
 	}
 }
 
@@ -80,6 +86,12 @@ void ForStatementNode::PrintContentInLevel(int level) const {
 	PRINT_CHILD_WITH_HINT(condition, "COND");
 	PRINT_CHILD_WITH_HINT(loop, "END OF LOOP");
 	PRINT_CHILD_WITH_HINT(body, "BODY");
+}
+
+void ReturnStatementNode::PrintContentInLevel(int level) const {
+	printf("Return Statement\n");
+
+	PRINT_CHILD_WITH_HINT(exprStmt, "RETURN VALUE");
 }
 
 /*        PRINT FUNCTION END        */

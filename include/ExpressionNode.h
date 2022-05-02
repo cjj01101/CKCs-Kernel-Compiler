@@ -1,6 +1,7 @@
 #ifndef _EXPRESSION_NODE_H_
 #define _EXPRESSION_NODE_H_
 
+#include <vector>
 #include "ASTNode.h"
 
 class ExpressionNode : public ASTNode {
@@ -49,6 +50,37 @@ public:
 private:
 	ASTNode *leftValue;
 	ASTNode *rightValue;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class FunctionCallNode : public ExpressionNode {
+
+public:
+	FunctionCallNode(ASTNode *name, ASTNode *arguments);
+	~FunctionCallNode() { delete name; delete arguments; }
+
+private:
+	ASTNode *name;
+	ASTNode *arguments;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class ArgumentListNode : public ASTNode {
+
+public:
+	ArgumentListNode() : ASTNode(), arguments() {}
+	~ArgumentListNode() {
+		for(auto arg : arguments) delete arg;
+	}
+
+	void AppendArgument(ASTNode *arg);
+
+private:
+	std::vector<ASTNode*> arguments;
 
 	virtual void PrintContentInLevel(int level) const override;
 

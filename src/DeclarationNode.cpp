@@ -39,7 +39,7 @@ void FunctionNode::PrintContentInLevel(int level) const {
 
 	PRINT_CHILD_WITH_HINT(returnType, "RETURN TYPE");
 	PRINT_CHILD_WITH_HINT(name, "NAME");
-	PRINT_CHILD_WITH_HINT(parameters, "PARAM");
+	PRINT_CHILD_WITH_HINT(parameters, "PARAMS");
 	PRINT_CHILD_WITH_HINT(body, "BODY");
 }
 

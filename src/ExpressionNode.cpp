@@ -11,10 +11,18 @@ BinaryOpNode::BinaryOpNode(Operator op, ASTNode *left, ASTNode *right)
 	assert(NOT_NULL_OF_TYPE(right, ExpressionNode*));
 }
 
-AssignOpNode::AssignOpNode(ASTNode *left, ASTNode *right) : ExpressionNode(), leftValue(left), rightValue(right)
+AssignOpNode::AssignOpNode(ASTNode *left, ASTNode *right)
+	: ExpressionNode(), leftValue(left), rightValue(right)
 { 
 	assert(NOT_NULL_OF_TYPE(left, IdentifierNode*));
 	assert(NOT_NULL_OF_TYPE(right, ExpressionNode*));
+}
+
+FunctionCallNode::FunctionCallNode(ASTNode *name, ASTNode *arguments)
+	: ExpressionNode(), name(name), arguments(arguments)
+{
+	assert(NOT_NULL_OF_TYPE(name, IdentifierNode*));
+	assert(NOT_NULL_OF_TYPE(arguments, ArgumentListNode*));
 }
 
 /*      CONSTRUCT FUNCTION END      */
@@ -47,4 +55,28 @@ void AssignOpNode::PrintContentInLevel(int level) const {
 	PRINT_CHILD_WITH_HINT(rightValue, "RIGHT");
 }
 
+void FunctionCallNode::PrintContentInLevel(int level) const {
+	printf("Function Call\n");
+
+	PRINT_CHILD_WITH_HINT(name, "NAME");
+	PRINT_CHILD_WITH_HINT(arguments, "ARGS");
+}
+
+void ArgumentListNode::PrintContentInLevel(int level) const {
+	printf("Argument List\n");
+
+	for(auto arg : arguments) {
+		PRINT_CHILD_WITH_HINT(arg, "ARG");
+	}
+}
+
 /*        PRINT FUNCTION END        */
+
+/*        AUXILIARY FUNCTION        */
+
+void ArgumentListNode::AppendArgument(ASTNode *arg) {
+	assert(NOT_NULL_OF_TYPE(arg, ExpressionNode*));
+	arguments.push_back(arg);
+}
+
+/*      AUXILIARY FUNCTION END      */

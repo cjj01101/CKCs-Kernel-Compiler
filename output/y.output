@@ -1,0 +1,1636 @@
+Terminals unused in grammar
+
+    COMMA
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 $@1: %empty
+
+    2 program: item $@1 program
+    3        | %empty
+
+    4 item: declaration
+    5     | statement
+
+    6 declaration: type declarators SEM
+
+    7 type: TYPE_INT
+
+    8 declarators: identifier
+
+    9 identifier: ID
+
+   10 statement: compoundstmt
+   11          | exprstmt
+   12          | ctrlstmt
+
+   13 compoundstmt: LBR items RBR
+
+   14 items: items item
+   15      | item
+
+   16 exprstmt: expr SEM
+   17         | SEM
+
+   18 expr: variable OP_ASSIGN expr
+   19     | logorexpr
+
+   20 variable: identifier
+
+   21 logorexpr: logorexpr OP_LOGOR logandexpr
+   22          | logandexpr
+
+   23 logandexpr: logandexpr OP_LOGAND orexpr
+   24           | orexpr
+
+   25 orexpr: orexpr OP_OR xorexpr
+   26       | xorexpr
+
+   27 xorexpr: xorexpr OP_XOR andexpr
+   28        | andexpr
+
+   29 andexpr: andexpr OP_AND ecmprexpr
+   30        | ecmprexpr
+
+   31 ecmprexpr: ecmprexpr OP_EQ cmprexpr
+   32          | ecmprexpr OP_NEQ cmprexpr
+   33          | cmprexpr
+
+   34 cmprexpr: cmprexpr OP_GT arithexpr
+   35         | cmprexpr OP_LT arithexpr
+   36         | cmprexpr OP_GTE arithexpr
+   37         | cmprexpr OP_LTE arithexpr
+   38         | arithexpr
+
+   39 arithexpr: arithexpr OP_ADD term
+   40          | arithexpr OP_SUB term
+   41          | term
+
+   42 term: term OP_MUL factor
+   43     | term OP_DIV factor
+   44     | term OP_MOD factor
+   45     | OP_SUB factor
+   46     | factor
+
+   47 factor: variable
+   48       | integer
+   49       | LP expr RP
+
+   50 integer: INT
+
+   51 ctrlstmt: IF LP expr RP statement
+   52         | IF LP expr RP statement ELSE statement
+   53         | WHILE LP expr RP statement
+   54         | FOR LP initstmt exprstmt expr RP statement
+   55         | FOR LP initstmt exprstmt RP statement
+
+   56 initstmt: exprstmt
+   57         | declaration
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    INT <intNum> (258) 50
+    ID <str> (259) 9
+    TYPE_INT (260) 7
+    OP_ADD (261) 39
+    OP_SUB (262) 40 45
+    OP_MUL (263) 42
+    OP_DIV (264) 43
+    OP_MOD (265) 44
+    OP_GT (266) 34
+    OP_LT (267) 35
+    OP_GTE (268) 36
+    OP_LTE (269) 37
+    OP_EQ (270) 31
+    OP_NEQ (271) 32
+    OP_AND (272) 29
+    OP_XOR (273) 27
+    OP_OR (274) 25
+    OP_LOGAND (275) 23
+    OP_LOGOR (276) 21
+    OP_ASSIGN (277) 18
+    LP (278) 49 51 52 53 54 55
+    RP (279) 49 51 52 53 54 55
+    LBR (280) 13
+    RBR (281) 13
+    SEM (282) 6 16 17
+    COMMA (283)
+    IF (284) 51 52
+    ELSE (285) 52
+    WHILE (286) 53
+    FOR (287) 54 55
+    IFX (288)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (34)
+        on left: 0
+    program (35)
+        on left: 2 3
+        on right: 0 2
+    $@1 (36)
+        on left: 1
+        on right: 2
+    item <node> (37)
+        on left: 4 5
+        on right: 2 14 15
+    declaration <node> (38)
+        on left: 6
+        on right: 4 57
+    type <node> (39)
+        on left: 7
+        on right: 6
+    declarators <node> (40)
+        on left: 8
+        on right: 6
+    identifier <node> (41)
+        on left: 9
+        on right: 8 20
+    statement <node> (42)
+        on left: 10 11 12
+        on right: 5 51 52 53 54 55
+    compoundstmt <node> (43)
+        on left: 13
+        on right: 10
+    items <compound> (44)
+        on left: 14 15
+        on right: 13 14
+    exprstmt <node> (45)
+        on left: 16 17
+        on right: 11 54 55 56
+    expr <node> (46)
+        on left: 18 19
+        on right: 16 18 49 51 52 53 54
+    variable <node> (47)
+        on left: 20
+        on right: 18 47
+    logorexpr <node> (48)
+        on left: 21 22
+        on right: 19 21
+    logandexpr <node> (49)
+        on left: 23 24
+        on right: 21 22 23
+    orexpr <node> (50)
+        on left: 25 26
+        on right: 23 24 25
+    xorexpr <node> (51)
+        on left: 27 28
+        on right: 25 26 27
+    andexpr <node> (52)
+        on left: 29 30
+        on right: 27 28 29
+    ecmprexpr <node> (53)
+        on left: 31 32 33
+        on right: 29 30 31 32
+    cmprexpr <node> (54)
+        on left: 34 35 36 37 38
+        on right: 31 32 33 34 35 36 37
+    arithexpr <node> (55)
+        on left: 39 40 41
+        on right: 34 35 36 37 38 39 40
+    term <node> (56)
+        on left: 42 43 44 45 46
+        on right: 39 40 41 42 43 44
+    factor <node> (57)
+        on left: 47 48 49
+        on right: 42 43 44 45 46
+    integer <node> (58)
+        on left: 50
+        on right: 48
+    ctrlstmt <node> (59)
+        on left: 51 52 53 54 55
+        on right: 12
+    initstmt <node> (60)
+        on left: 56 57
+        on right: 54 55
+
+
+State 0
+
+    0 $accept: . program $end
+
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    TYPE_INT  shift, and go to state 3
+    OP_SUB    shift, and go to state 4
+    LP        shift, and go to state 5
+    LBR       shift, and go to state 6
+    SEM       shift, and go to state 7
+    IF        shift, and go to state 8
+    WHILE     shift, and go to state 9
+    FOR       shift, and go to state 10
+
+    $default  reduce using rule 3 (program)
+
+    program       go to state 11
+    item          go to state 12
+    declaration   go to state 13
+    type          go to state 14
+    identifier    go to state 15
+    statement     go to state 16
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 1
+
+   50 integer: INT .
+
+    $default  reduce using rule 50 (integer)
+
+
+State 2
+
+    9 identifier: ID .
+
+    $default  reduce using rule 9 (identifier)
+
+
+State 3
+
+    7 type: TYPE_INT .
+
+    $default  reduce using rule 7 (type)
+
+
+State 4
+
+   45 term: OP_SUB . factor
+
+    INT  shift, and go to state 1
+    ID   shift, and go to state 2
+    LP   shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    factor      go to state 34
+    integer     go to state 31
+
+
+State 5
+
+   49 factor: LP . expr RP
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    expr        go to state 35
+    variable    go to state 20
+    logorexpr   go to state 21
+    logandexpr  go to state 22
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 6
+
+   13 compoundstmt: LBR . items RBR
+
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    TYPE_INT  shift, and go to state 3
+    OP_SUB    shift, and go to state 4
+    LP        shift, and go to state 5
+    LBR       shift, and go to state 6
+    SEM       shift, and go to state 7
+    IF        shift, and go to state 8
+    WHILE     shift, and go to state 9
+    FOR       shift, and go to state 10
+
+    item          go to state 36
+    declaration   go to state 13
+    type          go to state 14
+    identifier    go to state 15
+    statement     go to state 16
+    compoundstmt  go to state 17
+    items         go to state 37
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 7
+
+   17 exprstmt: SEM .
+
+    $default  reduce using rule 17 (exprstmt)
+
+
+State 8
+
+   51 ctrlstmt: IF . LP expr RP statement
+   52         | IF . LP expr RP statement ELSE statement
+
+    LP  shift, and go to state 38
+
+
+State 9
+
+   53 ctrlstmt: WHILE . LP expr RP statement
+
+    LP  shift, and go to state 39
+
+
+State 10
+
+   54 ctrlstmt: FOR . LP initstmt exprstmt expr RP statement
+   55         | FOR . LP initstmt exprstmt RP statement
+
+    LP  shift, and go to state 40
+
+
+State 11
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 41
+
+
+State 12
+
+    2 program: item . $@1 program
+
+    $default  reduce using rule 1 ($@1)
+
+    $@1  go to state 42
+
+
+State 13
+
+    4 item: declaration .
+
+    $default  reduce using rule 4 (item)
+
+
+State 14
+
+    6 declaration: type . declarators SEM
+
+    ID  shift, and go to state 2
+
+    declarators  go to state 43
+    identifier   go to state 44
+
+
+State 15
+
+   20 variable: identifier .
+
+    $default  reduce using rule 20 (variable)
+
+
+State 16
+
+    5 item: statement .
+
+    $default  reduce using rule 5 (item)
+
+
+State 17
+
+   10 statement: compoundstmt .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 18
+
+   11 statement: exprstmt .
+
+    $default  reduce using rule 11 (statement)
+
+
+State 19
+
+   16 exprstmt: expr . SEM
+
+    SEM  shift, and go to state 45
+
+
+State 20
+
+   18 expr: variable . OP_ASSIGN expr
+   47 factor: variable .
+
+    OP_ASSIGN  shift, and go to state 46
+
+    $default  reduce using rule 47 (factor)
+
+
+State 21
+
+   19 expr: logorexpr .
+   21 logorexpr: logorexpr . OP_LOGOR logandexpr
+
+    OP_LOGOR  shift, and go to state 47
+
+    $default  reduce using rule 19 (expr)
+
+
+State 22
+
+   22 logorexpr: logandexpr .
+   23 logandexpr: logandexpr . OP_LOGAND orexpr
+
+    OP_LOGAND  shift, and go to state 48
+
+    $default  reduce using rule 22 (logorexpr)
+
+
+State 23
+
+   24 logandexpr: orexpr .
+   25 orexpr: orexpr . OP_OR xorexpr
+
+    OP_OR  shift, and go to state 49
+
+    $default  reduce using rule 24 (logandexpr)
+
+
+State 24
+
+   26 orexpr: xorexpr .
+   27 xorexpr: xorexpr . OP_XOR andexpr
+
+    OP_XOR  shift, and go to state 50
+
+    $default  reduce using rule 26 (orexpr)
+
+
+State 25
+
+   28 xorexpr: andexpr .
+   29 andexpr: andexpr . OP_AND ecmprexpr
+
+    OP_AND  shift, and go to state 51
+
+    $default  reduce using rule 28 (xorexpr)
+
+
+State 26
+
+   30 andexpr: ecmprexpr .
+   31 ecmprexpr: ecmprexpr . OP_EQ cmprexpr
+   32          | ecmprexpr . OP_NEQ cmprexpr
+
+    OP_EQ   shift, and go to state 52
+    OP_NEQ  shift, and go to state 53
+
+    $default  reduce using rule 30 (andexpr)
+
+
+State 27
+
+   33 ecmprexpr: cmprexpr .
+   34 cmprexpr: cmprexpr . OP_GT arithexpr
+   35         | cmprexpr . OP_LT arithexpr
+   36         | cmprexpr . OP_GTE arithexpr
+   37         | cmprexpr . OP_LTE arithexpr
+
+    OP_GT   shift, and go to state 54
+    OP_LT   shift, and go to state 55
+    OP_GTE  shift, and go to state 56
+    OP_LTE  shift, and go to state 57
+
+    $default  reduce using rule 33 (ecmprexpr)
+
+
+State 28
+
+   38 cmprexpr: arithexpr .
+   39 arithexpr: arithexpr . OP_ADD term
+   40          | arithexpr . OP_SUB term
+
+    OP_ADD  shift, and go to state 58
+    OP_SUB  shift, and go to state 59
+
+    $default  reduce using rule 38 (cmprexpr)
+
+
+State 29
+
+   41 arithexpr: term .
+   42 term: term . OP_MUL factor
+   43     | term . OP_DIV factor
+   44     | term . OP_MOD factor
+
+    OP_MUL  shift, and go to state 60
+    OP_DIV  shift, and go to state 61
+    OP_MOD  shift, and go to state 62
+
+    $default  reduce using rule 41 (arithexpr)
+
+
+State 30
+
+   46 term: factor .
+
+    $default  reduce using rule 46 (term)
+
+
+State 31
+
+   48 factor: integer .
+
+    $default  reduce using rule 48 (factor)
+
+
+State 32
+
+   12 statement: ctrlstmt .
+
+    $default  reduce using rule 12 (statement)
+
+
+State 33
+
+   47 factor: variable .
+
+    $default  reduce using rule 47 (factor)
+
+
+State 34
+
+   45 term: OP_SUB factor .
+
+    $default  reduce using rule 45 (term)
+
+
+State 35
+
+   49 factor: LP expr . RP
+
+    RP  shift, and go to state 63
+
+
+State 36
+
+   15 items: item .
+
+    $default  reduce using rule 15 (items)
+
+
+State 37
+
+   13 compoundstmt: LBR items . RBR
+   14 items: items . item
+
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    TYPE_INT  shift, and go to state 3
+    OP_SUB    shift, and go to state 4
+    LP        shift, and go to state 5
+    LBR       shift, and go to state 6
+    RBR       shift, and go to state 64
+    SEM       shift, and go to state 7
+    IF        shift, and go to state 8
+    WHILE     shift, and go to state 9
+    FOR       shift, and go to state 10
+
+    item          go to state 65
+    declaration   go to state 13
+    type          go to state 14
+    identifier    go to state 15
+    statement     go to state 16
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 38
+
+   51 ctrlstmt: IF LP . expr RP statement
+   52         | IF LP . expr RP statement ELSE statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    expr        go to state 66
+    variable    go to state 20
+    logorexpr   go to state 21
+    logandexpr  go to state 22
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 39
+
+   53 ctrlstmt: WHILE LP . expr RP statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    expr        go to state 67
+    variable    go to state 20
+    logorexpr   go to state 21
+    logandexpr  go to state 22
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 40
+
+   54 ctrlstmt: FOR LP . initstmt exprstmt expr RP statement
+   55         | FOR LP . initstmt exprstmt RP statement
+
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    TYPE_INT  shift, and go to state 3
+    OP_SUB    shift, and go to state 4
+    LP        shift, and go to state 5
+    SEM       shift, and go to state 7
+
+    declaration  go to state 68
+    type         go to state 14
+    identifier   go to state 15
+    exprstmt     go to state 69
+    expr         go to state 19
+    variable     go to state 20
+    logorexpr    go to state 21
+    logandexpr   go to state 22
+    orexpr       go to state 23
+    xorexpr      go to state 24
+    andexpr      go to state 25
+    ecmprexpr    go to state 26
+    cmprexpr     go to state 27
+    arithexpr    go to state 28
+    term         go to state 29
+    factor       go to state 30
+    integer      go to state 31
+    initstmt     go to state 70
+
+
+State 41
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 42
+
+    2 program: item $@1 . program
+
+    INT       shift, and go to state 1
+    ID        shift, and go to state 2
+    TYPE_INT  shift, and go to state 3
+    OP_SUB    shift, and go to state 4
+    LP        shift, and go to state 5
+    LBR       shift, and go to state 6
+    SEM       shift, and go to state 7
+    IF        shift, and go to state 8
+    WHILE     shift, and go to state 9
+    FOR       shift, and go to state 10
+
+    $default  reduce using rule 3 (program)
+
+    program       go to state 71
+    item          go to state 12
+    declaration   go to state 13
+    type          go to state 14
+    identifier    go to state 15
+    statement     go to state 16
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 43
+
+    6 declaration: type declarators . SEM
+
+    SEM  shift, and go to state 72
+
+
+State 44
+
+    8 declarators: identifier .
+
+    $default  reduce using rule 8 (declarators)
+
+
+State 45
+
+   16 exprstmt: expr SEM .
+
+    $default  reduce using rule 16 (exprstmt)
+
+
+State 46
+
+   18 expr: variable OP_ASSIGN . expr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    expr        go to state 73
+    variable    go to state 20
+    logorexpr   go to state 21
+    logandexpr  go to state 22
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 47
+
+   21 logorexpr: logorexpr OP_LOGOR . logandexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    logandexpr  go to state 74
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 48
+
+   23 logandexpr: logandexpr OP_LOGAND . orexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    orexpr      go to state 75
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 49
+
+   25 orexpr: orexpr OP_OR . xorexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    xorexpr     go to state 76
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 50
+
+   27 xorexpr: xorexpr OP_XOR . andexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    andexpr     go to state 77
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 51
+
+   29 andexpr: andexpr OP_AND . ecmprexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    ecmprexpr   go to state 78
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 52
+
+   31 ecmprexpr: ecmprexpr OP_EQ . cmprexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    cmprexpr    go to state 79
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 53
+
+   32 ecmprexpr: ecmprexpr OP_NEQ . cmprexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    cmprexpr    go to state 80
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 54
+
+   34 cmprexpr: cmprexpr OP_GT . arithexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    arithexpr   go to state 81
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 55
+
+   35 cmprexpr: cmprexpr OP_LT . arithexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    arithexpr   go to state 82
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 56
+
+   36 cmprexpr: cmprexpr OP_GTE . arithexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    arithexpr   go to state 83
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 57
+
+   37 cmprexpr: cmprexpr OP_LTE . arithexpr
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    arithexpr   go to state 84
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 58
+
+   39 arithexpr: arithexpr OP_ADD . term
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    term        go to state 85
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 59
+
+   40 arithexpr: arithexpr OP_SUB . term
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    term        go to state 86
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 60
+
+   42 term: term OP_MUL . factor
+
+    INT  shift, and go to state 1
+    ID   shift, and go to state 2
+    LP   shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    factor      go to state 87
+    integer     go to state 31
+
+
+State 61
+
+   43 term: term OP_DIV . factor
+
+    INT  shift, and go to state 1
+    ID   shift, and go to state 2
+    LP   shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    factor      go to state 88
+    integer     go to state 31
+
+
+State 62
+
+   44 term: term OP_MOD . factor
+
+    INT  shift, and go to state 1
+    ID   shift, and go to state 2
+    LP   shift, and go to state 5
+
+    identifier  go to state 15
+    variable    go to state 33
+    factor      go to state 89
+    integer     go to state 31
+
+
+State 63
+
+   49 factor: LP expr RP .
+
+    $default  reduce using rule 49 (factor)
+
+
+State 64
+
+   13 compoundstmt: LBR items RBR .
+
+    $default  reduce using rule 13 (compoundstmt)
+
+
+State 65
+
+   14 items: items item .
+
+    $default  reduce using rule 14 (items)
+
+
+State 66
+
+   51 ctrlstmt: IF LP expr . RP statement
+   52         | IF LP expr . RP statement ELSE statement
+
+    RP  shift, and go to state 90
+
+
+State 67
+
+   53 ctrlstmt: WHILE LP expr . RP statement
+
+    RP  shift, and go to state 91
+
+
+State 68
+
+   57 initstmt: declaration .
+
+    $default  reduce using rule 57 (initstmt)
+
+
+State 69
+
+   56 initstmt: exprstmt .
+
+    $default  reduce using rule 56 (initstmt)
+
+
+State 70
+
+   54 ctrlstmt: FOR LP initstmt . exprstmt expr RP statement
+   55         | FOR LP initstmt . exprstmt RP statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    SEM     shift, and go to state 7
+
+    identifier  go to state 15
+    exprstmt    go to state 92
+    expr        go to state 19
+    variable    go to state 20
+    logorexpr   go to state 21
+    logandexpr  go to state 22
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 71
+
+    2 program: item $@1 program .
+
+    $default  reduce using rule 2 (program)
+
+
+State 72
+
+    6 declaration: type declarators SEM .
+
+    $default  reduce using rule 6 (declaration)
+
+
+State 73
+
+   18 expr: variable OP_ASSIGN expr .
+
+    $default  reduce using rule 18 (expr)
+
+
+State 74
+
+   21 logorexpr: logorexpr OP_LOGOR logandexpr .
+   23 logandexpr: logandexpr . OP_LOGAND orexpr
+
+    OP_LOGAND  shift, and go to state 48
+
+    $default  reduce using rule 21 (logorexpr)
+
+
+State 75
+
+   23 logandexpr: logandexpr OP_LOGAND orexpr .
+   25 orexpr: orexpr . OP_OR xorexpr
+
+    OP_OR  shift, and go to state 49
+
+    $default  reduce using rule 23 (logandexpr)
+
+
+State 76
+
+   25 orexpr: orexpr OP_OR xorexpr .
+   27 xorexpr: xorexpr . OP_XOR andexpr
+
+    OP_XOR  shift, and go to state 50
+
+    $default  reduce using rule 25 (orexpr)
+
+
+State 77
+
+   27 xorexpr: xorexpr OP_XOR andexpr .
+   29 andexpr: andexpr . OP_AND ecmprexpr
+
+    OP_AND  shift, and go to state 51
+
+    $default  reduce using rule 27 (xorexpr)
+
+
+State 78
+
+   29 andexpr: andexpr OP_AND ecmprexpr .
+   31 ecmprexpr: ecmprexpr . OP_EQ cmprexpr
+   32          | ecmprexpr . OP_NEQ cmprexpr
+
+    OP_EQ   shift, and go to state 52
+    OP_NEQ  shift, and go to state 53
+
+    $default  reduce using rule 29 (andexpr)
+
+
+State 79
+
+   31 ecmprexpr: ecmprexpr OP_EQ cmprexpr .
+   34 cmprexpr: cmprexpr . OP_GT arithexpr
+   35         | cmprexpr . OP_LT arithexpr
+   36         | cmprexpr . OP_GTE arithexpr
+   37         | cmprexpr . OP_LTE arithexpr
+
+    OP_GT   shift, and go to state 54
+    OP_LT   shift, and go to state 55
+    OP_GTE  shift, and go to state 56
+    OP_LTE  shift, and go to state 57
+
+    $default  reduce using rule 31 (ecmprexpr)
+
+
+State 80
+
+   32 ecmprexpr: ecmprexpr OP_NEQ cmprexpr .
+   34 cmprexpr: cmprexpr . OP_GT arithexpr
+   35         | cmprexpr . OP_LT arithexpr
+   36         | cmprexpr . OP_GTE arithexpr
+   37         | cmprexpr . OP_LTE arithexpr
+
+    OP_GT   shift, and go to state 54
+    OP_LT   shift, and go to state 55
+    OP_GTE  shift, and go to state 56
+    OP_LTE  shift, and go to state 57
+
+    $default  reduce using rule 32 (ecmprexpr)
+
+
+State 81
+
+   34 cmprexpr: cmprexpr OP_GT arithexpr .
+   39 arithexpr: arithexpr . OP_ADD term
+   40          | arithexpr . OP_SUB term
+
+    OP_ADD  shift, and go to state 58
+    OP_SUB  shift, and go to state 59
+
+    $default  reduce using rule 34 (cmprexpr)
+
+
+State 82
+
+   35 cmprexpr: cmprexpr OP_LT arithexpr .
+   39 arithexpr: arithexpr . OP_ADD term
+   40          | arithexpr . OP_SUB term
+
+    OP_ADD  shift, and go to state 58
+    OP_SUB  shift, and go to state 59
+
+    $default  reduce using rule 35 (cmprexpr)
+
+
+State 83
+
+   36 cmprexpr: cmprexpr OP_GTE arithexpr .
+   39 arithexpr: arithexpr . OP_ADD term
+   40          | arithexpr . OP_SUB term
+
+    OP_ADD  shift, and go to state 58
+    OP_SUB  shift, and go to state 59
+
+    $default  reduce using rule 36 (cmprexpr)
+
+
+State 84
+
+   37 cmprexpr: cmprexpr OP_LTE arithexpr .
+   39 arithexpr: arithexpr . OP_ADD term
+   40          | arithexpr . OP_SUB term
+
+    OP_ADD  shift, and go to state 58
+    OP_SUB  shift, and go to state 59
+
+    $default  reduce using rule 37 (cmprexpr)
+
+
+State 85
+
+   39 arithexpr: arithexpr OP_ADD term .
+   42 term: term . OP_MUL factor
+   43     | term . OP_DIV factor
+   44     | term . OP_MOD factor
+
+    OP_MUL  shift, and go to state 60
+    OP_DIV  shift, and go to state 61
+    OP_MOD  shift, and go to state 62
+
+    $default  reduce using rule 39 (arithexpr)
+
+
+State 86
+
+   40 arithexpr: arithexpr OP_SUB term .
+   42 term: term . OP_MUL factor
+   43     | term . OP_DIV factor
+   44     | term . OP_MOD factor
+
+    OP_MUL  shift, and go to state 60
+    OP_DIV  shift, and go to state 61
+    OP_MOD  shift, and go to state 62
+
+    $default  reduce using rule 40 (arithexpr)
+
+
+State 87
+
+   42 term: term OP_MUL factor .
+
+    $default  reduce using rule 42 (term)
+
+
+State 88
+
+   43 term: term OP_DIV factor .
+
+    $default  reduce using rule 43 (term)
+
+
+State 89
+
+   44 term: term OP_MOD factor .
+
+    $default  reduce using rule 44 (term)
+
+
+State 90
+
+   51 ctrlstmt: IF LP expr RP . statement
+   52         | IF LP expr RP . statement ELSE statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    LBR     shift, and go to state 6
+    SEM     shift, and go to state 7
+    IF      shift, and go to state 8
+    WHILE   shift, and go to state 9
+    FOR     shift, and go to state 10
+
+    identifier    go to state 15
+    statement     go to state 93
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 91
+
+   53 ctrlstmt: WHILE LP expr RP . statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    LBR     shift, and go to state 6
+    SEM     shift, and go to state 7
+    IF      shift, and go to state 8
+    WHILE   shift, and go to state 9
+    FOR     shift, and go to state 10
+
+    identifier    go to state 15
+    statement     go to state 94
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 92
+
+   54 ctrlstmt: FOR LP initstmt exprstmt . expr RP statement
+   55         | FOR LP initstmt exprstmt . RP statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    RP      shift, and go to state 95
+
+    identifier  go to state 15
+    expr        go to state 96
+    variable    go to state 20
+    logorexpr   go to state 21
+    logandexpr  go to state 22
+    orexpr      go to state 23
+    xorexpr     go to state 24
+    andexpr     go to state 25
+    ecmprexpr   go to state 26
+    cmprexpr    go to state 27
+    arithexpr   go to state 28
+    term        go to state 29
+    factor      go to state 30
+    integer     go to state 31
+
+
+State 93
+
+   51 ctrlstmt: IF LP expr RP statement .
+   52         | IF LP expr RP statement . ELSE statement
+
+    ELSE  shift, and go to state 97
+
+    $default  reduce using rule 51 (ctrlstmt)
+
+
+State 94
+
+   53 ctrlstmt: WHILE LP expr RP statement .
+
+    $default  reduce using rule 53 (ctrlstmt)
+
+
+State 95
+
+   55 ctrlstmt: FOR LP initstmt exprstmt RP . statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    LBR     shift, and go to state 6
+    SEM     shift, and go to state 7
+    IF      shift, and go to state 8
+    WHILE   shift, and go to state 9
+    FOR     shift, and go to state 10
+
+    identifier    go to state 15
+    statement     go to state 98
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 96
+
+   54 ctrlstmt: FOR LP initstmt exprstmt expr . RP statement
+
+    RP  shift, and go to state 99
+
+
+State 97
+
+   52 ctrlstmt: IF LP expr RP statement ELSE . statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    LBR     shift, and go to state 6
+    SEM     shift, and go to state 7
+    IF      shift, and go to state 8
+    WHILE   shift, and go to state 9
+    FOR     shift, and go to state 10
+
+    identifier    go to state 15
+    statement     go to state 100
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 98
+
+   55 ctrlstmt: FOR LP initstmt exprstmt RP statement .
+
+    $default  reduce using rule 55 (ctrlstmt)
+
+
+State 99
+
+   54 ctrlstmt: FOR LP initstmt exprstmt expr RP . statement
+
+    INT     shift, and go to state 1
+    ID      shift, and go to state 2
+    OP_SUB  shift, and go to state 4
+    LP      shift, and go to state 5
+    LBR     shift, and go to state 6
+    SEM     shift, and go to state 7
+    IF      shift, and go to state 8
+    WHILE   shift, and go to state 9
+    FOR     shift, and go to state 10
+
+    identifier    go to state 15
+    statement     go to state 101
+    compoundstmt  go to state 17
+    exprstmt      go to state 18
+    expr          go to state 19
+    variable      go to state 20
+    logorexpr     go to state 21
+    logandexpr    go to state 22
+    orexpr        go to state 23
+    xorexpr       go to state 24
+    andexpr       go to state 25
+    ecmprexpr     go to state 26
+    cmprexpr      go to state 27
+    arithexpr     go to state 28
+    term          go to state 29
+    factor        go to state 30
+    integer       go to state 31
+    ctrlstmt      go to state 32
+
+
+State 100
+
+   52 ctrlstmt: IF LP expr RP statement ELSE statement .
+
+    $default  reduce using rule 52 (ctrlstmt)
+
+
+State 101
+
+   54 ctrlstmt: FOR LP initstmt exprstmt expr RP statement .
+
+    $default  reduce using rule 54 (ctrlstmt)

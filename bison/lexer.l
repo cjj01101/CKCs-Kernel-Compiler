@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include "ASTNode.h"
+    #include "StatementNode.h"
     #include "y.tab.h"
 
     void yyerror(char *);

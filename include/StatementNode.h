@@ -97,14 +97,7 @@ private:
 class ForStatementNode : public StatementNode {
 
 public:
-	ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body) :
-		StatementNode(), init(init), condition(cond), loop(loop), body(body)
-	{
-		assert(dynamic_cast<ExpressionStatementNode*>(init) != nullptr ||
-			   dynamic_cast<DeclarationNode*>(init) != nullptr);
-		assert(dynamic_cast<ExpressionStatementNode*>(cond) != nullptr);
-		assert(dynamic_cast<StatementNode*>(body) != nullptr);
-	}
+	ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body);
 	~ForStatementNode() { delete init; delete condition; delete loop; delete body; }
 
 private:

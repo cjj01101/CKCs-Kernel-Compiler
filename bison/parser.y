@@ -18,6 +18,7 @@
     int intNum;
     char str[MAXVARLEN];
     ASTNode *node;
+    CompoundStatementNode *compound;
 }
 
 %token <intNum> INT
@@ -30,10 +31,12 @@
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR
 
-%type <node> items item declaration type idlist
+%type <node> item declaration type declarators
 %type <node> statement compoundstmt exprstmt ctrlstmt initstmt
 %type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr arithexpr
 %type <node> term factor identifier variable integer
+
+%type <compound> items
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -44,13 +47,20 @@
                 | /* empty */
                 ;
 
-    declaration : type idlist SEM { $$ = new DeclarationNode($2, $1); }
+           item : declaration { $$ = $1; }
+                | statement { $$ = $1; }
+                ;
+
+    declaration : type declarators SEM { $$ = new DeclarationNode($2, $1); }
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
                 ;
 
-         idlist : identifier { $$ = $1; }
+    declarators : identifier { $$ = $1; }
+                ;
+
+     identifier : ID { $$ = new VariableNode($1); }
                 ;
 
       statement : compoundstmt { $$ = $1; }
@@ -61,12 +71,8 @@
    compoundstmt : LBR items RBR { $$ = $2; }
                 ;
 
-          items : items item { $$ = $1; dynamic_cast<CompoundStatementNode*>($$)->AppendStatement($2); }
-                | item { auto node = new CompoundStatementNode(); node->AppendStatement($1); $$ = node; }
-                ;
-
-           item : declaration { $$ = $1; }
-                | statement { $$ = $1; }
+          items : items item { $$ = $1; $$->AppendStatement($2); }
+                | item { $$ = new CompoundStatementNode(); $$->AppendStatement($1);; }
                 ;
 
        exprstmt : expr SEM { $$ = new ExpressionStatementNode($1); }
@@ -75,6 +81,9 @@
 
            expr : variable OP_ASSIGN expr { $$ = new AssignOpNode($1, $3); }
                 | logorexpr { $$ = $1; }
+                ;
+
+       variable : identifier { $$ = $1; }
                 ;
 
       logorexpr : logorexpr OP_LOGOR logandexpr { $$ = new BinaryOpNode(Operator::LOGOR, $1, $3); }
@@ -111,25 +120,19 @@
 
       arithexpr : arithexpr OP_ADD term { $$ = new BinaryOpNode(Operator::ADD, $1, $3); }
                 | arithexpr OP_SUB term { $$ = new BinaryOpNode(Operator::SUB, $1, $3); }
-                | OP_SUB term { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
                 | term { $$ = $1; }
                 ;
 
            term : term OP_MUL factor { $$ = new BinaryOpNode(Operator::MUL, $1, $3); }
                 | term OP_DIV factor { $$ = new BinaryOpNode(Operator::DIV, $1, $3); }
                 | term OP_MOD factor { $$ = new BinaryOpNode(Operator::MOD, $1, $3); }
+                | OP_SUB factor { $$ = new BinaryOpNode(Operator::MUL, new IntegerNode(-1), $2); }
                 | factor { $$ = $1; }
                 ;
 
-         factor : identifier { $$ = $1; }
+         factor : variable { $$ = $1; }
                 | integer { $$ = $1; }
                 | LP expr RP { $$ = $2; }
-                ;
-
-       variable : identifier { $$ = $1; }
-                ;
-
-     identifier : ID { $$ = new VariableNode($1); }
                 ;
      
         integer : INT { $$ = new IntegerNode($1); }

@@ -23,7 +23,8 @@ private:
 class AssignOpNode : public ASTNode {
 
 public:
-	AssignOpNode(ASTNode *left, ASTNode *right) : ASTNode(), leftValue(left), rightValue(right) { 
+	AssignOpNode(ASTNode *left, ASTNode *right) : ASTNode(), leftValue(left), rightValue(right)
+	{ 
 		assert(dynamic_cast<VariableNode*>(left) != nullptr);
 		assert(right != nullptr);
 	}

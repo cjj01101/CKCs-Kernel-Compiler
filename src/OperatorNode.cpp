@@ -1,17 +1,7 @@
 #include <stdio.h>
-#include "ASTNode.h"
 #include "OperatorNode.h"
-#include "DeclarationNode.h"
 
 /*         PRINT FUNCTION         */
-
-void ASTNode::PrintInLevel(int level) const {
-	for(int i = 0; i < level; i++) {
-		if(i == level - 1) printf("+-------");
-		else printf("|       ");
-	}
-	PrintContentInLevel(level);
-}
 
 void BinaryOpNode::PrintContentInLevel(int level) const {
 
@@ -33,13 +23,6 @@ void AssignOpNode::PrintContentInLevel(int level) const {
 
 	leftValue->PrintInLevel(level + 1);
 	rightValue->PrintInLevel(level + 1);
-}
-
-void DeclarationNode::PrintContentInLevel(int level) const {
-	printf("Declaration\n");
-
-	type->PrintInLevel(level + 1);
-	variable->PrintInLevel(level + 1);
 }
 
 /*        PRINT FUNCTION END        */

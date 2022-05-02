@@ -3,9 +3,22 @@
 #include "StatementNode.h"
 
 #define PRINT_CHILD_WITH_HINT(child, hint) \
-	for(int i = 0; i < level; i++) printf("        "); \
+	for(int i = 0; i < level; i++) printf("|       "); \
 	printf("| [" hint "]\n"); \
 	child->PrintInLevel(level + 1);
+
+/*        CONSTRUCT FUNCTION        */
+
+ForStatementNode::ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body) :
+	StatementNode(), init(init), condition(cond), loop(loop), body(body)
+{
+	assert(dynamic_cast<ExpressionStatementNode*>(init) != nullptr ||
+		   dynamic_cast<DeclarationNode*>(init) != nullptr);
+	assert(dynamic_cast<ExpressionStatementNode*>(cond) != nullptr);
+	assert(dynamic_cast<StatementNode*>(body) != nullptr);
+}
+
+/*      CONSTRUCT FUNCTION END      */
 
 /*         PRINT FUNCTION         */
 

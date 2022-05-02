@@ -19,7 +19,7 @@ void EmptyExpressionNode::PrintContentInLevel(int level) const {
 }
 
 void IntegerNode::PrintContentInLevel(int level) const {
-	printf("%d\n", num);
+	printf("[int] %d\n", num);
 }
 
 void VariableNode::PrintContentInLevel(int level) const {

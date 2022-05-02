@@ -1,5 +1,6 @@
+#line 1 "./src/lexer.c"
 
-#line 2 "lex.yy.c"
+#line 3 "./src/lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -476,15 +477,16 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lexer.l"
-#line 2 "lexer.l"
+#line 1 "bison/lexer.l"
+#line 2 "bison/lexer.l"
     #include <stdio.h>
     #include "ASTNode.h"
+    #include "StatementNode.h"
     #include "y.tab.h"
 
     void yyerror(char *);
-#line 486 "lex.yy.c"
-#line 487 "lex.yy.c"
+#line 488 "./src/lexer.c"
+#line 489 "./src/lexer.c"
 
 #define INITIAL 0
 
@@ -701,10 +703,10 @@ YY_DECL
 		}
 
 	{
-#line 14 "lexer.l"
+#line 15 "bison/lexer.l"
 
 
-#line 707 "lex.yy.c"
+#line 709 "./src/lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -763,171 +765,171 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 16 "lexer.l"
+#line 17 "bison/lexer.l"
 return OP_ADD;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "lexer.l"
+#line 18 "bison/lexer.l"
 return OP_SUB;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 18 "lexer.l"
+#line 19 "bison/lexer.l"
 return OP_MUL;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 19 "lexer.l"
+#line 20 "bison/lexer.l"
 return OP_DIV;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 20 "lexer.l"
+#line 21 "bison/lexer.l"
 return OP_MOD;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 21 "lexer.l"
+#line 22 "bison/lexer.l"
 return OP_GT;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 22 "lexer.l"
+#line 23 "bison/lexer.l"
 return OP_LT;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 23 "lexer.l"
+#line 24 "bison/lexer.l"
 return OP_GTE;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 24 "lexer.l"
+#line 25 "bison/lexer.l"
 return OP_LTE;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 25 "lexer.l"
+#line 26 "bison/lexer.l"
 return OP_EQ;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 26 "lexer.l"
+#line 27 "bison/lexer.l"
 return OP_NEQ;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 27 "lexer.l"
+#line 28 "bison/lexer.l"
 return OP_AND;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 28 "lexer.l"
+#line 29 "bison/lexer.l"
 return OP_XOR;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 29 "lexer.l"
+#line 30 "bison/lexer.l"
 return OP_OR;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 30 "lexer.l"
+#line 31 "bison/lexer.l"
 return OP_LOGAND;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 31 "lexer.l"
+#line 32 "bison/lexer.l"
 return OP_LOGOR;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 32 "lexer.l"
+#line 33 "bison/lexer.l"
 return OP_ASSIGN;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 33 "lexer.l"
+#line 34 "bison/lexer.l"
 return LP;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 34 "lexer.l"
+#line 35 "bison/lexer.l"
 return RP;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 35 "lexer.l"
+#line 36 "bison/lexer.l"
 return LBR;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 36 "lexer.l"
+#line 37 "bison/lexer.l"
 return RBR;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 37 "lexer.l"
+#line 38 "bison/lexer.l"
 return SEM;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 38 "lexer.l"
+#line 39 "bison/lexer.l"
 return COMMA;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 39 "lexer.l"
+#line 40 "bison/lexer.l"
 return IF;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 40 "lexer.l"
+#line 41 "bison/lexer.l"
 return ELSE;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 41 "lexer.l"
+#line 42 "bison/lexer.l"
 return WHILE;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 42 "lexer.l"
+#line 43 "bison/lexer.l"
 return FOR;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 43 "lexer.l"
+#line 44 "bison/lexer.l"
 return TYPE_INT;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 44 "lexer.l"
+#line 45 "bison/lexer.l"
 { strncpy(yylval.str, yytext, 64); return ID; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 45 "lexer.l"
+#line 46 "bison/lexer.l"
 { yylval.intNum = atoi(yytext); return INT; }
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 46 "lexer.l"
+#line 47 "bison/lexer.l"
 ;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 47 "lexer.l"
+#line 48 "bison/lexer.l"
 { printf("Input parsing failure: %s.\n", yytext); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 49 "lexer.l"
+#line 50 "bison/lexer.l"
 ECHO;
 	YY_BREAK
-#line 930 "lex.yy.c"
+#line 932 "./src/lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1932,5 +1934,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 49 "lexer.l"
+#line 50 "bison/lexer.l"
 

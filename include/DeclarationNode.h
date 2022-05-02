@@ -7,7 +7,8 @@
 class DeclarationNode : public ASTNode {
 
 public:
-	DeclarationNode(ASTNode *var, ASTNode *type) : ASTNode(), variable(var), type(type) {
+	DeclarationNode(ASTNode *var, ASTNode *type) : ASTNode(), variable(var), type(type)
+	{
 		assert(dynamic_cast<VariableNode*>(var) != nullptr);
 		assert(dynamic_cast<TypeNode*>(type) != nullptr);
 	}

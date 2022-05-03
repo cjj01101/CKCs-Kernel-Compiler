@@ -1,22 +1,23 @@
 %{
     #include <stdio.h>
     #include "AbstractSyntaxTree.h"
-    #include "ValueNode.h"
-    #include "ExpressionNode.h"
-    #include "DeclarationNode.h"
-    #include "StatementNode.h"
     #include "TranslationUnitNode.h"
+    #include "DeclarationNode.h"
+    #include "FunctionNode.h"
+    #include "StatementNode.h"
+    #include "OperatorNode.h"
+    #include "ExpressionNode.h"
+    #include "ValueNode.h"
 
     int yylex(void);
     void yyerror(char *);
-    
-    enum class type;
 
-    extern ASTNode *root;
+    ASTNode *root = nullptr;
 %}
 
 %union {
     int intNum;
+    float floatNum;
     char str[MAXVARLEN];
     ASTNode *node;
     CompoundStatementNode *compound;
@@ -29,9 +30,10 @@
     } declarator;
 }
 
-%token <intNum> INT
+%token <intNum> NUM_INT
+%token <floatNum> NUM_FLOAT
 %token <str> ID
-%token TYPE_INT TYPE_VOID
+%token TYPE_INT TYPE_FLOAT TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_NOT OP_LOGAND OP_LOGOR
@@ -80,6 +82,7 @@
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
+                | TYPE_FLOAT { $$ = new TypeNode(Type::FLOAT); }
                 ;
 
      identifier : ID { $$ = new IdentifierNode($1); }
@@ -161,7 +164,8 @@
                 | OP_NOT factor { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
                 ;
      
-       constant : INT { $$ = new IntegerNode($1); }
+       constant : NUM_INT { $$ = new IntegerNode($1); }
+                | NUM_FLOAT { $$ = new FloatNode($1); }
                 ;
 
       arguments : arguments COMMA expr { $$ = $1; $1->AppendArgument($3); }
@@ -194,8 +198,9 @@ int yywrap(){
     return 1;
 }
 
-void GenerateSyntaxTree(FILE *input){
+ASTNode *parse_and_generate_syntax_tree(FILE *input){
     extern FILE *yyin;
     yyin = input;
     yyparse();
+    return root;
 }

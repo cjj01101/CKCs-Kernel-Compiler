@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "DeclarationNode.h"
-#include "ValueNode.h"
 #include "StatementNode.h"
+#include "ExpressionNode.h"
 
 /*        CONSTRUCT FUNCTION        */
 
@@ -11,15 +11,6 @@ DeclarationNode::DeclarationNode(ASTNode *name, ASTNode *type, ASTNode *init)
 	assert(NOT_NULL_OF_TYPE(name, IdentifierNode*));
 	assert(NOT_NULL_OF_TYPE(type, TypeNode*));
 	assert(NULLABLE_OF_TYPE(init, ExpressionNode*));
-}
-
-FunctionNode::FunctionNode(ASTNode *name, ASTNode *returnType, ASTNode *parameters, ASTNode *body)
-	: ASTNode(), returnType(returnType), name(name), parameters(parameters), body(body)
-{
-	assert(NOT_NULL_OF_TYPE(name, IdentifierNode*));
-	assert(NOT_NULL_OF_TYPE(returnType, TypeNode*));
-	assert(NOT_NULL_OF_TYPE(parameters, ParameterListNode*));
-	assert(NOT_NULL_OF_TYPE(body, CompoundStatementNode*));
 }
 
 /*      CONSTRUCT FUNCTION END      */
@@ -34,30 +25,20 @@ void DeclarationNode::PrintContentInLevel(int level) const {
 	if(initValue) PRINT_CHILD_WITH_HINT(initValue, "INIT VALUE");
 }
 
-void FunctionNode::PrintContentInLevel(int level) const {
-	printf("Function Definition\n");
+void TypeNode::PrintContentInLevel(int level) const {
 
-	PRINT_CHILD_WITH_HINT(returnType, "RETURN TYPE");
-	PRINT_CHILD_WITH_HINT(name, "NAME");
-	PRINT_CHILD_WITH_HINT(parameters, "PARAMS");
-	PRINT_CHILD_WITH_HINT(body, "BODY");
-}
+	const static char *typeName[] = {
+		#define TYPE(type) #type,
+		TYPES
+		#undef TYPE
+	};
 
-void ParameterListNode::PrintContentInLevel(int level) const {
-	printf("Parameter List\n");
+	printf("%s\n", typeName[static_cast<int>(type)]);
 
-	for(auto param : parameters) {
-		PRINT_CHILD_WITH_HINT(param, "PARAM");
-	}
 }
 
 /*        PRINT FUNCTION END        */
 
 /*        AUXILIARY FUNCTION        */
-
-void ParameterListNode::AppendParameter(ASTNode *param) {
-	assert(NOT_NULL_OF_TYPE(param, DeclarationNode*));
-	parameters.push_back(param);
-}
 
 /*      AUXILIARY FUNCTION END      */

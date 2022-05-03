@@ -16,27 +16,14 @@ private:
 
 };
 
-class IdentifierNode : public ExpressionNode {
+class FloatNode : public ExpressionNode {
 
 public:
-	IdentifierNode(char *name);
-	~IdentifierNode() {}
+	FloatNode(float num) : ExpressionNode(), num(num) {}
+	~FloatNode() {}
 
 private:
-	char id[MAXVARLEN];
-
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
-class TypeNode : public ASTNode {
-
-public:
-	TypeNode(Type type) : ASTNode(), type(type) { }
-	~TypeNode() {}
-
-private:
-	Type type;
+	float num;
 
 	virtual void PrintContentInLevel(int level) const override;
 

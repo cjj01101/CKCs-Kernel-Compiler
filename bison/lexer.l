@@ -1,17 +1,20 @@
 %{
     #include <stdio.h>
-    #include "ASTNode.h"
-    #include "ExpressionNode.h"
-    #include "StatementNode.h"
-    #include "DeclarationNode.h"
-    #include "TranslationUnitNode.h"
-    #include "y.tab.h"
+    #include "common.h"
+    
+    /* FORWARD DECLARATION */
+    class ASTNode;
+    class CompoundStatementNode;
+    class ParameterListNode;
+    class ArgumentListNode;
+    class TranslationUnitNode;
+    /* FORWARD DECLARATION */
 
-    void yyerror(char *);
+    #include "y.tab.h"
 %}
 
 integer ([1-9]+[0-9]*|0)
-real ([1-9]+[0-9]*|0)(\.[0-9]+)?
+real ([1-9]+[0-9]*|0)(\.[0-9]+)
 identifier [A-Za-z_][0-9A-Za-z_]*
 blank [ \f\n\r\t\v]+
 
@@ -47,10 +50,12 @@ blank [ \f\n\r\t\v]+
 "for"           return FOR;
 "return"        return RETURN;
 "int"           return TYPE_INT;
+"float"         return TYPE_FLOAT;
 "void"          return TYPE_VOID;
 {identifier}    { strncpy(yylval.str, yytext, 64); return ID; }
-{integer}       { yylval.intNum = atoi(yytext); return INT; }
+{integer}       { yylval.intNum = atoi(yytext); return NUM_INT; }
+{real}          { yylval.floatNum = atof(yytext); return NUM_FLOAT; }
 {blank}         ;
-.               { printf("Input parsing failure: %s.\n", yytext); }
+.               { fprintf(stderr, "Input parsing failure: %s.\n", yytext); }
 
 %%

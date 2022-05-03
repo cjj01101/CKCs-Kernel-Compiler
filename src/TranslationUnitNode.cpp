@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include "DeclarationNode.h"
 #include "TranslationUnitNode.h"
+#include "DeclarationNode.h"
+#include "FunctionNode.h"
 
 /*         PRINT FUNCTION         */
 

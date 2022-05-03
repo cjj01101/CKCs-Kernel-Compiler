@@ -26,61 +26,14 @@ private:
 
 };
 
-class BinaryOpNode : public ExpressionNode {
+class IdentifierNode : public ExpressionNode {
 
 public:
-	BinaryOpNode(Operator op, ASTNode *left, ASTNode *right);
-	~BinaryOpNode() { delete leftOperand; delete rightOperand; }
+	IdentifierNode(char *name);
+	~IdentifierNode() {}
 
 private:
-	ASTNode *leftOperand;
-	ASTNode *rightOperand;
-	Operator op;
-
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
-class AssignOpNode : public ExpressionNode {
-
-public:
-	AssignOpNode(ASTNode *left, ASTNode *right);
-	~AssignOpNode() { delete leftValue; delete rightValue; }
-
-private:
-	ASTNode *leftValue;
-	ASTNode *rightValue;
-
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
-class FunctionCallNode : public ExpressionNode {
-
-public:
-	FunctionCallNode(ASTNode *name, ASTNode *arguments);
-	~FunctionCallNode() { delete name; delete arguments; }
-
-private:
-	ASTNode *name;
-	ASTNode *arguments;
-
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
-class ArgumentListNode : public ASTNode {
-
-public:
-	ArgumentListNode() : ASTNode(), arguments() {}
-	~ArgumentListNode() {
-		for(auto arg : arguments) delete arg;
-	}
-
-	void AppendArgument(ASTNode *arg);
-
-private:
-	std::vector<ASTNode*> arguments;
+	char id[MAXVARLEN];
 
 	virtual void PrintContentInLevel(int level) const override;
 

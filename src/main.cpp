@@ -16,6 +16,7 @@ int main(int argc, char ** argv){
     AbstractSyntaxTree synTree(root);
 
     synTree.Print();
+    synTree.AnalyzeSemantic();
 
     return 0;
 }

@@ -32,6 +32,8 @@ public:
 	IdentifierNode(char *name);
 	~IdentifierNode() {}
 
+	char *GetName() { return id; }
+
 private:
 	char id[MAXVARLEN];
 

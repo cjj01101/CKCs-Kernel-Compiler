@@ -145,16 +145,18 @@ union YYSTYPE
     float floatNum;
     char str[MAXVARLEN];
     ASTNode *node;
+    TypeNode *type;
+    IdentifierNode *identifier;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
     struct {
-        ASTNode *type;
-        ASTNode *name;
+        TypeNode *type;
+        IdentifierNode *name;
     } declarator;
 
-#line 158 "./include/y.tab.h"
+#line 160 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

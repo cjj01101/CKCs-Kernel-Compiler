@@ -1,18 +1,30 @@
+#include <assert.h>
 #include <stdio.h>
 #include "FunctionNode.h"
 #include "ExpressionNode.h"
 #include "DeclarationNode.h"
 #include "StatementNode.h"
 
-/*        CONSTRUCT FUNCTION        */
+/*      (DE)CONSTRUCT FUNCTION      */
 
-FunctionNode::FunctionNode(ASTNode *name, ASTNode *returnType, ASTNode *parameters, ASTNode *body)
+FunctionNode::FunctionNode(IdentifierNode *name, TypeNode *returnType, ParameterListNode *parameters, CompoundStatementNode *body)
 	: ASTNode(), returnType(returnType), name(name), parameters(parameters), body(body)
 {
-	assert(NOT_NULL_OF_TYPE(name, IdentifierNode*));
-	assert(NOT_NULL_OF_TYPE(returnType, TypeNode*));
-	assert(NOT_NULL_OF_TYPE(parameters, ParameterListNode*));
-	assert(NOT_NULL_OF_TYPE(body, CompoundStatementNode*));
+	assert(NOT_NULL(returnType));
+	assert(NOT_NULL(name));
+	assert(NOT_NULL(parameters));
+	assert(NOT_NULL(body));
+}
+
+FunctionNode::~FunctionNode() {
+	delete returnType;
+	delete name;
+	delete parameters;
+	delete body;
+}
+
+ParameterListNode::~ParameterListNode() {
+	for(auto param : parameters) delete param;
 }
 
 FunctionCallNode::FunctionCallNode(ASTNode *name, ASTNode *arguments)
@@ -22,9 +34,47 @@ FunctionCallNode::FunctionCallNode(ASTNode *name, ASTNode *arguments)
 	assert(NOT_NULL_OF_TYPE(arguments, ArgumentListNode*));
 }
 
-/*      CONSTRUCT FUNCTION END      */
+/*    (DE)CONSTRUCT FUNCTION END    */
 
-/*         PRINT FUNCTION         */
+/*         SEMANTIC ANALYZE         */
+
+void FunctionNode::AnalyzeSemantic(SymbolTable *intab) {
+
+	std::string sym = std::string(name->GetName());
+	if(intab->HasSymbol(sym)) {
+		throw ASTException("Redeclaration of symbol '" + sym + "'.");
+	}
+
+	/* Add Function Definition */
+	std::vector<Type> paramTypes;
+	parameters->GetParameterTypes(paramTypes);
+	intab->AddEntry(
+		sym,
+		SymbolTableEntry(
+			SymbolKind::function,
+			SymbolType(returnType->GetType(), paramTypes)
+		)
+	);
+
+	/* Create Symbol Table in Function Scope */
+	SymbolTable symtab;
+	symtab.prev = intab;
+	parameters->AnalyzeSemantic(&symtab);
+
+	/* Move into Function Body */
+	body->AnalyzeSemantic(&symtab);
+
+}
+
+void ParameterListNode::AnalyzeSemantic(SymbolTable *intab) {
+
+	for(auto param : parameters) param->AnalyzeSemantic(intab);
+
+}
+
+/*       SEMANTIC ANALYZE END       */
+
+/*          PRINT FUNCTION          */
 
 void FunctionNode::PrintContentInLevel(int level) const {
 	printf("Function Definition\n");
@@ -62,9 +112,13 @@ void ArgumentListNode::PrintContentInLevel(int level) const {
 
 /*        AUXILIARY FUNCTION        */
 
-void ParameterListNode::AppendParameter(ASTNode *param) {
-	assert(NOT_NULL_OF_TYPE(param, DeclarationNode*));
+void ParameterListNode::AppendParameter(DeclarationNode *param) {
+	assert(NOT_NULL(param));
 	parameters.push_back(param);
+}
+
+void ParameterListNode::GetParameterTypes(std::vector<Type> &types) {
+	for(auto param : parameters) types.push_back(param->GetType());
 }
 
 void ArgumentListNode::AppendArgument(ASTNode *arg) {

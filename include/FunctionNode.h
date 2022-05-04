@@ -7,14 +7,16 @@
 class FunctionNode : public ASTNode {
 
 public:
-	FunctionNode(ASTNode *name, ASTNode *returnType, ASTNode *parameters, ASTNode *body);
-	~FunctionNode() { delete returnType; delete name; delete parameters; delete body; }
+	FunctionNode(IdentifierNode *name, TypeNode *returnType, ParameterListNode *parameters, CompoundStatementNode *body);
+	~FunctionNode();
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	ASTNode *returnType;
-	ASTNode *name;
-	ASTNode *parameters;
-	ASTNode *body;
+	TypeNode *returnType;
+	IdentifierNode *name;
+	ParameterListNode *parameters;
+	CompoundStatementNode *body;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -24,14 +26,15 @@ class ParameterListNode : public ASTNode {
 
 public:
 	ParameterListNode() : ASTNode(), parameters() {}
-	~ParameterListNode() {
-		for(auto param : parameters) delete param;
-	}
+	~ParameterListNode();
 
-	void AppendParameter(ASTNode *param);
+	void AppendParameter(DeclarationNode *param);
+	void GetParameterTypes(std::vector<Type> &types);
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	std::vector<ASTNode*> parameters;
+	std::vector<DeclarationNode*> parameters;
 
 	virtual void PrintContentInLevel(int level) const override;
 

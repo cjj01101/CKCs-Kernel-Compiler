@@ -20,13 +20,15 @@
     float floatNum;
     char str[MAXVARLEN];
     ASTNode *node;
+    TypeNode *type;
+    IdentifierNode *identifier;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
     struct {
-        ASTNode *type;
-        ASTNode *name;
+        TypeNode *type;
+        IdentifierNode *name;
     } declarator;
 }
 
@@ -42,15 +44,17 @@
 %token IF ELSE WHILE FOR RETURN
 
 %type <node> externdef function item declaration statement 
-%type <node> compoundstmt exprstmt ctrlstmt jumpstmt initstmt
+%type <node> exprstmt ctrlstmt jumpstmt initstmt
 %type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr
-%type <node> factor constant identifier type
+%type <node> factor constant
 
 %type <unit> program
-%type <compound> items
+%type <compound> compoundstmt items
 %type <parameters> parameters
 %type <arguments> arguments
 %type <declarator> declarator
+%type <identifier> identifier
+%type <type> type
 
 %nonassoc IFX
 %nonassoc ELSE

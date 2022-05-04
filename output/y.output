@@ -168,16 +168,16 @@ Nonterminals, with rules where they appear
     declarator <declarator> (45)
         on left: 12
         on right: 5 6 7 10 11
-    type <node> (46)
+    type <type> (46)
         on left: 13 14
         on right: 12
-    identifier <node> (47)
+    identifier <identifier> (47)
         on left: 15
         on right: 12 27 54 57
     statement <node> (48)
         on left: 16 17 18 19
         on right: 24 65 66 67 68 69
-    compoundstmt <node> (49)
+    compoundstmt <compound> (49)
         on left: 20
         on right: 5 16
     items <compound> (50)

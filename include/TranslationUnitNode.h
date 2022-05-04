@@ -12,6 +12,8 @@ public:
 
 	void AppendDefinition(ASTNode *def);
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	std::vector<ASTNode*> definitions;
 

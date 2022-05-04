@@ -1,4 +1,6 @@
 int a;
+int b;
+int c;
 float f = 6.247;
 int foo(int b, float c) {
   int x = b*b;

@@ -1,15 +1,6 @@
 %{
     #include <stdio.h>
     #include "common.h"
-    
-    /* FORWARD DECLARATION */
-    class ASTNode;
-    class CompoundStatementNode;
-    class ParameterListNode;
-    class ArgumentListNode;
-    class TranslationUnitNode;
-    /* FORWARD DECLARATION */
-
     #include "y.tab.h"
 %}
 

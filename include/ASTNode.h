@@ -1,7 +1,8 @@
 #ifndef _ASTNODE_H_
 #define _ASTNODE_H_
 
-#include <assert.h>
+#include <string>
+#include "SymbolTable.h"
 #include "common.h"
 
 #define PRINT_CHILD_WITH_HINT(child, hint) \
@@ -11,11 +12,14 @@
 		child->PrintInLevel(level + 1); \
 	} while(0)
 
+#define NOT_NULL(node) \
+	(node != nullptr)
+
 #define NOT_NULL_OF_TYPE(node, type) \
 	(dynamic_cast<type>(node) != nullptr)
 
 #define NULLABLE_OF_TYPE(node, type) \
-	(node == nullptr || dynamic_cast<type>(node) != nullptr)
+	(node == nullptr || NOT_NULL_OF_TYPE(node, type))
 
 class ASTNode {
 
@@ -24,10 +28,24 @@ public:
 	virtual ~ASTNode() {}
 
 	void PrintInLevel(int level) const;
+	virtual void AnalyzeSemantic(SymbolTable *intab) {}
 
 protected:
 	
 	virtual void PrintContentInLevel(int level) const = 0;
+
+};
+
+class ASTException {
+
+public:
+	ASTException(const std::string &message) : message(message) {}
+	~ASTException() {}
+
+	void PrintMessage() const;
+
+private:
+	std::string message;
 
 };
 

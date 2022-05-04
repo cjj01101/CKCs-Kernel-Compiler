@@ -10,6 +10,16 @@ public:
 	~AbstractSyntaxTree() { delete root; }
 
 	void Print() { if(root) root->PrintInLevel(0); }
+	void AnalyzeSemantic() {
+		if(root) {
+			try {
+				SymbolTable symtab;
+				root->AnalyzeSemantic(&symtab);
+			} catch (ASTException &e) {
+				e.PrintMessage();
+			}
+		}
+	}
 
 private:
 	ASTNode *root;

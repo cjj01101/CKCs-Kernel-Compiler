@@ -1,21 +1,42 @@
+#include <assert.h>
 #include <stdio.h>
 #include "DeclarationNode.h"
 #include "StatementNode.h"
 #include "ExpressionNode.h"
 
-/*        CONSTRUCT FUNCTION        */
+/*      (DE)CONSTRUCT FUNCTION      */
 
-DeclarationNode::DeclarationNode(ASTNode *name, ASTNode *type, ASTNode *init)
+DeclarationNode::DeclarationNode(IdentifierNode *name, TypeNode *type, ASTNode *init)
 	: ASTNode(), name(name), type(type), initValue(init)
 {
-	assert(NOT_NULL_OF_TYPE(name, IdentifierNode*));
-	assert(NOT_NULL_OF_TYPE(type, TypeNode*));
+	assert(NOT_NULL(name));
+	assert(NOT_NULL(type));
 	assert(NULLABLE_OF_TYPE(init, ExpressionNode*));
 }
 
-/*      CONSTRUCT FUNCTION END      */
+DeclarationNode::~DeclarationNode() {
+	delete type;
+	delete name;
+	delete initValue;
+}
 
-/*         PRINT FUNCTION         */
+/*    (DE)CONSTRUCT FUNCTION END    */
+
+/*         SEMANTIC ANALYZE         */
+
+void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	std::string sym = std::string(name->GetName());
+	if(intab->HasSymbol(sym)) {
+		throw ASTException("Redeclaration of symbol '" + sym + "'.");
+	}
+	
+	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::variable, type->GetType()));
+}
+
+/*       SEMANTIC ANALYZE END       */
+
+/*          PRINT FUNCTION          */
 
 void DeclarationNode::PrintContentInLevel(int level) const {
 	printf("Declaration\n");

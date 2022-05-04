@@ -570,14 +570,14 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    60,    60,    61,    64,    65,    68,    71,    72,    73,
-      74,    77,    78,    81,    84,    85,    88,    91,    92,    93,
-      94,    97,   100,   101,   104,   105,   108,   109,   112,   113,
-     116,   117,   120,   121,   124,   125,   128,   129,   132,   133,
-     136,   137,   138,   141,   142,   143,   144,   145,   148,   149,
-     150,   153,   154,   155,   156,   159,   160,   161,   162,   163,
-     164,   167,   168,   171,   172,   173,   176,   177,   179,   180,
-     181,   184,   185,   188
+       0,    64,    64,    65,    68,    69,    72,    75,    76,    77,
+      78,    81,    82,    85,    88,    89,    92,    95,    96,    97,
+      98,   101,   104,   105,   108,   109,   112,   113,   116,   117,
+     120,   121,   124,   125,   128,   129,   132,   133,   136,   137,
+     140,   141,   142,   145,   146,   147,   148,   149,   152,   153,
+     154,   157,   158,   159,   160,   163,   164,   165,   166,   167,
+     168,   171,   172,   175,   176,   177,   180,   181,   183,   184,
+     185,   188,   189,   192
 };
 #endif
 
@@ -1229,433 +1229,433 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: program externdef  */
-#line 60 "./bison/parser.y"
+#line 64 "./bison/parser.y"
                                     { (yyval.unit) = (yyvsp[-1].unit); (yyval.unit)->AppendDefinition((yyvsp[0].node)); }
 #line 1235 "./src/y.tab.c"
     break;
 
   case 3: /* program: %empty  */
-#line 61 "./bison/parser.y"
+#line 65 "./bison/parser.y"
                               { (yyval.unit) = new TranslationUnitNode(); root = (yyval.unit); }
 #line 1241 "./src/y.tab.c"
     break;
 
   case 4: /* externdef: function  */
-#line 64 "./bison/parser.y"
+#line 68 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1247 "./src/y.tab.c"
     break;
 
   case 5: /* externdef: declaration  */
-#line 65 "./bison/parser.y"
+#line 69 "./bison/parser.y"
                               { (yyval.node) = (yyvsp[0].node); }
 #line 1253 "./src/y.tab.c"
     break;
 
   case 6: /* function: declarator LP parameters RP compoundstmt  */
-#line 68 "./bison/parser.y"
-                                                           { (yyval.node) = new FunctionNode((yyvsp[-4].declarator).name, (yyvsp[-4].declarator).type, (yyvsp[-2].parameters), (yyvsp[0].node)); }
+#line 72 "./bison/parser.y"
+                                                           { (yyval.node) = new FunctionNode((yyvsp[-4].declarator).name, (yyvsp[-4].declarator).type, (yyvsp[-2].parameters), (yyvsp[0].compound)); }
 #line 1259 "./src/y.tab.c"
     break;
 
   case 7: /* parameters: parameters COMMA declarator  */
-#line 71 "./bison/parser.y"
+#line 75 "./bison/parser.y"
                                               { (yyval.parameters) = (yyvsp[-2].parameters); (yyvsp[-2].parameters)->AppendParameter(new DeclarationNode((yyvsp[0].declarator).name, (yyvsp[0].declarator).type)); }
 #line 1265 "./src/y.tab.c"
     break;
 
   case 8: /* parameters: declarator  */
-#line 72 "./bison/parser.y"
+#line 76 "./bison/parser.y"
                              { (yyval.parameters) = new ParameterListNode(); (yyval.parameters)->AppendParameter(new DeclarationNode((yyvsp[0].declarator).name, (yyvsp[0].declarator).type)); }
 #line 1271 "./src/y.tab.c"
     break;
 
   case 9: /* parameters: TYPE_VOID  */
-#line 73 "./bison/parser.y"
+#line 77 "./bison/parser.y"
                             { (yyval.parameters) = new ParameterListNode(); }
 #line 1277 "./src/y.tab.c"
     break;
 
   case 10: /* parameters: %empty  */
-#line 74 "./bison/parser.y"
+#line 78 "./bison/parser.y"
                               { (yyval.parameters) = new ParameterListNode(); }
 #line 1283 "./src/y.tab.c"
     break;
 
   case 11: /* declaration: declarator SEM  */
-#line 77 "./bison/parser.y"
+#line 81 "./bison/parser.y"
                                  { (yyval.node) = new DeclarationNode((yyvsp[-1].declarator).name, (yyvsp[-1].declarator).type); }
 #line 1289 "./src/y.tab.c"
     break;
 
   case 12: /* declaration: declarator OP_ASSIGN expr SEM  */
-#line 78 "./bison/parser.y"
+#line 82 "./bison/parser.y"
                                                 { (yyval.node) = new DeclarationNode((yyvsp[-3].declarator).name, (yyvsp[-3].declarator).type, (yyvsp[-1].node)); }
 #line 1295 "./src/y.tab.c"
     break;
 
   case 13: /* declarator: type identifier  */
-#line 81 "./bison/parser.y"
-                                  { (yyval.declarator) = { (yyvsp[-1].node), (yyvsp[0].node) }; }
+#line 85 "./bison/parser.y"
+                                  { (yyval.declarator) = { (yyvsp[-1].type), (yyvsp[0].identifier) }; }
 #line 1301 "./src/y.tab.c"
     break;
 
   case 14: /* type: TYPE_INT  */
-#line 84 "./bison/parser.y"
-                           { (yyval.node) = new TypeNode(Type::INTEGER); }
+#line 88 "./bison/parser.y"
+                           { (yyval.type) = new TypeNode(Type::INTEGER); }
 #line 1307 "./src/y.tab.c"
     break;
 
   case 15: /* type: TYPE_FLOAT  */
-#line 85 "./bison/parser.y"
-                             { (yyval.node) = new TypeNode(Type::FLOAT); }
+#line 89 "./bison/parser.y"
+                             { (yyval.type) = new TypeNode(Type::FLOAT); }
 #line 1313 "./src/y.tab.c"
     break;
 
   case 16: /* identifier: ID  */
-#line 88 "./bison/parser.y"
-                     { (yyval.node) = new IdentifierNode((yyvsp[0].str)); }
+#line 92 "./bison/parser.y"
+                     { (yyval.identifier) = new IdentifierNode((yyvsp[0].str)); }
 #line 1319 "./src/y.tab.c"
     break;
 
   case 17: /* statement: compoundstmt  */
-#line 91 "./bison/parser.y"
-                               { (yyval.node) = (yyvsp[0].node); }
+#line 95 "./bison/parser.y"
+                               { (yyval.node) = (yyvsp[0].compound); }
 #line 1325 "./src/y.tab.c"
     break;
 
   case 18: /* statement: exprstmt  */
-#line 92 "./bison/parser.y"
+#line 96 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1331 "./src/y.tab.c"
     break;
 
   case 19: /* statement: ctrlstmt  */
-#line 93 "./bison/parser.y"
+#line 97 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1337 "./src/y.tab.c"
     break;
 
   case 20: /* statement: jumpstmt  */
-#line 94 "./bison/parser.y"
+#line 98 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1343 "./src/y.tab.c"
     break;
 
   case 21: /* compoundstmt: LBR items RBR  */
-#line 97 "./bison/parser.y"
-                                { (yyval.node) = (yyvsp[-1].compound); }
+#line 101 "./bison/parser.y"
+                                { (yyval.compound) = (yyvsp[-1].compound); }
 #line 1349 "./src/y.tab.c"
     break;
 
   case 22: /* items: items item  */
-#line 100 "./bison/parser.y"
+#line 104 "./bison/parser.y"
                              { (yyval.compound) = (yyvsp[-1].compound); (yyval.compound)->AppendStatement((yyvsp[0].node)); }
 #line 1355 "./src/y.tab.c"
     break;
 
   case 23: /* items: %empty  */
-#line 101 "./bison/parser.y"
+#line 105 "./bison/parser.y"
                               { (yyval.compound) = new CompoundStatementNode(); }
 #line 1361 "./src/y.tab.c"
     break;
 
   case 24: /* item: declaration  */
-#line 104 "./bison/parser.y"
+#line 108 "./bison/parser.y"
                               { (yyval.node) = (yyvsp[0].node); }
 #line 1367 "./src/y.tab.c"
     break;
 
   case 25: /* item: statement  */
-#line 105 "./bison/parser.y"
+#line 109 "./bison/parser.y"
                             { (yyval.node) = (yyvsp[0].node); }
 #line 1373 "./src/y.tab.c"
     break;
 
   case 26: /* exprstmt: expr SEM  */
-#line 108 "./bison/parser.y"
+#line 112 "./bison/parser.y"
                            { (yyval.node) = new ExpressionStatementNode((yyvsp[-1].node)); }
 #line 1379 "./src/y.tab.c"
     break;
 
   case 27: /* exprstmt: SEM  */
-#line 109 "./bison/parser.y"
+#line 113 "./bison/parser.y"
                        { (yyval.node) = new ExpressionStatementNode(); }
 #line 1385 "./src/y.tab.c"
     break;
 
   case 28: /* expr: identifier OP_ASSIGN expr  */
-#line 112 "./bison/parser.y"
-                                            { (yyval.node) = new AssignOpNode((yyvsp[-2].node), (yyvsp[0].node)); }
+#line 116 "./bison/parser.y"
+                                            { (yyval.node) = new AssignOpNode((yyvsp[-2].identifier), (yyvsp[0].node)); }
 #line 1391 "./src/y.tab.c"
     break;
 
   case 29: /* expr: logorexpr  */
-#line 113 "./bison/parser.y"
+#line 117 "./bison/parser.y"
                             { (yyval.node) = (yyvsp[0].node); }
 #line 1397 "./src/y.tab.c"
     break;
 
   case 30: /* logorexpr: logorexpr OP_LOGOR logandexpr  */
-#line 116 "./bison/parser.y"
+#line 120 "./bison/parser.y"
                                                 { (yyval.node) = new BinaryOpNode(Operator::LOGOR, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1403 "./src/y.tab.c"
     break;
 
   case 31: /* logorexpr: logandexpr  */
-#line 117 "./bison/parser.y"
+#line 121 "./bison/parser.y"
                              { (yyval.node) = (yyvsp[0].node); }
 #line 1409 "./src/y.tab.c"
     break;
 
   case 32: /* logandexpr: logandexpr OP_LOGAND orexpr  */
-#line 120 "./bison/parser.y"
+#line 124 "./bison/parser.y"
                                               { (yyval.node) = new BinaryOpNode(Operator::LOGAND, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1415 "./src/y.tab.c"
     break;
 
   case 33: /* logandexpr: orexpr  */
-#line 121 "./bison/parser.y"
+#line 125 "./bison/parser.y"
                          { (yyval.node) = (yyvsp[0].node); }
 #line 1421 "./src/y.tab.c"
     break;
 
   case 34: /* orexpr: orexpr OP_OR xorexpr  */
-#line 124 "./bison/parser.y"
+#line 128 "./bison/parser.y"
                                        { (yyval.node) = new BinaryOpNode(Operator::OR, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1427 "./src/y.tab.c"
     break;
 
   case 35: /* orexpr: xorexpr  */
-#line 125 "./bison/parser.y"
+#line 129 "./bison/parser.y"
                           { (yyval.node) = (yyvsp[0].node); }
 #line 1433 "./src/y.tab.c"
     break;
 
   case 36: /* xorexpr: xorexpr OP_XOR andexpr  */
-#line 128 "./bison/parser.y"
+#line 132 "./bison/parser.y"
                                          { (yyval.node) = new BinaryOpNode(Operator::XOR, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1439 "./src/y.tab.c"
     break;
 
   case 37: /* xorexpr: andexpr  */
-#line 129 "./bison/parser.y"
+#line 133 "./bison/parser.y"
                           { (yyval.node) = (yyvsp[0].node); }
 #line 1445 "./src/y.tab.c"
     break;
 
   case 38: /* andexpr: andexpr OP_AND ecmprexpr  */
-#line 132 "./bison/parser.y"
+#line 136 "./bison/parser.y"
                                            { (yyval.node) = new BinaryOpNode(Operator::AND, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1451 "./src/y.tab.c"
     break;
 
   case 39: /* andexpr: ecmprexpr  */
-#line 133 "./bison/parser.y"
+#line 137 "./bison/parser.y"
                             { (yyval.node) = (yyvsp[0].node); }
 #line 1457 "./src/y.tab.c"
     break;
 
   case 40: /* ecmprexpr: ecmprexpr OP_EQ cmprexpr  */
-#line 136 "./bison/parser.y"
+#line 140 "./bison/parser.y"
                                            { (yyval.node) = new BinaryOpNode(Operator::EQ, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1463 "./src/y.tab.c"
     break;
 
   case 41: /* ecmprexpr: ecmprexpr OP_NEQ cmprexpr  */
-#line 137 "./bison/parser.y"
+#line 141 "./bison/parser.y"
                                             { (yyval.node) = new BinaryOpNode(Operator::NEQ, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1469 "./src/y.tab.c"
     break;
 
   case 42: /* ecmprexpr: cmprexpr  */
-#line 138 "./bison/parser.y"
+#line 142 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1475 "./src/y.tab.c"
     break;
 
   case 43: /* cmprexpr: cmprexpr OP_GT addexpr  */
-#line 141 "./bison/parser.y"
+#line 145 "./bison/parser.y"
                                          { (yyval.node) = new BinaryOpNode(Operator::GT, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1481 "./src/y.tab.c"
     break;
 
   case 44: /* cmprexpr: cmprexpr OP_LT addexpr  */
-#line 142 "./bison/parser.y"
+#line 146 "./bison/parser.y"
                                          { (yyval.node) = new BinaryOpNode(Operator::LT, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1487 "./src/y.tab.c"
     break;
 
   case 45: /* cmprexpr: cmprexpr OP_GTE addexpr  */
-#line 143 "./bison/parser.y"
+#line 147 "./bison/parser.y"
                                           { (yyval.node) = new BinaryOpNode(Operator::GTE, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1493 "./src/y.tab.c"
     break;
 
   case 46: /* cmprexpr: cmprexpr OP_LTE addexpr  */
-#line 144 "./bison/parser.y"
+#line 148 "./bison/parser.y"
                                           { (yyval.node) = new BinaryOpNode(Operator::LTE, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1499 "./src/y.tab.c"
     break;
 
   case 47: /* cmprexpr: addexpr  */
-#line 145 "./bison/parser.y"
+#line 149 "./bison/parser.y"
                           { (yyval.node) = (yyvsp[0].node); }
 #line 1505 "./src/y.tab.c"
     break;
 
   case 48: /* addexpr: addexpr OP_ADD mulexpr  */
-#line 148 "./bison/parser.y"
+#line 152 "./bison/parser.y"
                                          { (yyval.node) = new BinaryOpNode(Operator::ADD, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1511 "./src/y.tab.c"
     break;
 
   case 49: /* addexpr: addexpr OP_SUB mulexpr  */
-#line 149 "./bison/parser.y"
+#line 153 "./bison/parser.y"
                                          { (yyval.node) = new BinaryOpNode(Operator::SUB, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1517 "./src/y.tab.c"
     break;
 
   case 50: /* addexpr: mulexpr  */
-#line 150 "./bison/parser.y"
+#line 154 "./bison/parser.y"
                           { (yyval.node) = (yyvsp[0].node); }
 #line 1523 "./src/y.tab.c"
     break;
 
   case 51: /* mulexpr: mulexpr OP_MUL factor  */
-#line 153 "./bison/parser.y"
+#line 157 "./bison/parser.y"
                                         { (yyval.node) = new BinaryOpNode(Operator::MUL, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1529 "./src/y.tab.c"
     break;
 
   case 52: /* mulexpr: mulexpr OP_DIV factor  */
-#line 154 "./bison/parser.y"
+#line 158 "./bison/parser.y"
                                         { (yyval.node) = new BinaryOpNode(Operator::DIV, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1535 "./src/y.tab.c"
     break;
 
   case 53: /* mulexpr: mulexpr OP_MOD factor  */
-#line 155 "./bison/parser.y"
+#line 159 "./bison/parser.y"
                                         { (yyval.node) = new BinaryOpNode(Operator::MOD, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1541 "./src/y.tab.c"
     break;
 
   case 54: /* mulexpr: factor  */
-#line 156 "./bison/parser.y"
+#line 160 "./bison/parser.y"
                          { (yyval.node) = (yyvsp[0].node); }
 #line 1547 "./src/y.tab.c"
     break;
 
   case 55: /* factor: identifier  */
-#line 159 "./bison/parser.y"
-                             { (yyval.node) = (yyvsp[0].node); }
+#line 163 "./bison/parser.y"
+                             { (yyval.node) = (yyvsp[0].identifier); }
 #line 1553 "./src/y.tab.c"
     break;
 
   case 56: /* factor: constant  */
-#line 160 "./bison/parser.y"
+#line 164 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1559 "./src/y.tab.c"
     break;
 
   case 57: /* factor: LP expr RP  */
-#line 161 "./bison/parser.y"
+#line 165 "./bison/parser.y"
                              { (yyval.node) = (yyvsp[-1].node); }
 #line 1565 "./src/y.tab.c"
     break;
 
   case 58: /* factor: identifier LP arguments RP  */
-#line 162 "./bison/parser.y"
-                                             { (yyval.node) = new FunctionCallNode((yyvsp[-3].node), (yyvsp[-1].arguments)); }
+#line 166 "./bison/parser.y"
+                                             { (yyval.node) = new FunctionCallNode((yyvsp[-3].identifier), (yyvsp[-1].arguments)); }
 #line 1571 "./src/y.tab.c"
     break;
 
   case 59: /* factor: OP_SUB factor  */
-#line 163 "./bison/parser.y"
+#line 167 "./bison/parser.y"
                                 { (yyval.node) = new BinaryOpNode(Operator::SUB, new IntegerNode(0), (yyvsp[0].node)); }
 #line 1577 "./src/y.tab.c"
     break;
 
   case 60: /* factor: OP_NOT factor  */
-#line 164 "./bison/parser.y"
+#line 168 "./bison/parser.y"
                                 { (yyval.node) = new BinaryOpNode(Operator::XOR, new IntegerNode(0), (yyvsp[0].node)); }
 #line 1583 "./src/y.tab.c"
     break;
 
   case 61: /* constant: NUM_INT  */
-#line 167 "./bison/parser.y"
+#line 171 "./bison/parser.y"
                           { (yyval.node) = new IntegerNode((yyvsp[0].intNum)); }
 #line 1589 "./src/y.tab.c"
     break;
 
   case 62: /* constant: NUM_FLOAT  */
-#line 168 "./bison/parser.y"
+#line 172 "./bison/parser.y"
                             { (yyval.node) = new FloatNode((yyvsp[0].floatNum)); }
 #line 1595 "./src/y.tab.c"
     break;
 
   case 63: /* arguments: arguments COMMA expr  */
-#line 171 "./bison/parser.y"
+#line 175 "./bison/parser.y"
                                        { (yyval.arguments) = (yyvsp[-2].arguments); (yyvsp[-2].arguments)->AppendArgument((yyvsp[0].node)); }
 #line 1601 "./src/y.tab.c"
     break;
 
   case 64: /* arguments: expr  */
-#line 172 "./bison/parser.y"
+#line 176 "./bison/parser.y"
                        { (yyval.arguments) = new ArgumentListNode(); (yyval.arguments)->AppendArgument((yyvsp[0].node)); }
 #line 1607 "./src/y.tab.c"
     break;
 
   case 65: /* arguments: %empty  */
-#line 173 "./bison/parser.y"
+#line 177 "./bison/parser.y"
                               { (yyval.arguments) = new ArgumentListNode(); }
 #line 1613 "./src/y.tab.c"
     break;
 
   case 66: /* ctrlstmt: IF LP expr RP statement  */
-#line 176 "./bison/parser.y"
+#line 180 "./bison/parser.y"
                                                     { (yyval.node) = new IfStatementNode((yyvsp[-2].node), (yyvsp[0].node), new ExpressionStatementNode()); }
 #line 1619 "./src/y.tab.c"
     break;
 
   case 67: /* ctrlstmt: IF LP expr RP statement ELSE statement  */
-#line 177 "./bison/parser.y"
+#line 181 "./bison/parser.y"
                                                          { (yyval.node) = new IfStatementNode((yyvsp[-4].node), (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1625 "./src/y.tab.c"
     break;
 
   case 68: /* ctrlstmt: WHILE LP expr RP statement  */
-#line 179 "./bison/parser.y"
+#line 183 "./bison/parser.y"
                                              { (yyval.node) = new WhileStatementNode((yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1631 "./src/y.tab.c"
     break;
 
   case 69: /* ctrlstmt: FOR LP initstmt exprstmt expr RP statement  */
-#line 180 "./bison/parser.y"
+#line 184 "./bison/parser.y"
                                                              { (yyval.node) = new ForStatementNode((yyvsp[-4].node), (yyvsp[-3].node), (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1637 "./src/y.tab.c"
     break;
 
   case 70: /* ctrlstmt: FOR LP initstmt exprstmt RP statement  */
-#line 181 "./bison/parser.y"
+#line 185 "./bison/parser.y"
                                                         { (yyval.node) = new ForStatementNode((yyvsp[-3].node), (yyvsp[-2].node), new EmptyExpressionNode() ,(yyvsp[0].node)); }
 #line 1643 "./src/y.tab.c"
     break;
 
   case 71: /* initstmt: exprstmt  */
-#line 184 "./bison/parser.y"
+#line 188 "./bison/parser.y"
                            { (yyval.node) = (yyvsp[0].node); }
 #line 1649 "./src/y.tab.c"
     break;
 
   case 72: /* initstmt: declaration  */
-#line 185 "./bison/parser.y"
+#line 189 "./bison/parser.y"
                               { (yyval.node) = (yyvsp[0].node); }
 #line 1655 "./src/y.tab.c"
     break;
 
   case 73: /* jumpstmt: RETURN exprstmt  */
-#line 188 "./bison/parser.y"
+#line 192 "./bison/parser.y"
                                   { (yyval.node) = new ReturnStatementNode((yyvsp[0].node)); }
 #line 1661 "./src/y.tab.c"
     break;
@@ -1854,7 +1854,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 191 "./bison/parser.y"
+#line 195 "./bison/parser.y"
 
 
 void yyerror(char *e) {

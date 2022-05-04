@@ -1,6 +1,17 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+/* FORWARD DECLARATION */
+class ASTNode;
+class TypeNode;
+class IdentifierNode;
+class ParameterListNode;
+class ArgumentListNode;
+class CompoundStatementNode;
+class DeclarationNode;
+class TranslationUnitNode;
+/* FORWARD DECLARATION */
+
 #define MAXVARLEN 64
 
 #define TYPES \

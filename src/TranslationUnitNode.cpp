@@ -1,9 +1,20 @@
+#include <assert.h>
 #include <stdio.h>
 #include "TranslationUnitNode.h"
 #include "DeclarationNode.h"
 #include "FunctionNode.h"
 
-/*         PRINT FUNCTION         */
+/*         SEMANTIC ANALYZE         */
+
+void TranslationUnitNode::AnalyzeSemantic(SymbolTable *intab) {
+	for(auto def : definitions) {
+		def->AnalyzeSemantic(intab);
+	}
+}
+
+/*       SEMANTIC ANALYZE END       */
+
+/*          PRINT FUNCTION          */
 
 void TranslationUnitNode::PrintContentInLevel(int level) const {
 	printf("[Root] Translation Unit Starts Here!\n");

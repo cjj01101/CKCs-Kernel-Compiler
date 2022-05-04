@@ -11,4 +11,8 @@ void ASTNode::PrintInLevel(int level) const {
 	PrintContentInLevel(level);
 }
 
+void ASTException::PrintMessage() const {
+	printf("%s\n", message.c_str());
+}
+
 /*        PRINT FUNCTION END        */

@@ -9,6 +9,8 @@ public:
 	BinaryOpNode(Operator op, ASTNode *left, ASTNode *right);
 	~BinaryOpNode() { delete leftOperand; delete rightOperand; }
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	ASTNode *leftOperand;
 	ASTNode *rightOperand;
@@ -23,6 +25,8 @@ class AssignOpNode : public ExpressionNode {
 public:
 	AssignOpNode(ASTNode *left, ASTNode *right);
 	~AssignOpNode() { delete leftValue; delete rightValue; }
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	ASTNode *leftValue;

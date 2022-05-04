@@ -20,6 +20,22 @@ AssignOpNode::AssignOpNode(ASTNode *left, ASTNode *right)
 
 /*      CONSTRUCT FUNCTION END      */
 
+/*         SEMANTIC ANALYZE         */
+
+void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
+
+	leftOperand->AnalyzeSemantic(intab);
+	rightOperand->AnalyzeSemantic(intab);
+}
+
+void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	leftValue->AnalyzeSemantic(intab);
+	rightValue->AnalyzeSemantic(intab);
+}
+
+/*       SEMANTIC ANALYZE END       */
+
 /*         PRINT FUNCTION         */
 
 void BinaryOpNode::PrintContentInLevel(int level) const {

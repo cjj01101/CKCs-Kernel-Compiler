@@ -24,6 +24,10 @@ DeclarationNode::~DeclarationNode() {
 
 /*         SEMANTIC ANALYZE         */
 
+void TypeNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+}
+
 void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
 	
 	std::string sym = std::string(name->GetName());

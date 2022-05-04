@@ -16,6 +16,8 @@ public:
 
 	Type GetType() { return type; }
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	Type type;
 

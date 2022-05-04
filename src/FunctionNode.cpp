@@ -69,7 +69,17 @@ void FunctionNode::AnalyzeSemantic(SymbolTable *intab) {
 void ParameterListNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	for(auto param : parameters) param->AnalyzeSemantic(intab);
+}
 
+void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
+
+	name->AnalyzeSemantic(intab);
+	arguments->AnalyzeSemantic(intab);
+}
+
+void ArgumentListNode::AnalyzeSemantic(SymbolTable *intab) {
+
+	for(auto arg : arguments) arg->AnalyzeSemantic(intab);
 }
 
 /*       SEMANTIC ANALYZE END       */

@@ -46,6 +46,8 @@ public:
 	FunctionCallNode(ASTNode *name, ASTNode *arguments);
 	~FunctionCallNode() { delete name; delete arguments; }
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	ASTNode *name;
 	ASTNode *arguments;
@@ -63,6 +65,8 @@ public:
 	}
 
 	void AppendArgument(ASTNode *arg);
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	std::vector<ASTNode*> arguments;

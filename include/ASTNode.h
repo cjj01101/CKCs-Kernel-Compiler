@@ -28,7 +28,7 @@ public:
 	virtual ~ASTNode() {}
 
 	void PrintInLevel(int level) const;
-	virtual void AnalyzeSemantic(SymbolTable *intab) {}
+	virtual void AnalyzeSemantic(SymbolTable *intab) = 0;
 
 protected:
 	

@@ -1,9 +1,17 @@
 #include <stdio.h>
-#include "ValueNode.h"
+#include "ConstantNode.h"
 
 /*        CONSTRUCT FUNCTION        */
 
 /*      CONSTRUCT FUNCTION END      */
+
+/*         SEMANTIC ANALYZE         */
+
+void ConstantNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+}
+
+/*       SEMANTIC ANALYZE END       */
 
 /*         PRINT FUNCTION         */
 

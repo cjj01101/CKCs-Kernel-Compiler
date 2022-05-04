@@ -45,7 +45,52 @@ ReturnStatementNode::ReturnStatementNode(ASTNode *exprStmt)
 
 /*      CONSTRUCT FUNCTION END      */
 
-/*         PRINT FUNCTION         */
+/*         SEMANTIC ANALYZE         */
+
+void ExpressionStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	if(expression) expression->AnalyzeSemantic(intab);
+}
+
+void CompoundStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	SymbolTable symtab;
+	symtab.prev = intab;
+	for(auto item : items) item->AnalyzeSemantic(&symtab);
+}
+
+void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	condition->AnalyzeSemantic(intab);
+	thenStmt->AnalyzeSemantic(intab);
+	elseStmt->AnalyzeSemantic(intab);
+}
+
+void WhileStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	condition->AnalyzeSemantic(intab);
+	body->AnalyzeSemantic(intab);
+}
+
+void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	SymbolTable symtab;
+	symtab.prev = intab;
+
+	init->AnalyzeSemantic(&symtab);
+	condition->AnalyzeSemantic(&symtab);
+	loop->AnalyzeSemantic(&symtab);
+	body->AnalyzeSemantic(&symtab);
+}
+
+void ReturnStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+	
+	exprStmt->AnalyzeSemantic(intab);
+}
+
+/*       SEMANTIC ANALYZE END       */
+
+/*          PRINT FUNCTION          */
 
 void ExpressionStatementNode::PrintContentInLevel(int level) const {
 	if(expression == nullptr) {

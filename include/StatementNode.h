@@ -20,6 +20,8 @@ public:
 	ExpressionStatementNode(ASTNode *exp = nullptr);
 	~ExpressionStatementNode() { delete expression; }
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	ASTNode *expression;
 
@@ -37,6 +39,8 @@ public:
 
 	void AppendStatement(ASTNode *item);
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	std::vector<ASTNode*> items;
 
@@ -48,7 +52,9 @@ class IfStatementNode : public StatementNode {
 
 public:
 	IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt);
-	~IfStatementNode() { delete condition; delete thenStmt; delete thenStmt; }	
+	~IfStatementNode() { delete condition; delete thenStmt; delete thenStmt; }
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	ASTNode *condition;
@@ -65,6 +71,8 @@ public:
 	WhileStatementNode(ASTNode *condition, ASTNode *body);
 	~WhileStatementNode() { delete condition; delete body; }
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	ASTNode *condition;
 	ASTNode *body;
@@ -78,6 +86,8 @@ class ForStatementNode : public StatementNode {
 public:
 	ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body);
 	~ForStatementNode() { delete init; delete condition; delete loop; delete body; }
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	ASTNode *init;
@@ -94,6 +104,8 @@ class ReturnStatementNode : public StatementNode {
 public:
 	ReturnStatementNode(ASTNode *exp);
 	~ReturnStatementNode() { delete exprStmt; }
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	ASTNode *exprStmt;

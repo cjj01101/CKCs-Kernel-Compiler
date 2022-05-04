@@ -7,7 +7,7 @@
     #include "StatementNode.h"
     #include "OperatorNode.h"
     #include "ExpressionNode.h"
-    #include "ValueNode.h"
+    #include "ConstantNode.h"
 
     int yylex(void);
     void yyerror(char *);

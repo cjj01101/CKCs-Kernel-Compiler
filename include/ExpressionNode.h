@@ -21,6 +21,8 @@ public:
 	EmptyExpressionNode() : ExpressionNode() {}
 	~EmptyExpressionNode() {}
 
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+
 private:
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -33,6 +35,8 @@ public:
 	~IdentifierNode() {}
 
 	char *GetName() { return id; }
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	char id[MAXVARLEN];

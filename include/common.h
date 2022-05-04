@@ -15,7 +15,7 @@ class TranslationUnitNode;
 #define MAXVARLEN 64
 
 #define TYPES \
-	TYPE(INTEGER) TYPE(FLOAT)
+	TYPE(INTEGER) TYPE(FLOAT) TYPE(VOID)
 
 #define OPERATORS \
 	OP(LOGOR) OP(LOGAND) \

@@ -87,6 +87,7 @@
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
                 | TYPE_FLOAT { $$ = new TypeNode(Type::FLOAT); }
+                | TYPE_VOID { $$ = new TypeNode(Type::VOID); }
                 ;
 
      identifier : ID { $$ = new IdentifierNode($1); }

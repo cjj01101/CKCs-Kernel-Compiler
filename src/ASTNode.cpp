@@ -12,7 +12,7 @@ void ASTNode::PrintInLevel(int level) const {
 }
 
 void ASTException::PrintMessage() const {
-	printf("%s\n", message.c_str());
+	printf("ERROR: %s\n", message.c_str());
 }
 
 /*        PRINT FUNCTION END        */

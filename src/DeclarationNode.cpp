@@ -32,10 +32,15 @@ void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
 	
 	std::string sym = std::string(name->GetName());
 	if(intab->HasSymbol(sym)) {
-		throw ASTException("Redeclaration of symbol '" + sym + "'.");
+		throw ASTException("redeclaration of symbol '" + sym + "'.");
 	}
-	
-	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::variable, type->GetType()));
+
+	Type t = type->GetType();
+	if(t == Type::VOID) {
+		throw ASTException("variable or argument '" + sym + "' declared void.");
+	}
+
+	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::variable, t));
 }
 
 /*       SEMANTIC ANALYZE END       */

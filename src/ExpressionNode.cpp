@@ -16,21 +16,24 @@ IdentifierNode::IdentifierNode(char *name) : ExpressionNode() {
 /*         SEMANTIC ANALYZE         */
 
 void EmptyExpressionNode::AnalyzeSemantic(SymbolTable *intab) {
-	
+	valueType = Type::VOID;
 }
 
 void IdentifierNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	std::string sym = std::string(id);
-	if(intab->FindSymbolOccurrence(sym) == nullptr ) {
+	SymbolTable *occtab = intab->FindSymbolOccurrence(sym);
+	if(occtab == nullptr) {
 		throw ASTException("'" + sym + "' was not declared in this scope.");
+	} else {
+		valueType = occtab->entry.at(sym).type.type;
 	}
 	
 }
 
 /*       SEMANTIC ANALYZE END       */
 
-/*         PRINT FUNCTION         */
+/*          PRINT FUNCTION          */
 
 void EmptyExpressionNode::PrintContentInLevel(int level) const {
 	printf("Empty Expression\n");

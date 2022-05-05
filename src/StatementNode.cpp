@@ -3,38 +3,61 @@
 #include "ExpressionNode.h"
 #include "DeclarationNode.h"
 #include "StatementNode.h"
+#include "TypeNode.h"
 
-/*        CONSTRUCT FUNCTION        */
+/*      (DE)CONSTRUCT FUNCTION      */
 
-ExpressionStatementNode::ExpressionStatementNode(ASTNode *exp)
+ExpressionStatementNode::ExpressionStatementNode(ExpressionNode *exp)
 	: StatementNode(), expression(exp)
 {
-	assert(NULLABLE_OF_TYPE(exp, ExpressionNode*));
+	assert(NOT_NULL(exp));
 }
 
-IfStatementNode::IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt)
+ExpressionStatementNode::~ExpressionStatementNode() {
+	delete expression;
+}
+
+IfStatementNode::IfStatementNode(ExpressionNode *condition, StatementNode *thenStmt, StatementNode *elseStmt)
 	: StatementNode(), condition(condition), thenStmt(thenStmt), elseStmt(elseStmt)
 {
-	assert(NOT_NULL_OF_TYPE(condition, ExpressionNode*));
-	assert(NOT_NULL_OF_TYPE(thenStmt, StatementNode*));
-	assert(NOT_NULL_OF_TYPE(elseStmt, StatementNode*));
+	assert(NOT_NULL(condition));
+	assert(NOT_NULL(thenStmt));
+	assert(NOT_NULL(elseStmt));
 }
 
-WhileStatementNode::WhileStatementNode(ASTNode *condition, ASTNode *body)
+IfStatementNode::~IfStatementNode() {
+	delete condition;
+	delete thenStmt;
+	delete thenStmt;
+}
+
+WhileStatementNode::WhileStatementNode(ExpressionNode *condition, StatementNode *body)
 	: StatementNode(), condition(condition), body(body)
 {
-	assert(NOT_NULL_OF_TYPE(condition, ExpressionNode*));
-	assert(NOT_NULL_OF_TYPE(body, StatementNode*));
+	assert(NOT_NULL(condition));
+	assert(NOT_NULL(body));
 }
 
-ForStatementNode::ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body)
+WhileStatementNode::~WhileStatementNode() {
+	delete condition;
+	delete body;
+}
+
+ForStatementNode::ForStatementNode(ASTNode *init, ExpressionNode *cond, ExpressionNode *loop, StatementNode *body)
 	: StatementNode(), init(init), condition(cond), loop(loop), body(body)
 {
 	assert(NOT_NULL_OF_TYPE(init, ExpressionStatementNode*) || 
 		   NOT_NULL_OF_TYPE(init, DeclarationNode*));
-	assert(NOT_NULL_OF_TYPE(cond, ExpressionStatementNode*));
-	assert(NOT_NULL_OF_TYPE(loop, ExpressionNode*));
-	assert(NOT_NULL_OF_TYPE(body, StatementNode*));
+	assert(NOT_NULL(cond));
+	assert(NOT_NULL(loop));
+	assert(NOT_NULL(body));
+}
+
+ForStatementNode::~ForStatementNode() {
+	delete init;
+	delete condition;
+	delete loop;
+	delete body;
 }
 
 ReturnStatementNode::ReturnStatementNode(ASTNode *exprStmt)
@@ -43,13 +66,13 @@ ReturnStatementNode::ReturnStatementNode(ASTNode *exprStmt)
 	assert(NOT_NULL_OF_TYPE(exprStmt, ExpressionStatementNode*));
 }
 
-/*      CONSTRUCT FUNCTION END      */
+/*    (DE)CONSTRUCT FUNCTION END    */
 
 /*         SEMANTIC ANALYZE         */
 
 void ExpressionStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	
-	if(expression) expression->AnalyzeSemantic(intab);
+	expression->AnalyzeSemantic(intab);
 }
 
 void CompoundStatementNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -57,6 +80,7 @@ void CompoundStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	SymbolTable symtab;
 	symtab.prev = intab;
 	for(auto item : items) item->AnalyzeSemantic(&symtab);
+
 }
 
 void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -64,12 +88,26 @@ void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	condition->AnalyzeSemantic(intab);
 	thenStmt->AnalyzeSemantic(intab);
 	elseStmt->AnalyzeSemantic(intab);
+
+	/* Validate Condition Expression Type */
+	Type condType = condition->GetValueType();
+	if(!TypeNode::IsTypeCompatible(condType, Type::INTEGER)) {
+		throw ASTException("cannot convert '" + std::string(TypeNode::GetTypeName(condType)) + "' to 'BOOL'.");
+	}
+
 }
 
 void WhileStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	
 	condition->AnalyzeSemantic(intab);
 	body->AnalyzeSemantic(intab);
+
+	/* Validate Condition Expression Type */
+	Type condType = condition->GetValueType();
+	if(!TypeNode::IsTypeCompatible(condType, Type::INTEGER)) {
+		throw ASTException("cannot convert '" + std::string(TypeNode::GetTypeName(condType)) + "' to 'BOOL'.");
+	}
+
 }
 
 void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -81,6 +119,14 @@ void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	condition->AnalyzeSemantic(&symtab);
 	loop->AnalyzeSemantic(&symtab);
 	body->AnalyzeSemantic(&symtab);
+
+	/* Validate Condition Expression Type */
+	if(!NOT_NULL_OF_TYPE(condition, EmptyExpressionNode*)) {
+		Type condType = condition->GetValueType();
+		if(!TypeNode::IsTypeCompatible(condType, Type::INTEGER)) {
+			throw ASTException("cannot convert '" + std::string(TypeNode::GetTypeName(condType)) + "' to 'BOOL'.");
+		}
+	}
 }
 
 void ReturnStatementNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -93,7 +139,7 @@ void ReturnStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 /*          PRINT FUNCTION          */
 
 void ExpressionStatementNode::PrintContentInLevel(int level) const {
-	if(expression == nullptr) {
+	if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) {
 		printf("Empty Statement\n");
 	} else {
 		printf("Expression Statement\n");

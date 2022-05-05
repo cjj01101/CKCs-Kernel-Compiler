@@ -139,7 +139,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 18 "./bison/parser.y"
+#line 19 "./bison/parser.y"
 
     int intNum;
     float floatNum;
@@ -147,6 +147,8 @@ union YYSTYPE
     ASTNode *node;
     TypeNode *type;
     IdentifierNode *identifier;
+    ExpressionNode *expression;
+    StatementNode *statement;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
@@ -156,7 +158,7 @@ union YYSTYPE
         IdentifierNode *name;
     } declarator;
 
-#line 160 "./include/y.tab.h"
+#line 162 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

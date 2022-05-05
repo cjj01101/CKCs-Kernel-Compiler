@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "ASTNode.h"
 
-/*         PRINT FUNCTION         */
+/*          PRINT FUNCTION          */
 
 void ASTNode::PrintInLevel(int level) const {
 	for(int i = 0; i < level; i++) {

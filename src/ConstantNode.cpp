@@ -13,7 +13,7 @@ void ConstantNode::AnalyzeSemantic(SymbolTable *intab) {
 
 /*       SEMANTIC ANALYZE END       */
 
-/*         PRINT FUNCTION         */
+/*          PRINT FUNCTION          */
 
 void IntegerNode::PrintContentInLevel(int level) const {
 	printf("[int] %d\n", num);

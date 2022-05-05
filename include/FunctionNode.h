@@ -43,14 +43,14 @@ private:
 class FunctionCallNode : public ExpressionNode {
 
 public:
-	FunctionCallNode(ASTNode *name, ASTNode *arguments);
-	~FunctionCallNode() { delete name; delete arguments; }
+	FunctionCallNode(IdentifierNode *name, ArgumentListNode *arguments);
+	~FunctionCallNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	ASTNode *name;
-	ASTNode *arguments;
+	IdentifierNode *name;
+	ArgumentListNode *arguments;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -60,16 +60,15 @@ class ArgumentListNode : public ASTNode {
 
 public:
 	ArgumentListNode() : ASTNode(), arguments() {}
-	~ArgumentListNode() {
-		for(auto arg : arguments) delete arg;
-	}
+	~ArgumentListNode();
 
-	void AppendArgument(ASTNode *arg);
+	void AppendArgument(ExpressionNode *arg);
+	void GetArgumentTypes(std::vector<Type> &types);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	std::vector<ASTNode*> arguments;
+	std::vector<ExpressionNode*> arguments;
 
 	virtual void PrintContentInLevel(int level) const override;
 

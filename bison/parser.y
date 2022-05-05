@@ -8,6 +8,7 @@
     #include "OperatorNode.h"
     #include "ExpressionNode.h"
     #include "ConstantNode.h"
+    #include "TypeNode.h"
 
     int yylex(void);
     void yyerror(char *);
@@ -22,6 +23,8 @@
     ASTNode *node;
     TypeNode *type;
     IdentifierNode *identifier;
+    ExpressionNode *expression;
+    StatementNode *statement;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
@@ -43,13 +46,12 @@
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR RETURN
 
-%type <node> externdef function item declaration statement 
-%type <node> exprstmt ctrlstmt jumpstmt initstmt
-%type <node> expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr
-%type <node> factor constant
+%type <node> externdef function item inititem declaration
 
 %type <unit> program
 %type <compound> compoundstmt items
+%type <statement> statement exprstmt ctrlstmt jumpstmt
+%type <expression> optexpr expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr primaryexpr constant
 %type <parameters> parameters
 %type <arguments> arguments
 %type <declarator> declarator
@@ -110,8 +112,11 @@
                 | statement { $$ = $1; }
                 ;
 
-       exprstmt : expr SEM { $$ = new ExpressionStatementNode($1); }
-                | SEM  { $$ = new ExpressionStatementNode(); }
+       exprstmt : optexpr SEM { $$ = new ExpressionStatementNode($1); }
+                ;
+
+        optexpr : expr { $$ = $1; }
+                | /* empty */ { $$ = new EmptyExpressionNode(); }
                 ;
 
            expr : identifier OP_ASSIGN expr { $$ = new AssignOpNode($1, $3); }
@@ -155,18 +160,18 @@
                 | mulexpr { $$ = $1; }
                 ;
 
-        mulexpr : mulexpr OP_MUL factor { $$ = new BinaryOpNode(Operator::MUL, $1, $3); }
-                | mulexpr OP_DIV factor { $$ = new BinaryOpNode(Operator::DIV, $1, $3); }
-                | mulexpr OP_MOD factor { $$ = new BinaryOpNode(Operator::MOD, $1, $3); }
-                | factor { $$ = $1; }
+        mulexpr : mulexpr OP_MUL primaryexpr { $$ = new BinaryOpNode(Operator::MUL, $1, $3); }
+                | mulexpr OP_DIV primaryexpr { $$ = new BinaryOpNode(Operator::DIV, $1, $3); }
+                | mulexpr OP_MOD primaryexpr { $$ = new BinaryOpNode(Operator::MOD, $1, $3); }
+                | primaryexpr { $$ = $1; }
                 ;
 
-         factor : identifier { $$ = $1; }
+    primaryexpr : identifier { $$ = $1; }
                 | constant { $$ = $1; }
                 | LP expr RP { $$ = $2; }
                 | identifier LP arguments RP { $$ = new FunctionCallNode($1, $3); }
-                | OP_SUB factor { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
-                | OP_NOT factor { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
+                | OP_SUB primaryexpr { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
+                | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
                 ;
      
        constant : NUM_INT { $$ = new IntegerNode($1); }
@@ -178,15 +183,14 @@
                 | /* empty */ { $$ = new ArgumentListNode(); }
                 ;
 
-       ctrlstmt : IF LP expr RP statement %prec IFX { $$ = new IfStatementNode($3, $5, new ExpressionStatementNode()); }
+       ctrlstmt : IF LP expr RP statement %prec IFX { $$ = new IfStatementNode($3, $5, new ExpressionStatementNode(new EmptyExpressionNode())); }
                 | IF LP expr RP statement ELSE statement { $$ = new IfStatementNode($3, $5, $7); }
                 // | DO statement WHILE LP expr RP {  }
                 | WHILE LP expr RP statement { $$ = new WhileStatementNode($3, $5); }
-                | FOR LP initstmt exprstmt expr RP statement { $$ = new ForStatementNode($3, $4, $5, $7); }
-                | FOR LP initstmt exprstmt RP statement { $$ = new ForStatementNode($3, $4, new EmptyExpressionNode() ,$6); }
+                | FOR LP inititem optexpr SEM optexpr RP statement { $$ = new ForStatementNode($3, $4, $6, $8); }
                 ;
 
-       initstmt : exprstmt { $$ = $1; }
+       inititem : exprstmt { $$ = $1; }
                 | declaration { $$ = $1; }
                 ;
 

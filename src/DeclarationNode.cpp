@@ -3,15 +3,15 @@
 #include "DeclarationNode.h"
 #include "StatementNode.h"
 #include "ExpressionNode.h"
+#include "TypeNode.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
-DeclarationNode::DeclarationNode(IdentifierNode *name, TypeNode *type, ASTNode *init)
+DeclarationNode::DeclarationNode(IdentifierNode *name, TypeNode *type, ExpressionNode *init)
 	: ASTNode(), name(name), type(type), initValue(init)
 {
 	assert(NOT_NULL(name));
 	assert(NOT_NULL(type));
-	assert(NULLABLE_OF_TYPE(init, ExpressionNode*));
 }
 
 DeclarationNode::~DeclarationNode() {
@@ -24,13 +24,9 @@ DeclarationNode::~DeclarationNode() {
 
 /*         SEMANTIC ANALYZE         */
 
-void TypeNode::AnalyzeSemantic(SymbolTable *intab) {
-	
-}
-
 void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
-	
-	std::string sym = std::string(name->GetName());
+
+	std::string sym(name->GetName());
 	if(intab->HasSymbol(sym)) {
 		throw ASTException("redeclaration of symbol '" + sym + "'.");
 	}
@@ -40,7 +36,9 @@ void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
 		throw ASTException("variable or argument '" + sym + "' declared void.");
 	}
 
-	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::variable, t));
+	if(initValue) initValue->AnalyzeSemantic(intab);
+	
+	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::VARIABLE, t));
 }
 
 /*       SEMANTIC ANALYZE END       */
@@ -55,20 +53,12 @@ void DeclarationNode::PrintContentInLevel(int level) const {
 	if(initValue) PRINT_CHILD_WITH_HINT(initValue, "INIT VALUE");
 }
 
-void TypeNode::PrintContentInLevel(int level) const {
-
-	const static char *typeName[] = {
-		#define TYPE(type) #type,
-		TYPES
-		#undef TYPE
-	};
-
-	printf("%s\n", typeName[static_cast<int>(type)]);
-
-}
-
 /*        PRINT FUNCTION END        */
 
 /*        AUXILIARY FUNCTION        */
+
+Type DeclarationNode::GetType() {
+	return type->GetType();
+}
 
 /*      AUXILIARY FUNCTION END      */

@@ -1,4 +1,4 @@
-#ifndef _SYMBOL_TABLE_H_
+ #ifndef _SYMBOL_TABLE_H_
 #define _SYMBOL_TABLE_H_
 
 #include <unordered_map>
@@ -7,18 +7,18 @@
 #include "common.h"
 
 enum class SymbolKind {
-	function, argument, variable
+	FUNCTION, ARGUMENT, VARIABLE
 };
 
 struct SymbolType {
 
-	SymbolType(Type type) : type(type), argType() {}
-	SymbolType(Type type, const std::vector<Type> &argType) : type(type), argType(argType) { }
-	SymbolType(const SymbolType &rhs) : type(rhs.type), argType(rhs.argType) { }
+	SymbolType(Type type) : type(type), argTypes() {}
+	SymbolType(Type type, const std::vector<Type> &argTypes) : type(type), argTypes(argTypes) { }
+	SymbolType(const SymbolType &rhs) : type(rhs.type), argTypes(rhs.argTypes) { }
 	~SymbolType() {}
 
 	Type type;
-	std::vector<Type> argType; // Ignore if not function kind
+	std::vector<Type> argTypes; // Ignore if not function kind
 };
 
 struct SymbolTableEntry {

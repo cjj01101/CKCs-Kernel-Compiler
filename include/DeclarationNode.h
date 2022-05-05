@@ -8,37 +8,20 @@ typedef struct {
     IdentifierNode *name;
 } Declarator;
 
-class TypeNode : public ASTNode {
-
-public:
-	TypeNode(Type type) : ASTNode(), type(type) { }
-	~TypeNode() {}
-
-	Type GetType() { return type; }
-
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
-private:
-	Type type;
-
-	virtual void PrintContentInLevel(int level) const override;
-
-};
-
 class DeclarationNode : public ASTNode {
 
 public:
-	DeclarationNode(IdentifierNode *name, TypeNode *type, ASTNode *init = nullptr);
+	DeclarationNode(IdentifierNode *name, TypeNode *type, ExpressionNode *init = nullptr);
 	~DeclarationNode();
 
-	Type GetType() { return type->GetType(); }
+	Type GetType();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	TypeNode *type;
 	IdentifierNode *name;
-	ASTNode *initValue;
+	ExpressionNode *initValue;
 
 	virtual void PrintContentInLevel(int level) const override;
 

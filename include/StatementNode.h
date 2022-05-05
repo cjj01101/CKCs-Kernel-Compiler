@@ -17,13 +17,13 @@ protected:
 class ExpressionStatementNode : public StatementNode {
 
 public:
-	ExpressionStatementNode(ASTNode *exp = nullptr);
-	~ExpressionStatementNode() { delete expression; }
+	ExpressionStatementNode(ExpressionNode *exp);
+	~ExpressionStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	ASTNode *expression;
+	ExpressionNode *expression;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -51,13 +51,13 @@ private:
 class IfStatementNode : public StatementNode {
 
 public:
-	IfStatementNode(ASTNode *condition, ASTNode *thenStmt, ASTNode *elseStmt);
-	~IfStatementNode() { delete condition; delete thenStmt; delete thenStmt; }
+	IfStatementNode(ExpressionNode *condition, StatementNode *thenStmt, StatementNode *elseStmt);
+	~IfStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	ASTNode *condition;
+	ExpressionNode *condition;
 	ASTNode *thenStmt;
 	ASTNode *elseStmt;
 
@@ -68,13 +68,13 @@ private:
 class WhileStatementNode : public StatementNode {
 
 public:
-	WhileStatementNode(ASTNode *condition, ASTNode *body);
-	~WhileStatementNode() { delete condition; delete body; }
+	WhileStatementNode(ExpressionNode *condition, StatementNode *body);
+	~WhileStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	ASTNode *condition;
+	ExpressionNode *condition;
 	ASTNode *body;
 
 	virtual void PrintContentInLevel(int level) const override;
@@ -84,15 +84,15 @@ private:
 class ForStatementNode : public StatementNode {
 
 public:
-	ForStatementNode(ASTNode *init, ASTNode *cond, ASTNode *loop, ASTNode *body);
-	~ForStatementNode() { delete init; delete condition; delete loop; delete body; }
+	ForStatementNode(ASTNode *init, ExpressionNode *cond, ExpressionNode *loop, StatementNode *body);
+	~ForStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
 	ASTNode *init;
-	ASTNode *condition;
-	ASTNode *loop;
+	ExpressionNode *condition;
+	ExpressionNode *loop;
 	ASTNode *body;
 
 	virtual void PrintContentInLevel(int level) const override;
@@ -102,7 +102,7 @@ private:
 class ReturnStatementNode : public StatementNode {
 
 public:
-	ReturnStatementNode(ASTNode *exp);
+	ReturnStatementNode(ASTNode *exprStmt);
 	~ReturnStatementNode() { delete exprStmt; }
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;

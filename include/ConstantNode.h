@@ -6,7 +6,7 @@
 class ConstantNode : public ExpressionNode {
 
 public:
-	ConstantNode() : ExpressionNode() {}
+	ConstantNode(Type type) : ExpressionNode() { valueType = type; }
 	virtual ~ConstantNode() {}
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
@@ -18,7 +18,7 @@ protected:
 class IntegerNode : public ConstantNode {
 
 public:
-	IntegerNode(int num) : ConstantNode(), num(num) {}
+	IntegerNode(int num) : ConstantNode(Type::INTEGER), num(num) { }
 	~IntegerNode() {}
 
 private:
@@ -31,7 +31,7 @@ private:
 class FloatNode : public ConstantNode {
 
 public:
-	FloatNode(float num) : ConstantNode(), num(num) {}
+	FloatNode(float num) : ConstantNode(Type::FLOAT), num(num) {}
 	~FloatNode() {}
 
 private:

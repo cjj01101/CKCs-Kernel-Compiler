@@ -6,14 +6,18 @@
 class BinaryOpNode : public ExpressionNode {
 
 public:
-	BinaryOpNode(Operator op, ASTNode *left, ASTNode *right);
-	~BinaryOpNode() { delete leftOperand; delete rightOperand; }
+	BinaryOpNode(Operator op, ExpressionNode *left, ExpressionNode *right);
+	~BinaryOpNode();
+
+	bool IsIntegerOperator();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
+	static const char *GetOperatorName(Operator op);
+
 private:
-	ASTNode *leftOperand;
-	ASTNode *rightOperand;
+	ExpressionNode *leftOperand;
+	ExpressionNode *rightOperand;
 	Operator op;
 
 	virtual void PrintContentInLevel(int level) const override;
@@ -23,14 +27,14 @@ private:
 class AssignOpNode : public ExpressionNode {
 
 public:
-	AssignOpNode(ASTNode *left, ASTNode *right);
-	~AssignOpNode() { delete leftValue; delete rightValue; }
+	AssignOpNode(IdentifierNode *left, ExpressionNode *right);
+	~AssignOpNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 
 private:
-	ASTNode *leftValue;
-	ASTNode *rightValue;
+	IdentifierNode *leftValue;
+	ExpressionNode *rightValue;
 
 	virtual void PrintContentInLevel(int level) const override;
 

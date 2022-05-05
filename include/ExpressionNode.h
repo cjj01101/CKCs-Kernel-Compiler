@@ -7,11 +7,13 @@
 class ExpressionNode : public ASTNode {
 
 public:
-	ExpressionNode() : ASTNode() {}
+	ExpressionNode() : ASTNode(), valueType(Type::VOID) {}
 	virtual ~ExpressionNode() {}
 
-protected:
+	Type GetValueType() { return valueType; }
 
+protected:
+	Type valueType;
 
 };
 

@@ -21,7 +21,8 @@ public:
 	~ExpressionStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	ExpressionNode *expression;
 
@@ -40,7 +41,8 @@ public:
 	void AppendStatement(ASTNode *item);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	std::vector<ASTNode*> items;
 
@@ -55,7 +57,8 @@ public:
 	~IfStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	ExpressionNode *condition;
 	ASTNode *thenStmt;
@@ -72,6 +75,7 @@ public:
 	~WhileStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen() override;
 
 private:
 	ExpressionNode *condition;
@@ -88,6 +92,7 @@ public:
 	~ForStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen() override;
 
 private:
 	ASTNode *init;
@@ -106,7 +111,8 @@ public:
 	~ReturnStatementNode() { delete exprStmt; }
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	ASTNode *exprStmt;
 

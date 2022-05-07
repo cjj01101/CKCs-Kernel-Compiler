@@ -4,6 +4,7 @@
 #include <string>
 #include "SymbolTable.h"
 #include "common.h"
+#include "llvm/IR/Value.h"
 
 #define PRINT_CHILD_WITH_HINT(child, hint) \
 	do { \
@@ -29,6 +30,7 @@ public:
 
 	void PrintInLevel(int level) const;
 	virtual void AnalyzeSemantic(SymbolTable *intab) = 0;
+	virtual llvm::Value *CodeGen() = 0;
 
 protected:
 	

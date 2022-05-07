@@ -3,7 +3,7 @@ Grammar
     0 $accept: program $end
 
     1 program: program externdef
-    2        | %empty
+    2        | ε
 
     3 externdef: function
     4          | declaration
@@ -13,7 +13,7 @@ Grammar
     6 parameters: parameters COMMA declarator
     7           | declarator
     8           | TYPE_VOID
-    9           | %empty
+    9           | ε
 
    10 declaration: declarator SEM
    11            | declarator OP_ASSIGN expr SEM
@@ -34,7 +34,7 @@ Grammar
    21 compoundstmt: LBR items RBR
 
    22 items: items item
-   23      | %empty
+   23      | ε
 
    24 item: declaration
    25     | statement
@@ -42,7 +42,7 @@ Grammar
    26 exprstmt: optexpr SEM
 
    27 optexpr: expr
-   28        | %empty
+   28        | ε
 
    29 expr: identifier OP_ASSIGN expr
    30     | logorexpr
@@ -93,7 +93,7 @@ Grammar
 
    64 arguments: arguments COMMA expr
    65          | expr
-   66          | %empty
+   66          | ε
 
    67 ctrlstmt: IF LP expr RP statement
    68         | IF LP expr RP statement ELSE statement
@@ -246,7 +246,7 @@ Nonterminals, with rules where they appear
 
 State 0
 
-    0 $accept: . program $end
+    0 $accept: • program $end
 
     $default  reduce using rule 2 (program)
 
@@ -255,8 +255,8 @@ State 0
 
 State 1
 
-    0 $accept: program . $end
-    1 program: program . externdef
+    0 $accept: program • $end
+    1 program: program • externdef
 
     $end        shift, and go to state 2
     TYPE_INT    shift, and go to state 3
@@ -272,58 +272,58 @@ State 1
 
 State 2
 
-    0 $accept: program $end .
+    0 $accept: program $end •
 
     $default  accept
 
 
 State 3
 
-   13 type: TYPE_INT .
+   13 type: TYPE_INT •
 
     $default  reduce using rule 13 (type)
 
 
 State 4
 
-   14 type: TYPE_FLOAT .
+   14 type: TYPE_FLOAT •
 
     $default  reduce using rule 14 (type)
 
 
 State 5
 
-   15 type: TYPE_VOID .
+   15 type: TYPE_VOID •
 
     $default  reduce using rule 15 (type)
 
 
 State 6
 
-    1 program: program externdef .
+    1 program: program externdef •
 
     $default  reduce using rule 1 (program)
 
 
 State 7
 
-    3 externdef: function .
+    3 externdef: function •
 
     $default  reduce using rule 3 (externdef)
 
 
 State 8
 
-    4 externdef: declaration .
+    4 externdef: declaration •
 
     $default  reduce using rule 4 (externdef)
 
 
 State 9
 
-    5 function: declarator . LP parameters RP compoundstmt
-   10 declaration: declarator . SEM
-   11            | declarator . OP_ASSIGN expr SEM
+    5 function: declarator • LP parameters RP compoundstmt
+   10 declaration: declarator • SEM
+   11            | declarator • OP_ASSIGN expr SEM
 
     OP_ASSIGN  shift, and go to state 11
     LP         shift, and go to state 12
@@ -332,7 +332,7 @@ State 9
 
 State 10
 
-   12 declarator: type . identifier
+   12 declarator: type • identifier
 
     ID  shift, and go to state 14
 
@@ -341,7 +341,7 @@ State 10
 
 State 11
 
-   11 declaration: declarator OP_ASSIGN . expr SEM
+   11 declaration: declarator OP_ASSIGN • expr SEM
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -367,7 +367,7 @@ State 11
 
 State 12
 
-    5 function: declarator LP . parameters RP compoundstmt
+    5 function: declarator LP • parameters RP compoundstmt
 
     TYPE_INT    shift, and go to state 3
     TYPE_FLOAT  shift, and go to state 4
@@ -382,42 +382,42 @@ State 12
 
 State 13
 
-   10 declaration: declarator SEM .
+   10 declaration: declarator SEM •
 
     $default  reduce using rule 10 (declaration)
 
 
 State 14
 
-   16 identifier: ID .
+   16 identifier: ID •
 
     $default  reduce using rule 16 (identifier)
 
 
 State 15
 
-   12 declarator: type identifier .
+   12 declarator: type identifier •
 
     $default  reduce using rule 12 (declarator)
 
 
 State 16
 
-   62 constant: NUM_INT .
+   62 constant: NUM_INT •
 
     $default  reduce using rule 62 (constant)
 
 
 State 17
 
-   63 constant: NUM_FLOAT .
+   63 constant: NUM_FLOAT •
 
     $default  reduce using rule 63 (constant)
 
 
 State 18
 
-   60 primaryexpr: OP_SUB . primaryexpr
+   60 primaryexpr: OP_SUB • primaryexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -433,7 +433,7 @@ State 18
 
 State 19
 
-   61 primaryexpr: OP_NOT . primaryexpr
+   61 primaryexpr: OP_NOT • primaryexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -449,7 +449,7 @@ State 19
 
 State 20
 
-   58 primaryexpr: LP . expr RP
+   58 primaryexpr: LP • expr RP
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -475,9 +475,9 @@ State 20
 
 State 21
 
-   29 expr: identifier . OP_ASSIGN expr
-   56 primaryexpr: identifier .
-   59            | identifier . LP arguments RP
+   29 expr: identifier • OP_ASSIGN expr
+   56 primaryexpr: identifier •
+   59            | identifier • LP arguments RP
 
     OP_ASSIGN  shift, and go to state 41
     LP         shift, and go to state 42
@@ -487,15 +487,15 @@ State 21
 
 State 22
 
-   11 declaration: declarator OP_ASSIGN expr . SEM
+   11 declaration: declarator OP_ASSIGN expr • SEM
 
     SEM  shift, and go to state 43
 
 
 State 23
 
-   30 expr: logorexpr .
-   31 logorexpr: logorexpr . OP_LOGOR logandexpr
+   30 expr: logorexpr •
+   31 logorexpr: logorexpr • OP_LOGOR logandexpr
 
     OP_LOGOR  shift, and go to state 44
 
@@ -504,8 +504,8 @@ State 23
 
 State 24
 
-   32 logorexpr: logandexpr .
-   33 logandexpr: logandexpr . OP_LOGAND orexpr
+   32 logorexpr: logandexpr •
+   33 logandexpr: logandexpr • OP_LOGAND orexpr
 
     OP_LOGAND  shift, and go to state 45
 
@@ -514,8 +514,8 @@ State 24
 
 State 25
 
-   34 logandexpr: orexpr .
-   35 orexpr: orexpr . OP_OR xorexpr
+   34 logandexpr: orexpr •
+   35 orexpr: orexpr • OP_OR xorexpr
 
     OP_OR  shift, and go to state 46
 
@@ -524,8 +524,8 @@ State 25
 
 State 26
 
-   36 orexpr: xorexpr .
-   37 xorexpr: xorexpr . OP_XOR andexpr
+   36 orexpr: xorexpr •
+   37 xorexpr: xorexpr • OP_XOR andexpr
 
     OP_XOR  shift, and go to state 47
 
@@ -534,8 +534,8 @@ State 26
 
 State 27
 
-   38 xorexpr: andexpr .
-   39 andexpr: andexpr . OP_AND ecmprexpr
+   38 xorexpr: andexpr •
+   39 andexpr: andexpr • OP_AND ecmprexpr
 
     OP_AND  shift, and go to state 48
 
@@ -544,9 +544,9 @@ State 27
 
 State 28
 
-   40 andexpr: ecmprexpr .
-   41 ecmprexpr: ecmprexpr . OP_EQ cmprexpr
-   42          | ecmprexpr . OP_NEQ cmprexpr
+   40 andexpr: ecmprexpr •
+   41 ecmprexpr: ecmprexpr • OP_EQ cmprexpr
+   42          | ecmprexpr • OP_NEQ cmprexpr
 
     OP_EQ   shift, and go to state 49
     OP_NEQ  shift, and go to state 50
@@ -556,11 +556,11 @@ State 28
 
 State 29
 
-   43 ecmprexpr: cmprexpr .
-   44 cmprexpr: cmprexpr . OP_GT addexpr
-   45         | cmprexpr . OP_LT addexpr
-   46         | cmprexpr . OP_GTE addexpr
-   47         | cmprexpr . OP_LTE addexpr
+   43 ecmprexpr: cmprexpr •
+   44 cmprexpr: cmprexpr • OP_GT addexpr
+   45         | cmprexpr • OP_LT addexpr
+   46         | cmprexpr • OP_GTE addexpr
+   47         | cmprexpr • OP_LTE addexpr
 
     OP_GT   shift, and go to state 51
     OP_LT   shift, and go to state 52
@@ -572,9 +572,9 @@ State 29
 
 State 30
 
-   48 cmprexpr: addexpr .
-   49 addexpr: addexpr . OP_ADD mulexpr
-   50        | addexpr . OP_SUB mulexpr
+   48 cmprexpr: addexpr •
+   49 addexpr: addexpr • OP_ADD mulexpr
+   50        | addexpr • OP_SUB mulexpr
 
     OP_ADD  shift, and go to state 55
     OP_SUB  shift, and go to state 56
@@ -584,10 +584,10 @@ State 30
 
 State 31
 
-   51 addexpr: mulexpr .
-   52 mulexpr: mulexpr . OP_MUL primaryexpr
-   53        | mulexpr . OP_DIV primaryexpr
-   54        | mulexpr . OP_MOD primaryexpr
+   51 addexpr: mulexpr •
+   52 mulexpr: mulexpr • OP_MUL primaryexpr
+   53        | mulexpr • OP_DIV primaryexpr
+   54        | mulexpr • OP_MOD primaryexpr
 
     OP_MUL  shift, and go to state 57
     OP_DIV  shift, and go to state 58
@@ -598,22 +598,22 @@ State 31
 
 State 32
 
-   55 mulexpr: primaryexpr .
+   55 mulexpr: primaryexpr •
 
     $default  reduce using rule 55 (mulexpr)
 
 
 State 33
 
-   57 primaryexpr: constant .
+   57 primaryexpr: constant •
 
     $default  reduce using rule 57 (primaryexpr)
 
 
 State 34
 
-    8 parameters: TYPE_VOID .
-   15 type: TYPE_VOID .
+    8 parameters: TYPE_VOID •
+   15 type: TYPE_VOID •
 
     ID        reduce using rule 15 (type)
     $default  reduce using rule 8 (parameters)
@@ -621,8 +621,8 @@ State 34
 
 State 35
 
-    5 function: declarator LP parameters . RP compoundstmt
-    6 parameters: parameters . COMMA declarator
+    5 function: declarator LP parameters • RP compoundstmt
+    6 parameters: parameters • COMMA declarator
 
     RP     shift, and go to state 60
     COMMA  shift, and go to state 61
@@ -630,15 +630,15 @@ State 35
 
 State 36
 
-    7 parameters: declarator .
+    7 parameters: declarator •
 
     $default  reduce using rule 7 (parameters)
 
 
 State 37
 
-   56 primaryexpr: identifier .
-   59            | identifier . LP arguments RP
+   56 primaryexpr: identifier •
+   59            | identifier • LP arguments RP
 
     LP  shift, and go to state 42
 
@@ -647,28 +647,28 @@ State 37
 
 State 38
 
-   60 primaryexpr: OP_SUB primaryexpr .
+   60 primaryexpr: OP_SUB primaryexpr •
 
     $default  reduce using rule 60 (primaryexpr)
 
 
 State 39
 
-   61 primaryexpr: OP_NOT primaryexpr .
+   61 primaryexpr: OP_NOT primaryexpr •
 
     $default  reduce using rule 61 (primaryexpr)
 
 
 State 40
 
-   58 primaryexpr: LP expr . RP
+   58 primaryexpr: LP expr • RP
 
     RP  shift, and go to state 62
 
 
 State 41
 
-   29 expr: identifier OP_ASSIGN . expr
+   29 expr: identifier OP_ASSIGN • expr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -694,7 +694,7 @@ State 41
 
 State 42
 
-   59 primaryexpr: identifier LP . arguments RP
+   59 primaryexpr: identifier LP • arguments RP
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -723,14 +723,14 @@ State 42
 
 State 43
 
-   11 declaration: declarator OP_ASSIGN expr SEM .
+   11 declaration: declarator OP_ASSIGN expr SEM •
 
     $default  reduce using rule 11 (declaration)
 
 
 State 44
 
-   31 logorexpr: logorexpr OP_LOGOR . logandexpr
+   31 logorexpr: logorexpr OP_LOGOR • logandexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -754,7 +754,7 @@ State 44
 
 State 45
 
-   33 logandexpr: logandexpr OP_LOGAND . orexpr
+   33 logandexpr: logandexpr OP_LOGAND • orexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -777,7 +777,7 @@ State 45
 
 State 46
 
-   35 orexpr: orexpr OP_OR . xorexpr
+   35 orexpr: orexpr OP_OR • xorexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -799,7 +799,7 @@ State 46
 
 State 47
 
-   37 xorexpr: xorexpr OP_XOR . andexpr
+   37 xorexpr: xorexpr OP_XOR • andexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -820,7 +820,7 @@ State 47
 
 State 48
 
-   39 andexpr: andexpr OP_AND . ecmprexpr
+   39 andexpr: andexpr OP_AND • ecmprexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -840,7 +840,7 @@ State 48
 
 State 49
 
-   41 ecmprexpr: ecmprexpr OP_EQ . cmprexpr
+   41 ecmprexpr: ecmprexpr OP_EQ • cmprexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -859,7 +859,7 @@ State 49
 
 State 50
 
-   42 ecmprexpr: ecmprexpr OP_NEQ . cmprexpr
+   42 ecmprexpr: ecmprexpr OP_NEQ • cmprexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -878,7 +878,7 @@ State 50
 
 State 51
 
-   44 cmprexpr: cmprexpr OP_GT . addexpr
+   44 cmprexpr: cmprexpr OP_GT • addexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -896,7 +896,7 @@ State 51
 
 State 52
 
-   45 cmprexpr: cmprexpr OP_LT . addexpr
+   45 cmprexpr: cmprexpr OP_LT • addexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -914,7 +914,7 @@ State 52
 
 State 53
 
-   46 cmprexpr: cmprexpr OP_GTE . addexpr
+   46 cmprexpr: cmprexpr OP_GTE • addexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -932,7 +932,7 @@ State 53
 
 State 54
 
-   47 cmprexpr: cmprexpr OP_LTE . addexpr
+   47 cmprexpr: cmprexpr OP_LTE • addexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -950,7 +950,7 @@ State 54
 
 State 55
 
-   49 addexpr: addexpr OP_ADD . mulexpr
+   49 addexpr: addexpr OP_ADD • mulexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -967,7 +967,7 @@ State 55
 
 State 56
 
-   50 addexpr: addexpr OP_SUB . mulexpr
+   50 addexpr: addexpr OP_SUB • mulexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -984,7 +984,7 @@ State 56
 
 State 57
 
-   52 mulexpr: mulexpr OP_MUL . primaryexpr
+   52 mulexpr: mulexpr OP_MUL • primaryexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1000,7 +1000,7 @@ State 57
 
 State 58
 
-   53 mulexpr: mulexpr OP_DIV . primaryexpr
+   53 mulexpr: mulexpr OP_DIV • primaryexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1016,7 +1016,7 @@ State 58
 
 State 59
 
-   54 mulexpr: mulexpr OP_MOD . primaryexpr
+   54 mulexpr: mulexpr OP_MOD • primaryexpr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1032,7 +1032,7 @@ State 59
 
 State 60
 
-    5 function: declarator LP parameters RP . compoundstmt
+    5 function: declarator LP parameters RP • compoundstmt
 
     LBR  shift, and go to state 82
 
@@ -1041,7 +1041,7 @@ State 60
 
 State 61
 
-    6 parameters: parameters COMMA . declarator
+    6 parameters: parameters COMMA • declarator
 
     TYPE_INT    shift, and go to state 3
     TYPE_FLOAT  shift, and go to state 4
@@ -1053,29 +1053,29 @@ State 61
 
 State 62
 
-   58 primaryexpr: LP expr RP .
+   58 primaryexpr: LP expr RP •
 
     $default  reduce using rule 58 (primaryexpr)
 
 
 State 63
 
-   29 expr: identifier OP_ASSIGN expr .
+   29 expr: identifier OP_ASSIGN expr •
 
     $default  reduce using rule 29 (expr)
 
 
 State 64
 
-   65 arguments: expr .
+   65 arguments: expr •
 
     $default  reduce using rule 65 (arguments)
 
 
 State 65
 
-   59 primaryexpr: identifier LP arguments . RP
-   64 arguments: arguments . COMMA expr
+   59 primaryexpr: identifier LP arguments • RP
+   64 arguments: arguments • COMMA expr
 
     RP     shift, and go to state 85
     COMMA  shift, and go to state 86
@@ -1083,8 +1083,8 @@ State 65
 
 State 66
 
-   31 logorexpr: logorexpr OP_LOGOR logandexpr .
-   33 logandexpr: logandexpr . OP_LOGAND orexpr
+   31 logorexpr: logorexpr OP_LOGOR logandexpr •
+   33 logandexpr: logandexpr • OP_LOGAND orexpr
 
     OP_LOGAND  shift, and go to state 45
 
@@ -1093,8 +1093,8 @@ State 66
 
 State 67
 
-   33 logandexpr: logandexpr OP_LOGAND orexpr .
-   35 orexpr: orexpr . OP_OR xorexpr
+   33 logandexpr: logandexpr OP_LOGAND orexpr •
+   35 orexpr: orexpr • OP_OR xorexpr
 
     OP_OR  shift, and go to state 46
 
@@ -1103,8 +1103,8 @@ State 67
 
 State 68
 
-   35 orexpr: orexpr OP_OR xorexpr .
-   37 xorexpr: xorexpr . OP_XOR andexpr
+   35 orexpr: orexpr OP_OR xorexpr •
+   37 xorexpr: xorexpr • OP_XOR andexpr
 
     OP_XOR  shift, and go to state 47
 
@@ -1113,8 +1113,8 @@ State 68
 
 State 69
 
-   37 xorexpr: xorexpr OP_XOR andexpr .
-   39 andexpr: andexpr . OP_AND ecmprexpr
+   37 xorexpr: xorexpr OP_XOR andexpr •
+   39 andexpr: andexpr • OP_AND ecmprexpr
 
     OP_AND  shift, and go to state 48
 
@@ -1123,9 +1123,9 @@ State 69
 
 State 70
 
-   39 andexpr: andexpr OP_AND ecmprexpr .
-   41 ecmprexpr: ecmprexpr . OP_EQ cmprexpr
-   42          | ecmprexpr . OP_NEQ cmprexpr
+   39 andexpr: andexpr OP_AND ecmprexpr •
+   41 ecmprexpr: ecmprexpr • OP_EQ cmprexpr
+   42          | ecmprexpr • OP_NEQ cmprexpr
 
     OP_EQ   shift, and go to state 49
     OP_NEQ  shift, and go to state 50
@@ -1135,11 +1135,11 @@ State 70
 
 State 71
 
-   41 ecmprexpr: ecmprexpr OP_EQ cmprexpr .
-   44 cmprexpr: cmprexpr . OP_GT addexpr
-   45         | cmprexpr . OP_LT addexpr
-   46         | cmprexpr . OP_GTE addexpr
-   47         | cmprexpr . OP_LTE addexpr
+   41 ecmprexpr: ecmprexpr OP_EQ cmprexpr •
+   44 cmprexpr: cmprexpr • OP_GT addexpr
+   45         | cmprexpr • OP_LT addexpr
+   46         | cmprexpr • OP_GTE addexpr
+   47         | cmprexpr • OP_LTE addexpr
 
     OP_GT   shift, and go to state 51
     OP_LT   shift, and go to state 52
@@ -1151,11 +1151,11 @@ State 71
 
 State 72
 
-   42 ecmprexpr: ecmprexpr OP_NEQ cmprexpr .
-   44 cmprexpr: cmprexpr . OP_GT addexpr
-   45         | cmprexpr . OP_LT addexpr
-   46         | cmprexpr . OP_GTE addexpr
-   47         | cmprexpr . OP_LTE addexpr
+   42 ecmprexpr: ecmprexpr OP_NEQ cmprexpr •
+   44 cmprexpr: cmprexpr • OP_GT addexpr
+   45         | cmprexpr • OP_LT addexpr
+   46         | cmprexpr • OP_GTE addexpr
+   47         | cmprexpr • OP_LTE addexpr
 
     OP_GT   shift, and go to state 51
     OP_LT   shift, and go to state 52
@@ -1167,9 +1167,9 @@ State 72
 
 State 73
 
-   44 cmprexpr: cmprexpr OP_GT addexpr .
-   49 addexpr: addexpr . OP_ADD mulexpr
-   50        | addexpr . OP_SUB mulexpr
+   44 cmprexpr: cmprexpr OP_GT addexpr •
+   49 addexpr: addexpr • OP_ADD mulexpr
+   50        | addexpr • OP_SUB mulexpr
 
     OP_ADD  shift, and go to state 55
     OP_SUB  shift, and go to state 56
@@ -1179,9 +1179,9 @@ State 73
 
 State 74
 
-   45 cmprexpr: cmprexpr OP_LT addexpr .
-   49 addexpr: addexpr . OP_ADD mulexpr
-   50        | addexpr . OP_SUB mulexpr
+   45 cmprexpr: cmprexpr OP_LT addexpr •
+   49 addexpr: addexpr • OP_ADD mulexpr
+   50        | addexpr • OP_SUB mulexpr
 
     OP_ADD  shift, and go to state 55
     OP_SUB  shift, and go to state 56
@@ -1191,9 +1191,9 @@ State 74
 
 State 75
 
-   46 cmprexpr: cmprexpr OP_GTE addexpr .
-   49 addexpr: addexpr . OP_ADD mulexpr
-   50        | addexpr . OP_SUB mulexpr
+   46 cmprexpr: cmprexpr OP_GTE addexpr •
+   49 addexpr: addexpr • OP_ADD mulexpr
+   50        | addexpr • OP_SUB mulexpr
 
     OP_ADD  shift, and go to state 55
     OP_SUB  shift, and go to state 56
@@ -1203,9 +1203,9 @@ State 75
 
 State 76
 
-   47 cmprexpr: cmprexpr OP_LTE addexpr .
-   49 addexpr: addexpr . OP_ADD mulexpr
-   50        | addexpr . OP_SUB mulexpr
+   47 cmprexpr: cmprexpr OP_LTE addexpr •
+   49 addexpr: addexpr • OP_ADD mulexpr
+   50        | addexpr • OP_SUB mulexpr
 
     OP_ADD  shift, and go to state 55
     OP_SUB  shift, and go to state 56
@@ -1215,10 +1215,10 @@ State 76
 
 State 77
 
-   49 addexpr: addexpr OP_ADD mulexpr .
-   52 mulexpr: mulexpr . OP_MUL primaryexpr
-   53        | mulexpr . OP_DIV primaryexpr
-   54        | mulexpr . OP_MOD primaryexpr
+   49 addexpr: addexpr OP_ADD mulexpr •
+   52 mulexpr: mulexpr • OP_MUL primaryexpr
+   53        | mulexpr • OP_DIV primaryexpr
+   54        | mulexpr • OP_MOD primaryexpr
 
     OP_MUL  shift, and go to state 57
     OP_DIV  shift, and go to state 58
@@ -1229,10 +1229,10 @@ State 77
 
 State 78
 
-   50 addexpr: addexpr OP_SUB mulexpr .
-   52 mulexpr: mulexpr . OP_MUL primaryexpr
-   53        | mulexpr . OP_DIV primaryexpr
-   54        | mulexpr . OP_MOD primaryexpr
+   50 addexpr: addexpr OP_SUB mulexpr •
+   52 mulexpr: mulexpr • OP_MUL primaryexpr
+   53        | mulexpr • OP_DIV primaryexpr
+   54        | mulexpr • OP_MOD primaryexpr
 
     OP_MUL  shift, and go to state 57
     OP_DIV  shift, and go to state 58
@@ -1243,28 +1243,28 @@ State 78
 
 State 79
 
-   52 mulexpr: mulexpr OP_MUL primaryexpr .
+   52 mulexpr: mulexpr OP_MUL primaryexpr •
 
     $default  reduce using rule 52 (mulexpr)
 
 
 State 80
 
-   53 mulexpr: mulexpr OP_DIV primaryexpr .
+   53 mulexpr: mulexpr OP_DIV primaryexpr •
 
     $default  reduce using rule 53 (mulexpr)
 
 
 State 81
 
-   54 mulexpr: mulexpr OP_MOD primaryexpr .
+   54 mulexpr: mulexpr OP_MOD primaryexpr •
 
     $default  reduce using rule 54 (mulexpr)
 
 
 State 82
 
-   21 compoundstmt: LBR . items RBR
+   21 compoundstmt: LBR • items RBR
 
     $default  reduce using rule 23 (items)
 
@@ -1273,28 +1273,28 @@ State 82
 
 State 83
 
-    5 function: declarator LP parameters RP compoundstmt .
+    5 function: declarator LP parameters RP compoundstmt •
 
     $default  reduce using rule 5 (function)
 
 
 State 84
 
-    6 parameters: parameters COMMA declarator .
+    6 parameters: parameters COMMA declarator •
 
     $default  reduce using rule 6 (parameters)
 
 
 State 85
 
-   59 primaryexpr: identifier LP arguments RP .
+   59 primaryexpr: identifier LP arguments RP •
 
     $default  reduce using rule 59 (primaryexpr)
 
 
 State 86
 
-   64 arguments: arguments COMMA . expr
+   64 arguments: arguments COMMA • expr
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1320,8 +1320,8 @@ State 86
 
 State 87
 
-   21 compoundstmt: LBR items . RBR
-   22 items: items . item
+   21 compoundstmt: LBR items • RBR
+   22 items: items • item
 
     NUM_INT     shift, and go to state 16
     NUM_FLOAT   shift, and go to state 17
@@ -1368,43 +1368,43 @@ State 87
 
 State 88
 
-   64 arguments: arguments COMMA expr .
+   64 arguments: arguments COMMA expr •
 
     $default  reduce using rule 64 (arguments)
 
 
 State 89
 
-   21 compoundstmt: LBR items RBR .
+   21 compoundstmt: LBR items RBR •
 
     $default  reduce using rule 21 (compoundstmt)
 
 
 State 90
 
-   67 ctrlstmt: IF . LP expr RP statement
-   68         | IF . LP expr RP statement ELSE statement
+   67 ctrlstmt: IF • LP expr RP statement
+   68         | IF • LP expr RP statement ELSE statement
 
     LP  shift, and go to state 104
 
 
 State 91
 
-   69 ctrlstmt: WHILE . LP expr RP statement
+   69 ctrlstmt: WHILE • LP expr RP statement
 
     LP  shift, and go to state 105
 
 
 State 92
 
-   70 ctrlstmt: FOR . LP inititem optexpr SEM optexpr RP statement
+   70 ctrlstmt: FOR • LP inititem optexpr SEM optexpr RP statement
 
     LP  shift, and go to state 106
 
 
 State 93
 
-   73 jumpstmt: RETURN . exprstmt
+   73 jumpstmt: RETURN • exprstmt
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1434,15 +1434,15 @@ State 93
 
 State 94
 
-   24 item: declaration .
+   24 item: declaration •
 
     $default  reduce using rule 24 (item)
 
 
 State 95
 
-   10 declaration: declarator . SEM
-   11            | declarator . OP_ASSIGN expr SEM
+   10 declaration: declarator • SEM
+   11            | declarator • OP_ASSIGN expr SEM
 
     OP_ASSIGN  shift, and go to state 11
     SEM        shift, and go to state 13
@@ -1450,64 +1450,64 @@ State 95
 
 State 96
 
-   25 item: statement .
+   25 item: statement •
 
     $default  reduce using rule 25 (item)
 
 
 State 97
 
-   17 statement: compoundstmt .
+   17 statement: compoundstmt •
 
     $default  reduce using rule 17 (statement)
 
 
 State 98
 
-   22 items: items item .
+   22 items: items item •
 
     $default  reduce using rule 22 (items)
 
 
 State 99
 
-   18 statement: exprstmt .
+   18 statement: exprstmt •
 
     $default  reduce using rule 18 (statement)
 
 
 State 100
 
-   26 exprstmt: optexpr . SEM
+   26 exprstmt: optexpr • SEM
 
     SEM  shift, and go to state 108
 
 
 State 101
 
-   27 optexpr: expr .
+   27 optexpr: expr •
 
     $default  reduce using rule 27 (optexpr)
 
 
 State 102
 
-   19 statement: ctrlstmt .
+   19 statement: ctrlstmt •
 
     $default  reduce using rule 19 (statement)
 
 
 State 103
 
-   20 statement: jumpstmt .
+   20 statement: jumpstmt •
 
     $default  reduce using rule 20 (statement)
 
 
 State 104
 
-   67 ctrlstmt: IF LP . expr RP statement
-   68         | IF LP . expr RP statement ELSE statement
+   67 ctrlstmt: IF LP • expr RP statement
+   68         | IF LP • expr RP statement ELSE statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1533,7 +1533,7 @@ State 104
 
 State 105
 
-   69 ctrlstmt: WHILE LP . expr RP statement
+   69 ctrlstmt: WHILE LP • expr RP statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1559,7 +1559,7 @@ State 105
 
 State 106
 
-   70 ctrlstmt: FOR LP . inititem optexpr SEM optexpr RP statement
+   70 ctrlstmt: FOR LP • inititem optexpr SEM optexpr RP statement
 
     NUM_INT     shift, and go to state 16
     NUM_FLOAT   shift, and go to state 17
@@ -1596,50 +1596,50 @@ State 106
 
 State 107
 
-   73 jumpstmt: RETURN exprstmt .
+   73 jumpstmt: RETURN exprstmt •
 
     $default  reduce using rule 73 (jumpstmt)
 
 
 State 108
 
-   26 exprstmt: optexpr SEM .
+   26 exprstmt: optexpr SEM •
 
     $default  reduce using rule 26 (exprstmt)
 
 
 State 109
 
-   67 ctrlstmt: IF LP expr . RP statement
-   68         | IF LP expr . RP statement ELSE statement
+   67 ctrlstmt: IF LP expr • RP statement
+   68         | IF LP expr • RP statement ELSE statement
 
     RP  shift, and go to state 114
 
 
 State 110
 
-   69 ctrlstmt: WHILE LP expr . RP statement
+   69 ctrlstmt: WHILE LP expr • RP statement
 
     RP  shift, and go to state 115
 
 
 State 111
 
-   72 inititem: declaration .
+   72 inititem: declaration •
 
     $default  reduce using rule 72 (inititem)
 
 
 State 112
 
-   71 inititem: exprstmt .
+   71 inititem: exprstmt •
 
     $default  reduce using rule 71 (inititem)
 
 
 State 113
 
-   70 ctrlstmt: FOR LP inititem . optexpr SEM optexpr RP statement
+   70 ctrlstmt: FOR LP inititem • optexpr SEM optexpr RP statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1668,8 +1668,8 @@ State 113
 
 State 114
 
-   67 ctrlstmt: IF LP expr RP . statement
-   68         | IF LP expr RP . statement ELSE statement
+   67 ctrlstmt: IF LP expr RP • statement
+   68         | IF LP expr RP • statement ELSE statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1708,7 +1708,7 @@ State 114
 
 State 115
 
-   69 ctrlstmt: WHILE LP expr RP . statement
+   69 ctrlstmt: WHILE LP expr RP • statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1747,15 +1747,15 @@ State 115
 
 State 116
 
-   70 ctrlstmt: FOR LP inititem optexpr . SEM optexpr RP statement
+   70 ctrlstmt: FOR LP inititem optexpr • SEM optexpr RP statement
 
     SEM  shift, and go to state 119
 
 
 State 117
 
-   67 ctrlstmt: IF LP expr RP statement .
-   68         | IF LP expr RP statement . ELSE statement
+   67 ctrlstmt: IF LP expr RP statement •
+   68         | IF LP expr RP statement • ELSE statement
 
     ELSE  shift, and go to state 120
 
@@ -1764,14 +1764,14 @@ State 117
 
 State 118
 
-   69 ctrlstmt: WHILE LP expr RP statement .
+   69 ctrlstmt: WHILE LP expr RP statement •
 
     $default  reduce using rule 69 (ctrlstmt)
 
 
 State 119
 
-   70 ctrlstmt: FOR LP inititem optexpr SEM . optexpr RP statement
+   70 ctrlstmt: FOR LP inititem optexpr SEM • optexpr RP statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1800,7 +1800,7 @@ State 119
 
 State 120
 
-   68 ctrlstmt: IF LP expr RP statement ELSE . statement
+   68 ctrlstmt: IF LP expr RP statement ELSE • statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1839,21 +1839,21 @@ State 120
 
 State 121
 
-   70 ctrlstmt: FOR LP inititem optexpr SEM optexpr . RP statement
+   70 ctrlstmt: FOR LP inititem optexpr SEM optexpr • RP statement
 
     RP  shift, and go to state 123
 
 
 State 122
 
-   68 ctrlstmt: IF LP expr RP statement ELSE statement .
+   68 ctrlstmt: IF LP expr RP statement ELSE statement •
 
     $default  reduce using rule 68 (ctrlstmt)
 
 
 State 123
 
-   70 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP . statement
+   70 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP • statement
 
     NUM_INT    shift, and go to state 16
     NUM_FLOAT  shift, and go to state 17
@@ -1892,6 +1892,6 @@ State 123
 
 State 124
 
-   70 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP statement .
+   70 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP statement •
 
     $default  reduce using rule 70 (ctrlstmt)

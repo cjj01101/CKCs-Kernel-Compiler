@@ -2,6 +2,8 @@
     #include <stdio.h>
     #include "common.h"
     #include "y.tab.h"
+
+    extern "C" int yylex();
 %}
 
 integer ([1-9]+[0-9]*|0)

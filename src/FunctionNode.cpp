@@ -173,6 +173,11 @@ void ParameterListNode::GetParameterTypes(std::vector<Type> &types) {
 	for(auto param : parameters) types.push_back(param->GetType());
 }
 
+
+void ParameterListNode::GetParameterNames(std::vector<std::string> &names) {
+	for(auto param : parameters) names.push_back(param->GetName());
+}
+
 void ArgumentListNode::AppendArgument(ExpressionNode *arg) {
 	assert(NOT_NULL(arg));
 	arguments.push_back(arg);

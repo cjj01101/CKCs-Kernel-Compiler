@@ -80,7 +80,7 @@
     #include "ConstantNode.h"
     #include "TypeNode.h"
 
-    int yylex(void);
+    extern "C" int yylex(void);
     void yyerror(char *);
 
     ASTNode *root = nullptr;

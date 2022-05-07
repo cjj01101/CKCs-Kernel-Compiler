@@ -12,7 +12,8 @@ public:
 	bool IsIntegerOperator();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 	static const char *GetOperatorName(Operator op);
 
 private:
@@ -31,7 +32,8 @@ public:
 	~AssignOpNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	IdentifierNode *leftValue;
 	ExpressionNode *rightValue;

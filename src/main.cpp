@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "AbstractSyntaxTree.h"
+#include "CodeGenerator.h"
 
 extern ASTNode *parse_and_generate_syntax_tree(FILE *input);
 
@@ -17,6 +18,10 @@ int main(int argc, char ** argv){
 
     synTree.Print();
     synTree.AnalyzeSemantic();
+
+    // Make the module, which holds all the code.
+    InitializeModule();
+    Generate(root);
 
     return 0;
 }

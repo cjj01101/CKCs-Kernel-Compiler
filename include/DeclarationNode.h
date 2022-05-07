@@ -15,9 +15,11 @@ public:
 	~DeclarationNode();
 
 	Type GetType();
+	char *GetName();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	TypeNode *type;
 	IdentifierNode *name;

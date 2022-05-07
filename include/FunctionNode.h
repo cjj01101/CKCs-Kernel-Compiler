@@ -1,6 +1,7 @@
 #ifndef _FUNCTION_NODE_H_
 #define _FUNCTION_NODE_H_
 
+#include <string>
 #include <vector>
 #include "ExpressionNode.h"
 
@@ -11,7 +12,8 @@ public:
 	~FunctionNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	TypeNode *returnType;
 	IdentifierNode *name;
@@ -30,8 +32,10 @@ public:
 
 	void AppendParameter(DeclarationNode *param);
 	void GetParameterTypes(std::vector<Type> &types);
+	void GetParameterNames(std::vector<std::string> &names);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen() override;
 
 private:
 	std::vector<DeclarationNode*> parameters;
@@ -47,6 +51,7 @@ public:
 	~FunctionCallNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen() override;
 
 private:
 	IdentifierNode *name;
@@ -66,7 +71,8 @@ public:
 	void GetArgumentTypes(std::vector<Type> &types);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen() override;
+	
 private:
 	std::vector<ExpressionNode*> arguments;
 

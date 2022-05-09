@@ -60,7 +60,7 @@ llvm::Value *TranslationUnitNode::CodeGen(CodeGenerator *generator) {
                                                       &generator->module);
     llvm::BasicBlock *funcBody = llvm::BasicBlock::Create(generator->context, "initialize", function);
 
-    generator->builder.SetInsertPoint(funcBody);
+    generator->JumpToBlock(funcBody);
     llvm::ReturnInst *ret = generator->builder.CreateRetVoid();
     generator->JumpToVoid();
     generator->SetGlobalInsertionPoint(ret);
@@ -73,7 +73,7 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
 
     Info("[NODE] Function Node");
     
-    // Get Parameter Definition.
+    /* Get Parameter Definition */
     std::vector<llvm::Type*> paramTypes;
     std::vector<std::string> paramNames;
     for(auto param : parameters->parameters) {
@@ -81,7 +81,7 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
         paramNames.push_back(param->GetName());
     }
 
-    // Construct Function Node.
+    /* Construct Function Node */
     Type retType = returnType->GetType();
     llvm::FunctionType *funcType = llvm::FunctionType::get(generator->ConvertToLLVMType(retType), paramTypes, false);
     llvm::Function *function = llvm::Function::Create(funcType,
@@ -89,29 +89,32 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
                                                       name->GetName(),
                                                       &generator->module);
 
-    // Set Argument Names.
+    /* Set Argument Names and Add to Value Table */
+    generator->AddNewTable();
     unsigned int i = 0;
-    for (auto &arg : function->args()) arg.setName(paramNames[i++]);
-    
-    // Record the function arguments in the NamedValues map.
-    //NamedValues.clear();
-    //for (auto &arg : function->args()) NamedValues[std::string(arg.getName())] = &arg;
+    for (auto &arg : function->args()) {
+        arg.setName(paramNames[i]);
+        generator->RecordValue(paramNames[i], &arg);
+        i++;
+    }
 
-    // Generate Function Body.
+    /* Generate Function Body */
     llvm::BasicBlock *funcBody = llvm::BasicBlock::Create(generator->context, "", function);
-    generator->builder.SetInsertPoint(funcBody);
+    generator->JumpToBlock(funcBody);
     body->CodeGen(generator);
 
-    // Generate Default Return Instruction
+    /* Generate Default Return Instruction */
     if(retType == Type::VOID) {
         generator->builder.CreateRetVoid();
     } else {
         generator->builder.CreateRet(generator->GetTypeDefaultValue(retType));
     }
 
+    /* Finish up */
     generator->JumpToVoid();
+    generator->RemoveTable();
 
-    // Validate the generated code, checking for consistency.
+    /* Validate Function */
     verifyFunction(*function);
     return function;
 }
@@ -162,6 +165,10 @@ llvm::Value *DeclarationNode::CodeGen(CodeGenerator *generator) {
     return nullptr;
 }
 
+llvm::Value *EmptyExpressionNode::CodeGen(CodeGenerator *generator) {
+    return nullptr;
+}
+
 llvm::Value *CompoundStatementNode::CodeGen(CodeGenerator *generator) {
     
     Info("[NODE] Compound Statement Node");
@@ -184,9 +191,28 @@ llvm::Value *IfStatementNode::CodeGen(CodeGenerator *generator) {
     
     Info("[NODE] If Statement Node");
 
-    condition->CodeGen(generator);
+    // Create Basic Blocks
+    llvm::BasicBlock *thenBlock = generator->CreateBasicBlock("if-then");
+    llvm::BasicBlock *elseBlock = generator->CreateBasicBlock("if-else");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-if");
+
+    // Generate Condition Branch Instructions
+    llvm::Value *condValue = condition->CodeGen(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, thenBlock, elseBlock);
+
+    // Complete Then Block
+    generator->JumpToBlock(thenBlock);
     thenStmt->CodeGen(generator);
+    generator->builder.CreateBr(afterBlock);
+
+    // Complete Then Block
+    generator->JumpToBlock(elseBlock);
     elseStmt->CodeGen(generator);
+    generator->builder.CreateBr(afterBlock);
+
+    // Finish up
+    generator->JumpToBlock(afterBlock);
 
     return nullptr;
 }
@@ -195,8 +221,24 @@ llvm::Value *WhileStatementNode::CodeGen(CodeGenerator *generator) {
     
     Info("[NODE] While Statement Node");
 
-    condition->CodeGen(generator);
+    // Create Basic Blocks
+    llvm::BasicBlock *condBlock = generator->CreateBasicBlock("whlie-cond");
+    llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("while-loop");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-while");
+
+    // Complete Loop Condition Branch
+    generator->JumpToBlock(condBlock);
+    llvm::Value *condValue = condition->CodeGen(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, loopBlock, afterBlock);
+
+    // Complete Loop Body
+    generator->JumpToBlock(loopBlock);
     body->CodeGen(generator);
+    generator->builder.CreateBr(condBlock);
+
+    // Finish up
+    generator->JumpToBlock(afterBlock);
 
     return nullptr;
 }
@@ -205,10 +247,28 @@ llvm::Value *ForStatementNode::CodeGen(CodeGenerator *generator) {
     
     Info("[NODE] For Statement Node");
 
+    // Generate IR for Initial Statement
     init->CodeGen(generator);
-    condition->CodeGen(generator);
-    loop->CodeGen(generator);
+
+    // Create Basic Blocks
+    llvm::BasicBlock *condBlock = generator->CreateBasicBlock("for-cond");
+    llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("for-loop");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-for");
+
+    // Complete Loop Condition Branch
+    generator->JumpToBlock(condBlock);
+    llvm::Value *condValue = condition->CodeGen(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, loopBlock, afterBlock);
+
+    // Complete Loop Body
+    generator->JumpToBlock(loopBlock);
     body->CodeGen(generator);
+    generator->builder.CreateBr(condBlock);
+    loop->CodeGen(generator);
+
+    // Finish up
+    generator->JumpToBlock(afterBlock);
 
     return nullptr;
 }
@@ -217,12 +277,12 @@ llvm::Value *ReturnStatementNode::CodeGen(CodeGenerator *generator) {
     
     Info("[NODE] Return Statement Node");
 
-    exprStmt->CodeGen(generator);
+    if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) {
+        generator->builder.CreateRetVoid();
+    } else {
+        generator->builder.CreateRet(expression->CodeGen(generator));
+    }
 
-    return nullptr;
-}
-
-llvm::Value *EmptyExpressionNode::CodeGen(CodeGenerator *generator) {
     return nullptr;
 }
 
@@ -408,11 +468,7 @@ llvm::Value *AssignOpNode::CodeGen(CodeGenerator *generator) {
 }
 
 llvm::Value *IdentifierNode::CodeGen(CodeGenerator *generator) {
-    //std::string Name = std::string(id);
-    //llvm::Value *V = NamedValues[Name];
-    //if (!V) return LogErrorV("[ERROR] Unknown Identifier name!");
-    //return V;
-    return nullptr;
+    return generator->FindValue(std::string(id));
 }
 
 llvm::Value *IntegerNode::CodeGen(CodeGenerator *generator) {

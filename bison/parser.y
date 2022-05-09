@@ -194,7 +194,7 @@
                 | declaration { $$ = $1; }
                 ;
 
-       jumpstmt : RETURN exprstmt { $$ = new ReturnStatementNode($2); }
+       jumpstmt : RETURN optexpr SEM { $$ = new ReturnStatementNode($2); }
                 ;
 
 %%

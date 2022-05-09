@@ -60,10 +60,14 @@ ForStatementNode::~ForStatementNode() {
 	delete body;
 }
 
-ReturnStatementNode::ReturnStatementNode(ASTNode *exprStmt)
-	: StatementNode(), exprStmt(exprStmt)
+ReturnStatementNode::ReturnStatementNode(ExpressionNode *expression)
+	: StatementNode(), expression(expression)
 {
-	assert(NOT_NULL_OF_TYPE(exprStmt, ExpressionStatementNode*));
+	assert(NOT_NULL(expression));
+}
+
+ReturnStatementNode::~ReturnStatementNode() {
+	delete expression;
 }
 
 /*    (DE)CONSTRUCT FUNCTION END    */
@@ -131,7 +135,7 @@ void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 
 void ReturnStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	
-	exprStmt->AnalyzeSemantic(intab);
+	expression->AnalyzeSemantic(intab);
 }
 
 /*       SEMANTIC ANALYZE END       */
@@ -183,7 +187,9 @@ void ForStatementNode::PrintContentInLevel(int level) const {
 void ReturnStatementNode::PrintContentInLevel(int level) const {
 	printf("Return Statement\n");
 
-	PRINT_CHILD_WITH_HINT(exprStmt, "RETURN VALUE");
+	if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) return;
+	
+	PRINT_CHILD_WITH_HINT(expression, "RETURN VALUE");
 }
 
 /*        PRINT FUNCTION END        */

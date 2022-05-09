@@ -5,6 +5,7 @@
 #include "StatementNode.h"
 #include "ExpressionNode.h"
 #include "TypeNode.h"
+#include "Utility.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -119,9 +120,9 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 	}
 
 	for(int i = 0; i < paramNum; i++) {
-		if(!TypeNode::IsTypeCompatible(argTypes[i], paramTypes[i])) {
+		if(!TypeUtils::CanConvert(argTypes[i], paramTypes[i])) {
 			sprintf(message, "cannot convert '%s' to '%s' in call to function %s.",
-				TypeNode::GetTypeName(argTypes[i]), TypeNode::GetTypeName(paramTypes[i]), fname);
+				TypeUtils::GetTypeName(argTypes[i]), TypeUtils::GetTypeName(paramTypes[i]), fname);
 			throw ASTException(message);
 		}
 	}

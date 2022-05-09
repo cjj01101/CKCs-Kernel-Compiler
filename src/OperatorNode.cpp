@@ -1,7 +1,9 @@
 #include <assert.h>
 #include <stdio.h>
 #include "OperatorNode.h"
-#include "TypeNode.h"
+#include "Utility.h"
+
+using namespace TypeUtils;
 
 /*        CONSTRUCT FUNCTION        */
 
@@ -44,17 +46,20 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	/* Validate Operand Types */
 	if((leftType == Type::VOID || rightType == Type::VOID) ||
-	   (IsIntegerOperator() && (leftType != Type::INTEGER || rightType != Type::INTEGER)))
+	   (IsIntegerOperator() && (leftType == Type::FLOAT || rightType == Type::FLOAT)))
 	{
 	   	char message[128];
 		sprintf(message, "invalid operands of type '%s' and '%s' to binary operator '%s'.",
-			TypeNode::GetTypeName(leftType), TypeNode::GetTypeName(rightType), GetOperatorName(op));
+			GetTypeName(leftType), GetTypeName(rightType), GetOperatorName(op));
 		throw ASTException(message);
 	}
 
 	/* Determine Value Type */
-	valueType = TypeNode::GetPromotedTypeBetween(leftType, rightType);
-
+	valueType = IsLogicalOperator() ? Type::BOOLEAN
+			  : IsRelationalOperator() ? Type::BOOLEAN
+			  : IsIntegerOperator() ? Type::INTEGER
+			  : IsArithmeticOperator() ? GetPromotedTypeBetween(Type::INTEGER, GetPromotedTypeBetween(leftType, rightType))
+			  : GetPromotedTypeBetween(leftType, rightType);
 }
 
 void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -67,10 +72,10 @@ void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
 	Type rightType = rightValue->GetValueType();
 
 	/* Validate Operand Types */
-	if(!TypeNode::IsTypeCompatible(leftType, rightType)) {
+	if(!CanConvert(rightType, leftType)) {
 		char message[128];
 		sprintf(message, "cannot convert '%s' to '%s' in initialization.",
-			TypeNode::GetTypeName(leftType), TypeNode::GetTypeName(rightType));
+			GetTypeName(leftType), GetTypeName(rightType));
 		throw ASTException(message);
 	}
 
@@ -85,7 +90,7 @@ void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
 
 void BinaryOpNode::PrintContentInLevel(int level) const {
 
-	printf("%s\n", GetOperatorName(op));
+	printf("%s(%s)\n", GetOperatorName(op), GetTypeName(valueType));
 
 	if(leftOperand) PRINT_CHILD_WITH_HINT(leftOperand, "LEFT");
 	if(rightOperand) PRINT_CHILD_WITH_HINT(rightOperand, "RIGHT");
@@ -103,9 +108,24 @@ void AssignOpNode::PrintContentInLevel(int level) const {
 
 /*        AUXILIARY FUNCTION        */
 
+bool BinaryOpNode::IsArithmeticOperator() {
+	return (op == Operator::ADD || op == Operator::SUB ||
+	   		op == Operator::MUL || op == Operator::DIV);
+}
+
 bool BinaryOpNode::IsIntegerOperator() {
 	return (op == Operator::OR || op == Operator::XOR ||
 	   		op == Operator::AND || op == Operator::MOD);
+}
+
+bool BinaryOpNode::IsLogicalOperator() {
+	return (op == Operator::LOGOR || op == Operator::LOGAND);
+}
+
+bool BinaryOpNode::IsRelationalOperator() {
+	return (op == Operator::EQ || op == Operator::NEQ ||
+			op == Operator::LT || op == Operator::LTE || 
+			op == Operator::GT || op == Operator::GTE);
 }
 
 const char *BinaryOpNode::GetOperatorName(Operator op) {

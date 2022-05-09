@@ -12,11 +12,7 @@ public:
 	Type GetType() { return type; }
 	
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;	
-
-	static const char *GetTypeName(Type type);
-	static bool IsTypeCompatible(Type first, Type second);
-	static Type GetPromotedTypeBetween(Type first, Type second);
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	Type type;

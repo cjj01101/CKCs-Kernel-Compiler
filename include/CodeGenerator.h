@@ -1,7 +1,7 @@
 #ifndef _CODE_GENERATOR_H_
 #define _CODE_GENERATOR_H_
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 #include "llvm/IR/IRBuilder.h"
@@ -27,6 +27,9 @@ public:
 	llvm::Type *ConvertToLLVMType(Type type);
 	llvm::Type *ConvertToLLVMPtrType(Type type);
 	llvm::Constant *GetTypeDefaultValue(Type type);
+
+	/* Type Conversion */
+	llvm::Value *CastValueType(llvm::Value *origin, Type from, Type to);
 
 	llvm::LLVMContext context;
 	llvm::Module module;

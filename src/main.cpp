@@ -16,10 +16,10 @@ int main(int argc, char ** argv){
     ASTNode *root = parse_and_generate_syntax_tree(input_file);
     AbstractSyntaxTree synTree(root);
 
-    synTree.Print();
-
     try {
         synTree.AnalyzeSemantic();
+
+        synTree.Print();
 
         CodeGenerator::InitializeLLVM();
         CodeGenerator cg;

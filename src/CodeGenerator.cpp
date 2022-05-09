@@ -24,6 +24,7 @@
 #include "OperatorNode.h"
 #include "ConstantNode.h"
 #include "TypeNode.h"
+#include "Utility.h"
 
 //===------------------------------------------------------------===//
 // Auxiliary Function
@@ -118,13 +119,19 @@ llvm::Value *DeclarationNode::CodeGen(CodeGenerator *generator) {
     }*/
 
     res = generator->builder.CreateAlloca(generator->ConvertToLLVMType(dtype), nullptr, dname);
-    if (initValue) res = generator->builder.CreateStore(initValue->CodeGen(generator), res);
+    if (initValue) {
+        llvm::Value *R = initValue->CodeGen(generator);
+        R = generator->CastValueType(R, initValue->GetValueType(), dtype);
+        res = generator->builder.CreateStore(R, res);
+    }
     
     return res;
 }
 
 llvm::Value *CompoundStatementNode::CodeGen(CodeGenerator *generator) {
     
+    Info("[NODE] Compound Statement Node");
+
     for (auto item : items) item->CodeGen(generator);
 
     return nullptr;
@@ -132,6 +139,8 @@ llvm::Value *CompoundStatementNode::CodeGen(CodeGenerator *generator) {
 
 llvm::Value *ExpressionStatementNode::CodeGen(CodeGenerator *generator) {
     
+    Info("[NODE] Expression Statement Node");
+
     expression->CodeGen(generator);
 
     return nullptr;
@@ -139,6 +148,8 @@ llvm::Value *ExpressionStatementNode::CodeGen(CodeGenerator *generator) {
 
 llvm::Value *IfStatementNode::CodeGen(CodeGenerator *generator) {
     
+    Info("[NODE] If Statement Node");
+
     condition->CodeGen(generator);
     thenStmt->CodeGen(generator);
     elseStmt->CodeGen(generator);
@@ -148,6 +159,8 @@ llvm::Value *IfStatementNode::CodeGen(CodeGenerator *generator) {
 
 llvm::Value *WhileStatementNode::CodeGen(CodeGenerator *generator) {
     
+    Info("[NODE] While Statement Node");
+
     condition->CodeGen(generator);
     body->CodeGen(generator);
 
@@ -156,6 +169,8 @@ llvm::Value *WhileStatementNode::CodeGen(CodeGenerator *generator) {
 
 llvm::Value *ForStatementNode::CodeGen(CodeGenerator *generator) {
     
+    Info("[NODE] For Statement Node");
+
     init->CodeGen(generator);
     condition->CodeGen(generator);
     loop->CodeGen(generator);
@@ -166,6 +181,8 @@ llvm::Value *ForStatementNode::CodeGen(CodeGenerator *generator) {
 
 llvm::Value *ReturnStatementNode::CodeGen(CodeGenerator *generator) {
     
+    Info("[NODE] Return Statement Node");
+
     exprStmt->CodeGen(generator);
 
     return nullptr;
@@ -178,6 +195,8 @@ llvm::Value *EmptyExpressionNode::CodeGen(CodeGenerator *generator) {
 
 llvm::Value *FunctionCallNode::CodeGen(CodeGenerator *generator) {
 
+    Info("[NODE] Function Call Node");
+
     llvm::Function *function = generator->module.getFunction(std::string(name->GetName()));
 
     std::vector<llvm::Value *> args;
@@ -189,119 +208,167 @@ llvm::Value *FunctionCallNode::CodeGen(CodeGenerator *generator) {
 }
 
 llvm::Value *ArgumentListNode::CodeGen(CodeGenerator *generator) {
-    //for (auto arg : arguments) arg->CodeGen(generator);
     return nullptr;
 }
 
 llvm::Value *BinaryOpNode::CodeGen(CodeGenerator *generator) {
+    
+    Info("[NODE] Binary Operation Node");
+
     llvm::Value *L = leftOperand->CodeGen(generator);
     llvm::Value *R = rightOperand->CodeGen(generator);
 
-    // if (!L || !R)  return nullptr;
+    assert(L != nullptr && R != nullptr);
 
     Type leftType = leftOperand->GetValueType();
     Type rightType = rightOperand->GetValueType();
-    Type opType = TypeNode::GetPromotedTypeBetween(leftType, rightType);
+    Type opType = TypeUtils::GetPromotedTypeBetween(leftType, rightType);
 
-    // Downcast to INT if Logical Operator
-    if(op == Operator::LOGAND || op == Operator::LOGOR) {
-        opType = Type::INTEGER;
-        if(leftType == Type::FLOAT){
-            L = generator->builder.CreateFPToSI(L, generator->builder.getInt32Ty(), "cast float to int");
-        }
-        if(rightType == Type::FLOAT){
-            R = generator->builder.CreateFPToSI(R, generator->builder.getInt32Ty(), "cast float to intt");
-        }
+    /* Cast Operands */
+
+    /* Downcast to BOOLEAN if Logical Operation */
+    if(IsLogicalOperator()) {
+        L = generator->CastValueType(L, leftType, Type::BOOLEAN);
+        R = generator->CastValueType(R, rightType, Type::BOOLEAN);
     }
 
-    // Upcast if Necessary
-    if(opType == Type::FLOAT) {
-        if(leftType == Type::INTEGER){
-            L = generator->builder.CreateSIToFP(L, generator->builder.getDoubleTy(), "cast int to float");
-        }
-        if(rightType == Type::INTEGER){
-            R = generator->builder.CreateSIToFP(R, generator->builder.getDoubleTy(), "cast int to float");
-        }
+    /* Upcast from BOOLEAN to INTEGER if Integer Operation
+     * or Relational Operation with at Least 1 Interger Operands and no Float Operands
+     * or Arithmetic Operation with Non-float Operands */
+    else if(opType == Type::INTEGER || valueType == Type::INTEGER) {
+        L = generator->CastValueType(L, leftType, Type::INTEGER);
+        R = generator->CastValueType(R, rightType, Type::INTEGER);
     }
 
+    /* Upcast to Float if Arithmetic/Relational Operation with at Least 1 Float Operands */
+    else if (opType == Type::FLOAT) {
+        L = generator->CastValueType(L, leftType, Type::FLOAT);
+        R = generator->CastValueType(R, rightType, Type::FLOAT);
+    }
+
+    /* Compute Result */
+    llvm::Value *res = nullptr;
     switch(op) {
-        case Operator::ADD: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateAdd(L, R, "iadd");
-                case Type::FLOAT: return generator->builder.CreateFAdd(L, R, "fadd");
-            }
 
-        case Operator::SUB:
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateSub(L, R, "isub");
-                case Type::FLOAT: return generator->builder.CreateFSub(L, R, "fsub");
-            }
+        case Operator::ADD: {
+
+            res = valueType == Type::FLOAT ? generator->builder.CreateFAdd(L, R, "faddtmp")
+                : generator->builder.CreateAdd(L, R, "iaddtmp");
+            break;
+
+        }
+        case Operator::SUB: {
+
+            res = valueType == Type::FLOAT ? generator->builder.CreateFSub(L, R, "fsubtmp")
+                : generator->builder.CreateSub(L, R, "isubtmp");
+            break;
+
+        }
+        case Operator::MUL: {
         
-        case Operator::MUL: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateMul(L, R, "imul");
-                case Type::FLOAT: return generator->builder.CreateFMul(L, R, "fmul");
-            }
+            res = valueType == Type::FLOAT ? generator->builder.CreateFMul(L, R, "fmultmp")
+                : generator->builder.CreateMul(L, R, "imultmp");
+            break;
 
-        case Operator::DIV:
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateSDiv(L, R, "idiv");
-                case Type::FLOAT: return generator->builder.CreateFDiv(L, R, "fdiv");
-            }
-
-        case Operator::MOD: return generator->builder.CreateSRem(L, R, "mod");
-
-        case Operator::AND: return generator->builder.CreateAnd(L, R, "and");
-        case Operator::OR:  return generator->builder.CreateOr(L, R, "or");
-        case Operator::XOR: return generator->builder.CreateXor(L, R, "xor");
-
-        case Operator::EQ: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateICmpEQ(L, R, "ieq");
-                case Type::FLOAT: return generator->builder.CreateFCmpOEQ(L, R, "feq");
-            }
-
-        case Operator::NEQ: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateICmpNE(L, R, "ine");
-                case Type::FLOAT: return generator->builder.CreateFCmpONE(L, R, "fne");
-            }
-
-        case Operator::GT: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateICmpSGT(L, R, "igt");
-                case Type::FLOAT: return generator->builder.CreateFCmpOGT(L, R, "fgt");
-            }
+        }
+        case Operator::DIV: {
         
-        case Operator::GTE: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateICmpSGE(L, R, "ige");
-                case Type::FLOAT: return generator->builder.CreateFCmpOGE(L, R, "fge");
-            }
-        
-        case Operator::LT: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateICmpSLT(L, R, "ilt");
-                case Type::FLOAT: return generator->builder.CreateFCmpOLT(L, R, "flt");
-            }
-        
-        case Operator::LTE: 
-            switch(opType) {
-                case Type::INTEGER: return generator->builder.CreateICmpSLE(L, R, "ile");
-                case Type::FLOAT: return generator->builder.CreateFCmpOLE(L, R, "fle");
-            }
+            res = valueType == Type::FLOAT ? generator->builder.CreateFDiv(L, R, "fdivtmp")
+                : generator->builder.CreateSDiv(L, R, "idivtmp");
+            break;
 
-        case Operator::LOGAND: return generator->builder.CreateLogicalAnd(L, R, "logicand");
+        }
+        case Operator::MOD: {
 
-        case Operator::LOGOR: return generator->builder.CreateLogicalOr(L, R, "logicor");
+            res = generator->builder.CreateSRem(L, R, "modtmp");
+            break;
+
+        }
+        case Operator::AND: {
+
+            res = generator->builder.CreateAnd(L, R, "andtmp");
+            break;
+
+        }
+        case Operator::OR: {
+
+            res = generator->builder.CreateOr(L, R, "ortmp"); 
+            break;
+
+        }
+        case Operator::XOR: {
+
+            res = generator->builder.CreateXor(L, R, "xortmp"); 
+            break;
+
+        }
+        case Operator::EQ: {
+
+            res = opType == Type::FLOAT ? generator->builder.CreateFCmpOEQ(L, R, "feqtmp")
+                : generator->builder.CreateICmpEQ(L, R, "ieqtmp");
+            break;
+
+        }
+        case Operator::NEQ: {
+
+            res = opType == Type::FLOAT ? generator->builder.CreateFCmpONE(L, R, "fnetmp")
+                : generator->builder.CreateICmpNE(L, R, "inetmp");
+            break;
+
+        }
+        case Operator::GT: {
+
+            res = opType == Type::FLOAT ? generator->builder.CreateFCmpOGT(L, R, "fgttmp")
+                : generator->builder.CreateICmpSGT(L, R, "igttmp");
+            break;
+        
+        }
+        case Operator::GTE: {
+
+            res = opType == Type::FLOAT ? generator->builder.CreateFCmpOGE(L, R, "fgetmp")
+                : generator->builder.CreateICmpSGE(L, R, "igetmp");
+            break;
+        
+        }
+        case Operator::LT: {
+
+            res = opType == Type::FLOAT ? generator->builder.CreateFCmpOLT(L, R, "flttmp")
+                : generator->builder.CreateICmpSLT(L, R, "ilttmp");
+            break;
+        
+        }
+        case Operator::LTE: {
+
+            res = opType == Type::FLOAT ? generator->builder.CreateFCmpOLE(L, R, "fletmp")
+                : generator->builder.CreateICmpSLE(L, R, "iletmp");
+            break;
+
+        }
+        case Operator::LOGAND: {
+
+            res = generator->builder.CreateLogicalAnd(L, R, "logicandtmp");
+            break;
+
+        }
+        case Operator::LOGOR: {
+
+            res = generator->builder.CreateLogicalOr(L, R, "logicortmp");
+            break;
+
+        }
     }
 
-    return nullptr;
+    assert(res != nullptr);
+    return res;
 }
 
 llvm::Value *AssignOpNode::CodeGen(CodeGenerator *generator) {
+
+    Info("[NODE] Assignment Node");
+    
     llvm::Value *L = leftValue->CodeGen(generator);
     llvm::Value *R = rightValue->CodeGen(generator);
+    R = generator->CastValueType(R, rightValue->GetValueType(), valueType);
 
     return generator->builder.CreateStore(R, L);
 }
@@ -360,7 +427,6 @@ llvm::Type *CodeGenerator::ConvertToLLVMPtrType(Type type) {
     }
 }
 
-
 llvm::Constant *CodeGenerator::GetTypeDefaultValue(Type type) {
     switch(type) {
         // TO DO : analyze int a = 1 + b * 3; Type::VOID
@@ -369,4 +435,34 @@ llvm::Constant *CodeGenerator::GetTypeDefaultValue(Type type) {
         case Type::VOID: return nullptr;
         default: return nullptr;
     }
+}
+
+llvm::Value *CodeGenerator::CastValueType(llvm::Value *origin, Type from, Type to) {
+
+    switch(to) {
+
+        case Type::BOOLEAN:
+            switch(from) {
+                case Type::BOOLEAN: return origin;
+                case Type::INTEGER: return builder.CreateICmpNE(origin, builder.getInt32(0), "bcasttmp");
+                case Type::FLOAT: return builder.CreateFCmpONE(origin, llvm::ConstantFP::get(builder.getDoubleTy(), 0.0), "bcasttmp");
+            }
+
+        case Type::INTEGER:
+            switch(from) {
+                case Type::BOOLEAN: return builder.CreateIntCast(origin, builder.getInt32Ty(), false, "icasttmp");
+                case Type::INTEGER: return origin;
+                case Type::FLOAT: return builder.CreateFPToSI(origin, builder.getInt32Ty(), "icasttmp");
+            }
+
+        case Type::FLOAT:
+            switch(from) {
+                case Type::BOOLEAN: return builder.CreateUIToFP(origin, builder.getDoubleTy(), "fcasttmp");
+                case Type::INTEGER: return builder.CreateSIToFP(origin, builder.getDoubleTy(), "fcasttmp");
+                case Type::FLOAT: return origin;
+            }
+
+    }
+
+    assert(false);
 }

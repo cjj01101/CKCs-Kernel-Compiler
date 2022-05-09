@@ -9,7 +9,6 @@ class ExpressionNode : public ASTNode {
 public:
 	ExpressionNode() : ASTNode(), valueType(Type::VOID) {}
 	virtual ~ExpressionNode() {}
-	virtual llvm::Value *CodeGen() override;
 	
 	Type GetValueType() { return valueType; }
 
@@ -25,7 +24,7 @@ public:
 	~EmptyExpressionNode() {}
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 	
 private:
 	virtual void PrintContentInLevel(int level) const override;
@@ -41,7 +40,7 @@ public:
 	char *GetName() { return id; }
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 	
 private:
 	char id[MAXVARLEN];

@@ -17,11 +17,20 @@ int main(int argc, char ** argv){
     AbstractSyntaxTree synTree(root);
 
     synTree.Print();
-    synTree.AnalyzeSemantic();
 
-    // Make the module, which holds all the code.
-    InitializeModule();
-    Generate(root);
+    try {
+        synTree.AnalyzeSemantic();
+
+        CodeGenerator::InitializeLLVM();
+        CodeGenerator cg;
+        synTree.CodeGen(&cg);
+
+        cg.PrintIR();
+    } catch (ASTException &e) {
+        e.PrintMessage();
+    }
+
+    
 
     return 0;
 }

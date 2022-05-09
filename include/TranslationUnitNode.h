@@ -13,7 +13,7 @@ public:
 	void AppendDefinition(ASTNode *def);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	std::vector<ASTNode*> definitions;

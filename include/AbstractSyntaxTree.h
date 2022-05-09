@@ -3,6 +3,8 @@
 
 #include "ASTNode.h"
 
+class CodeGenerator;
+
 class AbstractSyntaxTree {
 
 public:
@@ -10,16 +12,8 @@ public:
 	~AbstractSyntaxTree() { delete root; }
 
 	void Print() { if(root) root->PrintInLevel(0); }
-	void AnalyzeSemantic() {
-		if(root) {
-			try {
-				SymbolTable symtab;
-				root->AnalyzeSemantic(&symtab);
-			} catch (ASTException &e) {
-				e.PrintMessage();
-			}
-		}
-	}
+	void AnalyzeSemantic() { if(root) { SymbolTable symtab; root->AnalyzeSemantic(&symtab); } }
+	void CodeGen(CodeGenerator *generator) { if(root) root->CodeGen(generator); }
 
 private:
 	ASTNode *root;

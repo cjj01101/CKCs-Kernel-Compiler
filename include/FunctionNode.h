@@ -12,7 +12,7 @@ public:
 	~FunctionNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 	
 private:
 	TypeNode *returnType;
@@ -26,6 +26,8 @@ private:
 
 class ParameterListNode : public ASTNode {
 
+	friend class FunctionNode;
+
 public:
 	ParameterListNode() : ASTNode(), parameters() {}
 	~ParameterListNode();
@@ -35,7 +37,7 @@ public:
 	void GetParameterNames(std::vector<std::string> &names);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	std::vector<DeclarationNode*> parameters;
@@ -51,7 +53,7 @@ public:
 	~FunctionCallNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	IdentifierNode *name;
@@ -63,6 +65,8 @@ private:
 
 class ArgumentListNode : public ASTNode {
 
+	friend class FunctionCallNode;
+
 public:
 	ArgumentListNode() : ASTNode(), arguments() {}
 	~ArgumentListNode();
@@ -71,7 +75,7 @@ public:
 	void GetArgumentTypes(std::vector<Type> &types);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen() override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 	
 private:
 	std::vector<ExpressionNode*> arguments;

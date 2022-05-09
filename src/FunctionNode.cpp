@@ -88,11 +88,19 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 	arguments->AnalyzeSemantic(intab);
 
 	/* Start Type Checking */
+	char message[128];
 
-	/* Get Parameter Types*/
+	/* Check Symbol Kind */
 	char *fname = name->GetName();
 	std::string sym(fname);
-	const auto &paramTypes = intab->FindSymbolOccurrence(sym)->entry.at(sym).type.argTypes;
+	const auto &symbolContent = intab->FindSymbolOccurrence(sym)->entry.at(sym);
+	if(symbolContent.kind != SymbolKind::FUNCTION) {
+		sprintf(message, "'%s' is not a function.", fname);
+		throw ASTException(message);
+	}
+	
+	/* Get Parameter Types */
+	const auto &paramTypes = symbolContent.type.argTypes;
 	int paramNum = paramTypes.size();
 
 	/* Get Argument Types*/
@@ -101,7 +109,6 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 	int argNum = argTypes.size();
 
 	/* Validate Argument Types */
-	char message[128];
 	if(argNum != paramNum) {
 		sprintf(message, "function %s expects %d arguments, %d provided.", fname, paramNum, argNum);
 		throw ASTException(message);

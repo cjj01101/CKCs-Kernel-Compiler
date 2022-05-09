@@ -1,37 +1,37 @@
 #ifndef _CODE_GENERATOR_H_
 #define _CODE_GENERATOR_H_
 
-#include <algorithm>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
 #include <map>
-#include <memory>
 #include <string>
-#include <vector>
 
-#include "ASTNode.h"
-#include "ConstantNode.h"
-#include "DeclarationNode.h"
-#include "ExpressionNode.h"
-#include "FunctionNode.h"
-#include "OperatorNode.h"
-#include "StatementNode.h"
-#include "TranslationUnitNode.h"
-#include "TypeNode.h"
+#include "llvm/IR/IRBuilder.h"
+#include "common.h"
 
-static std::unique_ptr<llvm::LLVMContext> TheContext;
-static std::unique_ptr<llvm::IRBuilder<>> Builder;
-static std::unique_ptr<llvm::Module> TheModule;
-static std::map<std::string, llvm::Value *> NamedValues;
+/* FORWARD DECLARATION */
+namespace llvm {
+	class Value;
+	class LLVMContext;
+	class Module;
+};
+/* FORWARD DECLARATION */
 
-llvm::Value *LogErrorV(const char *Str);
+class CodeGenerator {
 
-void Info(const char *Str);
+public:
+	CodeGenerator() : context(), module("IR", context), builder(context) {}
+	~CodeGenerator() {}
 
-void InitializeModule();
+	static void InitializeLLVM();
+	void PrintIR();
 
-void Generate(ASTNode *root);
+	llvm::Type *ConvertToLLVMType(Type type);
+	llvm::Type *ConvertToLLVMPtrType(Type type);
+	llvm::Constant *GetTypeDefaultValue(Type type);
 
+	llvm::LLVMContext context;
+	llvm::Module module;
+	llvm::IRBuilder<> builder;
+
+};
 
 #endif

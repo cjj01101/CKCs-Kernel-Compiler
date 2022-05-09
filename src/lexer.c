@@ -1,6 +1,6 @@
-#line 1 "./src/lexer.c"
+#line 2 "./src/lexer.c"
 
-#line 3 "./src/lexer.c"
+#line 4 "./src/lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -495,8 +495,8 @@ char *yytext;
     #include "y.tab.h"
 
     extern "C" int yylex();
-#line 498 "./src/lexer.c"
 #line 499 "./src/lexer.c"
+#line 500 "./src/lexer.c"
 
 #define INITIAL 0
 
@@ -716,7 +716,7 @@ YY_DECL
 #line 14 "bison/lexer.l"
 
 
-#line 719 "./src/lexer.c"
+#line 720 "./src/lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -964,7 +964,7 @@ YY_RULE_SETUP
 #line 54 "bison/lexer.l"
 ECHO;
 	YY_BREAK
-#line 967 "./src/lexer.c"
+#line 968 "./src/lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

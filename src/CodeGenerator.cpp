@@ -1,313 +1,33 @@
+#include <vector>
+
+#include "llvm/ADT/APFloat.h"
+#include "llvm/ADT/STLExtras.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+#include "llvm/IR/GlobalVariable.h"
+#include "llvm/IR/ValueSymbolTable.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Support/TargetSelect.h"
+
 #include "CodeGenerator.h"
+#include "AbstractSyntaxTree.h"
+#include "TranslationUnitNode.h"
+#include "DeclarationNode.h"
+#include "FunctionNode.h"
+#include "StatementNode.h"
+#include "ExpressionNode.h"
+#include "OperatorNode.h"
+#include "ConstantNode.h"
+#include "TypeNode.h"
 
 //===------------------------------------------------------------===//
 // Auxiliary Function
 //===------------------------------------------------------------===//
-
-llvm::AllocaInst *CreateEntryBlockAlloca(llvm::Function * TheFunction, llvm::StringRef VarName, llvm::Type *type) {
-    llvm::IRBuilder<> Tmp(&TheFunction->getEntryBlock(), TheFunction->getEntryBlock().begin());
-    return Tmp.CreateAlloca(type, nullptr, VarName);
-}
-
-llvm::Type *TypeNode::ConverToLLVMPtrType(Type type) {
-    switch (type)
-    {
-        case Type::INTEGER: return llvm::Type::getInt32PtrTy(*TheContext);
-        case Type::FLOAT: return llvm::Type::getDoublePtrTy(*TheContext);
-        case Type::VOID: return llvm::Type::getDoublePtrTy(*TheContext);
-        default: Info("[ERROR] Invalid Type!"); return nullptr;
-    }
-}
-
-llvm::Type *TypeNode::ConvertToLLVMType(Type type) {
-    switch (type)
-    {
-        case Type::INTEGER: return llvm::Type::getInt32Ty(*TheContext);
-        case Type::FLOAT: return llvm::Type::getDoubleTy(*TheContext);
-        case Type::VOID: return llvm::Type::getVoidTy(*TheContext);
-        default: Info("[ERROR] Invalid Type!"); return nullptr;
-    }
-}
-
-llvm::Constant *TypeNode::initValue(Type type) {
-    switch(type) {
-        // TO DO : analyze int a = 1 + b * 3; Type::VOID
-        case Type::INTEGER: return Builder->getInt32(0);
-        case Type::FLOAT: return llvm::ConstantFP::get(Builder->getDoubleTy(), 0.0);
-        case Type::VOID: return nullptr;
-        default: Info("[ERROR] Invalid Type!"); return nullptr;
-    }
-}
-
-//===------------------------------------------------------------===//
-// Code Generation
-//===------------------------------------------------------------===//
-
-llvm::Value *TranslationUnitNode::CodeGen() {
-    Info("[NODE] TranslationNode");
-    for (auto def : definitions)
-        def->CodeGen();
-    return nullptr;
-}
-
-llvm::Value *FunctionNode::CodeGen() {
-    // Make the function type.
-    std::vector<Type> paramTypes;
-    parameters->GetParameterTypes(paramTypes);
-    std::vector<llvm::Type*> Variables;
-    for(auto type : paramTypes) {
-        Variables.push_back(TypeNode::ConvertToLLVMType(type));
-    }
-    llvm::FunctionType *FT = llvm::FunctionType::get(TypeNode::ConvertToLLVMType(returnType->GetType()), Variables, false);
-
-    llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, name->GetName(), TheModule.get());
-
-    // Set names for all arguments.
-    std::vector<std::string> paramNames;
-    parameters->GetParameterNames(paramNames);
-    unsigned int i = 0;
-    for (auto &arg : F->args()) arg.setName(paramNames[i++]);
-
-    // Create a new basic block to start insertion into.
-    llvm::BasicBlock *BB = llvm::BasicBlock::Create(*TheContext, "entry", F);
-    Builder->SetInsertPoint(BB);
-
-    // Record the function arguments in the NamedValues map.
-    NamedValues.clear();
-    for (auto &arg : F->args()) NamedValues[std::string(arg.getName())] = &arg;
-    
-    // Create Function Body
-    body->CodeGen();
-    
-    // Finish off the function.
-    //Builder->CreateRet(RetVal);
-
-    // Validate the generated code, checking for consistency.
-    verifyFunction(*F);
-    return F;
-
-    // Error reading body, remove function.
-    //F->eraseFromParent();
-    //return nullptr;
-}
-
-llvm::Value *ParameterListNode::CodeGen() {
-    return nullptr;
-}
-
-llvm::Value *DeclarationNode::CodeGen() {
-    Info("[NODE] DeclarationNode");
-    std::string dname = std::string(name->GetName());
-
-    llvm::Value *res = nullptr;
-    
-    // if (this->isGlobal) {
-        //res = new llvm::GlobalVariable(*TheModule, TypeNode::ConvertToLLVMType(type->GetType()), true,
-        //                                llvm::GlobalValue::ExternalLinkage, TypeNode::initValue(type->GetType()), DecName);
-        //if (initValue) res = Builder->CreateStore(initValue->CodeGen(), res);
-    // }
-    // else {
-        //res = CreateEntryBlockAlloca(, this->type->toLLVMPtrType);
-        res = Builder->CreateAlloca(TypeNode::ConvertToLLVMType(type->GetType()), nullptr, dname);
-    // }
-    
-    return res;
-}
-
-llvm::Value *TypeNode::CodeGen() {
-    /*
-    switch (type)
-    {
-        case Type::INTEGER: return Builder->getInt32Ty();
-        case Type::FLOAT: return Builder->getDoubleTy();
-        case Type::VOID: return Builder->getVoidTy();
-        default: LogErrorV("[ERROR] Invalid Type!"); return nullptr;
-    }
-    */
-    return nullptr;
-}
-
-llvm::Value *IdentifierNode::CodeGen() {
-    std::string Name = std::string(id);
-    llvm::Value *V = NamedValues[Name];
-    if (!V) return LogErrorV("[ERROR] Unknown Identifier name!");
-    return V;
-}
-
-llvm::Value *CompoundStatementNode::CodeGen() {
-    llvm::Value *res = nullptr;
-    for (auto item : items)
-        item->CodeGen();
-    return res;
-}
-
-llvm::Value *ExpressionNode::CodeGen() {
-    /*
-    switch (valueType)
-    {
-        case Type::INTEGER: return Builder->getInt32Ty();
-        case Type::FLOAT: return Builder->getDoubleTy();
-        case Type::VOID: return Builder->getVoidTy();
-        default: LogErrorV("[ERROR] Invalid Type!"); return nullptr;
-    }
-    */
-    return nullptr;
-}
-
-llvm::Value *AssignOpNode::CodeGen() {
-    llvm::Value *L = leftValue->CodeGen();
-    llvm::Value *R = rightValue->CodeGen();
-
-    return Builder->CreateStore(R, L);
-}
-
-llvm::Value *BinaryOpNode::CodeGen() {
-    llvm::Value *L = leftOperand->CodeGen();
-    llvm::Value *R = rightOperand->CodeGen();
-
-    Type leftType = leftOperand->GetValueType();
-    Type rightType = leftOperand->GetValueType();
-
-    Type opType = TypeNode::GetPromotedTypeBetween(leftType, rightType);
-
-    if (!L || !R) 
-        return nullptr;
-
-    // TO DO : switch opType to decide the valueType.
-    switch(op) {
-        case Operator::ADD: 
-            switch(opType) {
-                case Type::INTEGER: return Builder->CreateAdd(L, R, "iaddtmp");
-                case Type::FLOAT: return Builder->CreateFAdd(L, R, "faddtmp");
-                case Type::VOID: return Builder->CreateAdd(L, R, "vaddtmp");
-            }
-        
-        case Operator::AND: 
-            switch (opType) {
-                case Type::INTEGER: return Builder->CreateAnd(L, R, "iandtmp");
-                case Type::FLOAT: return Builder->CreateAnd(L, R, "andtmp");
-            }
-        
-        case Operator::DIV: return Builder->CreateFDiv(L, R, "divtmp");
-        case Operator::EQ: return Builder->CreateFCmpOEQ(L, R, "eqtmp");
-        case Operator::NEQ: return Builder->CreateFCmpONE(L, R, "neqtmp");
-        case Operator::GT: return Builder->CreateFCmpUGT(L, R, "gttmp");
-        case Operator::GTE: return Builder->CreateFCmpOGE(L, R, "gtetmp");
-        case Operator::LOGAND: 
-        case Operator::LOGOR: 
-        case Operator::LT: L = Builder->CreateFCmpULT(L, R, "cmptmp");
-                            return Builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*TheContext), "booltmp");
-        case Operator::LTE: return Builder->CreateFCmpOLE(L, R, "ltetmp");
-        case Operator::MOD: return nullptr;
-        case Operator::MUL: return Builder->CreateFMul(L, R, "multmp");
-        case Operator::NOT: return nullptr;
-        case Operator::OR:  return Builder->CreateOr(L, R, "ortmp");
-        case Operator::SUB: return Builder->CreateFSub(L, R, "subtmp");
-        case Operator::XOR: return nullptr;
-    }
-
-    return nullptr;
-}
-
-llvm::Value *FunctionCallNode::CodeGen() {
-
-    /*
-    arguments->CodeGen();
-    
-    llvm::Function *CalleeF = TheModule->getFunction(std::string(name->GetName()));
-    if (!CalleeF)
-        return LogErrorV("[ERROR] Unknown Function Referenced!");
-
-    std::vector<llvm::Value *> ArgsV;
-    for (unsigned i = 0, e = arguments->arguments.size(); i != e; ++i) {
-        ArgsV.push_back(arguments->arguments[i]->CodeGen());
-        if (!ArgsV.back())
-            return nullptr;
-    }
-
-    return Builder->CreateCall(CalleeF, ArgsV, "calltmp");
-    */
-
-    return nullptr;
-
-}
-
-llvm::Value *ArgumentListNode::CodeGen() {
-    for (auto iter = arguments.begin(); iter != arguments.end(); iter++)
-        (*iter)->CodeGen();
-    return nullptr;
-}
-
-llvm::Value *IntegerNode::CodeGen() {
-    return Builder->getInt32(num);
-}
-
-llvm::Value *FloatNode::CodeGen() {
-    return llvm::ConstantFP::get(Builder->getDoubleTy(), num);
-}
-
-llvm::Value *IfStatementNode::CodeGen() {
-    condition->CodeGen();
-    thenStmt->CodeGen();
-    elseStmt->CodeGen();
-
-    return nullptr;
-}
-
-llvm::Value *EmptyExpressionNode::CodeGen() {
-    return nullptr;
-}
-
-llvm::Value *WhileStatementNode::CodeGen() {
-    condition->CodeGen();
-    body->CodeGen();
-
-    return nullptr;
-}
-
-llvm::Value *ForStatementNode::CodeGen() {
-    init->CodeGen();
-    condition->CodeGen();
-    loop->CodeGen();
-    body->CodeGen();
-
-    return nullptr;
-}
-
-llvm::Value *ReturnStatementNode::CodeGen() {
-    exprStmt->CodeGen();
-
-    return nullptr;
-}
-
-llvm::Value *ExpressionStatementNode::CodeGen() {
-    return expression->CodeGen();
-}
-
-//===------------------------------------------------------------===//
-// Top-Level Initialize & Generate
-//===------------------------------------------------------------===//
-
-void InitializeModule() {
-    llvm::InitializeNativeTarget();
-    llvm::InitializeNativeTargetAsmPrinter();
-    llvm::InitializeNativeTargetAsmParser();
-
-    // Open a new context and module.
-    TheContext = std::make_unique<llvm::LLVMContext>();
-    TheModule = std::make_unique<llvm::Module>("my cool jit", *TheContext);
-
-    // Create a new builder for the module.
-    Builder = std::make_unique<llvm::IRBuilder<>>(*TheContext);
-}
-
-void Generate(ASTNode *root) {
-    Info("[CODEGEN] IR generation begin...");
-    if (root == nullptr) printf("shit\n");
-    root->CodeGen();
-    Info("[CODEGEN] IR generation finished...");
-    TheModule->print(llvm::errs(), nullptr);
-}
 
 llvm::Value *LogErrorV(const char *str) {
   fprintf(stderr, "CodeGen Error : %s\n", str);
@@ -316,4 +36,337 @@ llvm::Value *LogErrorV(const char *str) {
 
 void Info(const char *str) {
   fprintf(stdout, "Info : %s\n", str);
+}
+
+llvm::AllocaInst *CreateEntryBlockAlloca(llvm::Function * function, llvm::StringRef varName, llvm::Type *type) {
+    llvm::IRBuilder<> Tmp(&function->getEntryBlock(), function->getEntryBlock().begin());
+    return Tmp.CreateAlloca(type, nullptr, varName);
+}
+
+//===------------------------------------------------------------===//
+// Code Generation
+//===------------------------------------------------------------===//
+
+llvm::Value *TranslationUnitNode::CodeGen(CodeGenerator *generator) {
+    for (auto def : definitions) def->CodeGen(generator);
+    return nullptr;
+}
+
+llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
+
+    Info("[NODE] Function Node");
+    
+    // Get Parameter Definition.
+    std::vector<Type> paramTypes;
+    parameters->GetParameterTypes(paramTypes);
+    std::vector<std::string> paramNames;
+    parameters->GetParameterNames(paramNames);
+
+    // Construct Function Node.
+    std::vector<llvm::Type*> Variables;
+    for(auto type : paramTypes) {
+        Variables.push_back(generator->ConvertToLLVMType(type));
+    }
+    llvm::FunctionType *funcType = llvm::FunctionType::get(generator->ConvertToLLVMType(returnType->GetType()), Variables, false);
+    llvm::Function *function = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, name->GetName(), &generator->module);
+
+    // Set Argument Names.
+    unsigned int i = 0;
+    for (auto &arg : function->args()) arg.setName(paramNames[i++]);
+    
+    // Record the function arguments in the NamedValues map.
+    //NamedValues.clear();
+    //for (auto &arg : function->args()) NamedValues[std::string(arg.getName())] = &arg;
+
+    // Generate Function Body.
+    llvm::BasicBlock *funcBody = llvm::BasicBlock::Create(generator->context, "entry", function);
+    generator->builder.SetInsertPoint(funcBody);
+    body->CodeGen(generator);
+
+    // Generate Default Return Instruction
+    Type retType = returnType->GetType();
+    if(retType == Type::VOID) {
+        generator->builder.CreateRetVoid();
+    } else {
+        generator->builder.CreateRet(generator->GetTypeDefaultValue(retType));
+    }
+
+    // Validate the generated code, checking for consistency.
+    verifyFunction(*function);
+    return function;
+}
+
+llvm::Value *ParameterListNode::CodeGen(CodeGenerator *generator) {
+    return nullptr;
+}
+
+llvm::Value *DeclarationNode::CodeGen(CodeGenerator *generator) {
+    
+    Info("[NODE] Declaration Node");
+
+    std::string dname = std::string(name->GetName());
+    Type dtype = type->GetType();
+
+    llvm::Value *res = nullptr;
+    
+    /*if (this->isGlobal) {
+        res = new llvm::GlobalVariable(*generator->module, TypeNode::ConvertToLLVMType(type->GetType()), true,
+                                        llvm::GlobalValue::ExternalLinkage, TypeNode::initValue(type->GetType()), DecName);
+        if (initValue) res = generator->builder.CreateStore(initValue->CodeGen(), res);
+    }
+    else {
+        res = CreateEntryBlockAlloca(, this->type->toLLVMPtrType);
+        
+    }*/
+
+    res = generator->builder.CreateAlloca(generator->ConvertToLLVMType(dtype), nullptr, dname);
+    if (initValue) res = generator->builder.CreateStore(initValue->CodeGen(generator), res);
+    
+    return res;
+}
+
+llvm::Value *CompoundStatementNode::CodeGen(CodeGenerator *generator) {
+    
+    for (auto item : items) item->CodeGen(generator);
+
+    return nullptr;
+}
+
+llvm::Value *ExpressionStatementNode::CodeGen(CodeGenerator *generator) {
+    
+    expression->CodeGen(generator);
+
+    return nullptr;
+}
+
+llvm::Value *IfStatementNode::CodeGen(CodeGenerator *generator) {
+    
+    condition->CodeGen(generator);
+    thenStmt->CodeGen(generator);
+    elseStmt->CodeGen(generator);
+
+    return nullptr;
+}
+
+llvm::Value *WhileStatementNode::CodeGen(CodeGenerator *generator) {
+    
+    condition->CodeGen(generator);
+    body->CodeGen(generator);
+
+    return nullptr;
+}
+
+llvm::Value *ForStatementNode::CodeGen(CodeGenerator *generator) {
+    
+    init->CodeGen(generator);
+    condition->CodeGen(generator);
+    loop->CodeGen(generator);
+    body->CodeGen(generator);
+
+    return nullptr;
+}
+
+llvm::Value *ReturnStatementNode::CodeGen(CodeGenerator *generator) {
+    
+    exprStmt->CodeGen(generator);
+
+    return nullptr;
+}
+
+llvm::Value *EmptyExpressionNode::CodeGen(CodeGenerator *generator) {
+    return nullptr;
+}
+
+
+llvm::Value *FunctionCallNode::CodeGen(CodeGenerator *generator) {
+
+    llvm::Function *function = generator->module.getFunction(std::string(name->GetName()));
+
+    std::vector<llvm::Value *> args;
+    for(auto arg : arguments->arguments) args.push_back(arg->CodeGen(generator));
+
+    return generator->builder.CreateCall(function, args, "call");
+}
+
+llvm::Value *ArgumentListNode::CodeGen(CodeGenerator *generator) {
+    //for (auto arg : arguments) arg->CodeGen(generator);
+    return nullptr;
+}
+
+llvm::Value *BinaryOpNode::CodeGen(CodeGenerator *generator) {
+    llvm::Value *L = leftOperand->CodeGen(generator);
+    llvm::Value *R = rightOperand->CodeGen(generator);
+
+    // if (!L || !R)  return nullptr;
+
+    Type leftType = leftOperand->GetValueType();
+    Type rightType = rightOperand->GetValueType();
+    Type opType = TypeNode::GetPromotedTypeBetween(leftType, rightType);
+
+    // Downcast to INT if Logical Operator
+    if(op == Operator::LOGAND || op == Operator::LOGOR) {
+        opType = Type::INTEGER;
+        if(leftType == Type::FLOAT){
+            L = generator->builder.CreateFPToSI(L, generator->builder.getInt32Ty(), "cast float to int");
+        }
+        if(rightType == Type::FLOAT){
+            R = generator->builder.CreateFPToSI(R, generator->builder.getInt32Ty(), "cast float to intt");
+        }
+    }
+
+    // Upcast if Necessary
+    if(opType == Type::FLOAT) {
+        if(leftType == Type::INTEGER){
+            L = generator->builder.CreateSIToFP(L, generator->builder.getDoubleTy(), "cast int to float");
+        }
+        if(rightType == Type::INTEGER){
+            R = generator->builder.CreateSIToFP(R, generator->builder.getDoubleTy(), "cast int to float");
+        }
+    }
+
+    switch(op) {
+        case Operator::ADD: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateAdd(L, R, "iadd");
+                case Type::FLOAT: return generator->builder.CreateFAdd(L, R, "fadd");
+            }
+
+        case Operator::SUB:
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateSub(L, R, "isub");
+                case Type::FLOAT: return generator->builder.CreateFSub(L, R, "fsub");
+            }
+        
+        case Operator::MUL: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateMul(L, R, "imul");
+                case Type::FLOAT: return generator->builder.CreateFMul(L, R, "fmul");
+            }
+
+        case Operator::DIV:
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateSDiv(L, R, "idiv");
+                case Type::FLOAT: return generator->builder.CreateFDiv(L, R, "fdiv");
+            }
+
+        case Operator::MOD: return generator->builder.CreateSRem(L, R, "mod");
+
+        case Operator::AND: return generator->builder.CreateAnd(L, R, "and");
+        case Operator::OR:  return generator->builder.CreateOr(L, R, "or");
+        case Operator::XOR: return generator->builder.CreateXor(L, R, "xor");
+
+        case Operator::EQ: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateICmpEQ(L, R, "ieq");
+                case Type::FLOAT: return generator->builder.CreateFCmpOEQ(L, R, "feq");
+            }
+
+        case Operator::NEQ: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateICmpNE(L, R, "ine");
+                case Type::FLOAT: return generator->builder.CreateFCmpONE(L, R, "fne");
+            }
+
+        case Operator::GT: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateICmpSGT(L, R, "igt");
+                case Type::FLOAT: return generator->builder.CreateFCmpOGT(L, R, "fgt");
+            }
+        
+        case Operator::GTE: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateICmpSGE(L, R, "ige");
+                case Type::FLOAT: return generator->builder.CreateFCmpOGE(L, R, "fge");
+            }
+        
+        case Operator::LT: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateICmpSLT(L, R, "ilt");
+                case Type::FLOAT: return generator->builder.CreateFCmpOLT(L, R, "flt");
+            }
+        
+        case Operator::LTE: 
+            switch(opType) {
+                case Type::INTEGER: return generator->builder.CreateICmpSLE(L, R, "ile");
+                case Type::FLOAT: return generator->builder.CreateFCmpOLE(L, R, "fle");
+            }
+
+        case Operator::LOGAND: return generator->builder.CreateLogicalAnd(L, R, "logicand");
+
+        case Operator::LOGOR: return generator->builder.CreateLogicalOr(L, R, "logicor");
+    }
+
+    return nullptr;
+}
+
+llvm::Value *AssignOpNode::CodeGen(CodeGenerator *generator) {
+    llvm::Value *L = leftValue->CodeGen(generator);
+    llvm::Value *R = rightValue->CodeGen(generator);
+
+    return generator->builder.CreateStore(R, L);
+}
+
+llvm::Value *IdentifierNode::CodeGen(CodeGenerator *generator) {
+    //std::string Name = std::string(id);
+    //llvm::Value *V = NamedValues[Name];
+    //if (!V) return LogErrorV("[ERROR] Unknown Identifier name!");
+    //return V;
+    return nullptr;
+}
+
+llvm::Value *IntegerNode::CodeGen(CodeGenerator *generator) {
+    return llvm::ConstantInt::get(generator->builder.getInt32Ty(), num);
+}
+
+llvm::Value *FloatNode::CodeGen(CodeGenerator *generator) {
+    return llvm::ConstantFP::get(generator->builder.getDoubleTy(), num);
+}
+
+llvm::Value *TypeNode::CodeGen(CodeGenerator *generator) {
+    return nullptr;
+}
+
+//===------------------------------------------------------------===//
+// Top-Level Initialize & Generate
+//===------------------------------------------------------------===//
+
+void CodeGenerator::InitializeLLVM() {
+    llvm::InitializeNativeTarget();
+    llvm::InitializeNativeTargetAsmPrinter();
+    llvm::InitializeNativeTargetAsmParser();
+}
+
+void CodeGenerator::PrintIR() {
+    module.print(llvm::outs(), nullptr);
+}
+
+llvm::Type *CodeGenerator::ConvertToLLVMType(Type type) {
+    switch (type)
+    {
+        case Type::INTEGER: return llvm::Type::getInt32Ty(context);
+        case Type::FLOAT: return llvm::Type::getDoubleTy(context);
+        case Type::VOID: return llvm::Type::getVoidTy(context);
+        default: return nullptr;
+    }
+}
+
+llvm::Type *CodeGenerator::ConvertToLLVMPtrType(Type type) {
+    switch (type)
+    {
+        case Type::INTEGER: return llvm::Type::getInt32PtrTy(context);
+        case Type::FLOAT: return llvm::Type::getDoublePtrTy(context);
+        case Type::VOID: return llvm::Type::getInt32PtrTy(context);
+        default: return nullptr;
+    }
+}
+
+
+llvm::Constant *CodeGenerator::GetTypeDefaultValue(Type type) {
+    switch(type) {
+        // TO DO : analyze int a = 1 + b * 3; Type::VOID
+        case Type::INTEGER: return llvm::ConstantInt::get(builder.getInt32Ty(), 0);
+        case Type::FLOAT: return llvm::ConstantFP::get(builder.getDoubleTy(), 0.0);
+        case Type::VOID: return nullptr;
+        default: return nullptr;
+    }
 }

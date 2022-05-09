@@ -105,8 +105,7 @@ void AssignOpNode::PrintContentInLevel(int level) const {
 
 bool BinaryOpNode::IsIntegerOperator() {
 	return (op == Operator::OR || op == Operator::XOR ||
-	   		op == Operator::AND || op == Operator::NOT ||
-	   		op == Operator::MOD);
+	   		op == Operator::AND || op == Operator::MOD);
 }
 
 const char *BinaryOpNode::GetOperatorName(Operator op) {

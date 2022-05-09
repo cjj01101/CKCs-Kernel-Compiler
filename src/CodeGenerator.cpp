@@ -57,17 +57,16 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
     Info("[NODE] Function Node");
     
     // Get Parameter Definition.
-    std::vector<Type> paramTypes;
-    parameters->GetParameterTypes(paramTypes);
+    std::vector<llvm::Type*> paramTypes;
     std::vector<std::string> paramNames;
-    parameters->GetParameterNames(paramNames);
+    for(auto param : parameters->parameters) {
+        paramTypes.push_back(generator->ConvertToLLVMType(param->GetType()));
+        paramNames.push_back(param->GetName());
+    }
 
     // Construct Function Node.
-    std::vector<llvm::Type*> Variables;
-    for(auto type : paramTypes) {
-        Variables.push_back(generator->ConvertToLLVMType(type));
-    }
-    llvm::FunctionType *funcType = llvm::FunctionType::get(generator->ConvertToLLVMType(returnType->GetType()), Variables, false);
+    Type retType = returnType->GetType();
+    llvm::FunctionType *funcType = llvm::FunctionType::get(generator->ConvertToLLVMType(retType), paramTypes, false);
     llvm::Function *function = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, name->GetName(), &generator->module);
 
     // Set Argument Names.
@@ -79,12 +78,11 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
     //for (auto &arg : function->args()) NamedValues[std::string(arg.getName())] = &arg;
 
     // Generate Function Body.
-    llvm::BasicBlock *funcBody = llvm::BasicBlock::Create(generator->context, "entry", function);
+    llvm::BasicBlock *funcBody = llvm::BasicBlock::Create(generator->context, "", function);
     generator->builder.SetInsertPoint(funcBody);
     body->CodeGen(generator);
 
     // Generate Default Return Instruction
-    Type retType = returnType->GetType();
     if(retType == Type::VOID) {
         generator->builder.CreateRetVoid();
     } else {
@@ -183,7 +181,9 @@ llvm::Value *FunctionCallNode::CodeGen(CodeGenerator *generator) {
     llvm::Function *function = generator->module.getFunction(std::string(name->GetName()));
 
     std::vector<llvm::Value *> args;
-    for(auto arg : arguments->arguments) args.push_back(arg->CodeGen(generator));
+    for(auto arg : arguments->arguments) {
+        args.push_back(arg->CodeGen(generator));
+    }
 
     return generator->builder.CreateCall(function, args, "call");
 }

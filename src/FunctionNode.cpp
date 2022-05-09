@@ -62,7 +62,9 @@ void FunctionNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	/* Add Function Definition */
 	std::vector<Type> paramTypes;
-	parameters->GetParameterTypes(paramTypes);
+	for(auto param : parameters->parameters) {
+        paramTypes.push_back(param->GetType());
+    }
 	intab->AddEntry(
 		sym,
 		SymbolTableEntry(
@@ -105,7 +107,9 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	/* Get Argument Types*/
 	std::vector<Type> argTypes;
-	arguments->GetArgumentTypes(argTypes);
+	for(auto arg : arguments->arguments) {
+		argTypes.push_back(arg->GetValueType());
+	}
 	int argNum = argTypes.size();
 
 	/* Validate Argument Types */
@@ -176,22 +180,9 @@ void ParameterListNode::AppendParameter(DeclarationNode *param) {
 	parameters.push_back(param);
 }
 
-void ParameterListNode::GetParameterTypes(std::vector<Type> &types) {
-	for(auto param : parameters) types.push_back(param->GetType());
-}
-
-
-void ParameterListNode::GetParameterNames(std::vector<std::string> &names) {
-	for(auto param : parameters) names.push_back(param->GetName());
-}
-
 void ArgumentListNode::AppendArgument(ExpressionNode *arg) {
 	assert(NOT_NULL(arg));
 	arguments.push_back(arg);
-}
-
-void ArgumentListNode::GetArgumentTypes(std::vector<Type> &types) {
-	for(auto arg : arguments) types.push_back(arg->GetValueType());
 }
 
 /*      AUXILIARY FUNCTION END      */

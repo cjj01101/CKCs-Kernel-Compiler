@@ -33,8 +33,6 @@ public:
 	~ParameterListNode();
 
 	void AppendParameter(DeclarationNode *param);
-	void GetParameterTypes(std::vector<Type> &types);
-	void GetParameterNames(std::vector<std::string> &names);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
@@ -72,7 +70,6 @@ public:
 	~ArgumentListNode();
 
 	void AppendArgument(ExpressionNode *arg);
-	void GetArgumentTypes(std::vector<Type> &types);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;

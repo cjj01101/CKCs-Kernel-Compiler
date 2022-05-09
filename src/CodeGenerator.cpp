@@ -49,6 +49,22 @@ llvm::AllocaInst *CreateEntryBlockAlloca(llvm::Function * function, llvm::String
 //===------------------------------------------------------------===//
 
 llvm::Value *TranslationUnitNode::CodeGen(CodeGenerator *generator) {
+
+    Info("[NODE] Translation Unit Node");
+
+    /* Create Global Initialization Function */
+    llvm::FunctionType *funcType = llvm::FunctionType::get(generator->builder.getVoidTy(), false);
+    llvm::Function *function = llvm::Function::Create(funcType,
+                                                      llvm::Function::InternalLinkage,
+                                                      "GlobalInit",
+                                                      &generator->module);
+    llvm::BasicBlock *funcBody = llvm::BasicBlock::Create(generator->context, "initialize", function);
+
+    generator->builder.SetInsertPoint(funcBody);
+    llvm::ReturnInst *ret = generator->builder.CreateRetVoid();
+    generator->JumpToVoid();
+    generator->SetGlobalInsertionPoint(ret);
+
     for (auto def : definitions) def->CodeGen(generator);
     return nullptr;
 }
@@ -68,7 +84,10 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
     // Construct Function Node.
     Type retType = returnType->GetType();
     llvm::FunctionType *funcType = llvm::FunctionType::get(generator->ConvertToLLVMType(retType), paramTypes, false);
-    llvm::Function *function = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, name->GetName(), &generator->module);
+    llvm::Function *function = llvm::Function::Create(funcType,
+                                                      llvm::Function::ExternalLinkage,
+                                                      name->GetName(),
+                                                      &generator->module);
 
     // Set Argument Names.
     unsigned int i = 0;
@@ -90,6 +109,8 @@ llvm::Value *FunctionNode::CodeGen(CodeGenerator *generator) {
         generator->builder.CreateRet(generator->GetTypeDefaultValue(retType));
     }
 
+    generator->JumpToVoid();
+
     // Validate the generated code, checking for consistency.
     verifyFunction(*function);
     return function;
@@ -107,25 +128,38 @@ llvm::Value *DeclarationNode::CodeGen(CodeGenerator *generator) {
     Type dtype = type->GetType();
 
     llvm::Value *res = nullptr;
-    
-    /*if (this->isGlobal) {
-        res = new llvm::GlobalVariable(*generator->module, TypeNode::ConvertToLLVMType(type->GetType()), true,
-                                        llvm::GlobalValue::ExternalLinkage, TypeNode::initValue(type->GetType()), DecName);
-        if (initValue) res = generator->builder.CreateStore(initValue->CodeGen(), res);
-    }
-    else {
-        res = CreateEntryBlockAlloca(, this->type->toLLVMPtrType);
-        
-    }*/
 
-    res = generator->builder.CreateAlloca(generator->ConvertToLLVMType(dtype), nullptr, dname);
-    if (initValue) {
-        llvm::Value *R = initValue->CodeGen(generator);
-        R = generator->CastValueType(R, initValue->GetValueType(), dtype);
-        res = generator->builder.CreateStore(R, res);
+    /* Local Varible */
+    if(generator->builder.GetInsertBlock()) {
+
+        res = generator->builder.CreateAlloca(generator->ConvertToLLVMType(dtype), nullptr, dname);
+
+        if (initValue) {
+            llvm::Value *R = initValue->CodeGen(generator);
+            R = generator->CastValueType(R, initValue->GetValueType(), dtype);
+            res = generator->builder.CreateStore(R, res);
+        }
+    }
+
+    /* Global Varible */
+    else {
+        res = new llvm::GlobalVariable(generator->module,
+                                       generator->ConvertToLLVMType(type->GetType()),
+                                       true,
+                                       llvm::GlobalValue::ExternalLinkage,
+                                       generator->GetTypeDefaultValue(type->GetType()),
+                                       dname);
+
+        if (initValue) {
+            generator->JumpToInitializer();
+            llvm::Value *R = initValue->CodeGen(generator);
+            R = generator->CastValueType(R, initValue->GetValueType(), dtype);
+            res = generator->builder.CreateStore(R, res);
+            generator->JumpToVoid();
+        }
     }
     
-    return res;
+    return nullptr;
 }
 
 llvm::Value *CompoundStatementNode::CodeGen(CodeGenerator *generator) {

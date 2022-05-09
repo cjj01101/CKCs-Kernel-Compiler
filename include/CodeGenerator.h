@@ -31,9 +31,16 @@ public:
 	/* Type Conversion */
 	llvm::Value *CastValueType(llvm::Value *origin, Type from, Type to);
 
+	void SetGlobalInsertionPoint(llvm::Instruction *inst) { init = inst; }
+	void JumpToInitializer() { builder.SetInsertPoint(init); }
+	void JumpToVoid() { builder.ClearInsertionPoint(); }
+
 	llvm::LLVMContext context;
 	llvm::Module module;
 	llvm::IRBuilder<> builder;
+
+private:
+	llvm::Instruction *init;
 
 };
 

@@ -6,8 +6,9 @@
     extern "C" int yylex();
 %}
 
-integer ([1-9]+[0-9]*|0)
-real ([1-9]+[0-9]*|0)(\.[0-9]+)
+integer (\+|-)?([1-9]+[0-9]*|0)
+real {integer}(\.[0-9]+)
+boolean (true|false)
 identifier [A-Za-z_][0-9A-Za-z_]*
 blank [ \f\n\r\t\v]+
 
@@ -44,11 +45,12 @@ blank [ \f\n\r\t\v]+
 "return"        return RETURN;
 "int"           return TYPE_INT;
 "float"         return TYPE_FLOAT;
-"bool"          return TYPE_BOOLEAN;
+"bool"          return TYPE_BOOL;
 "void"          return TYPE_VOID;
-{identifier}    { strncpy(yylval.str, yytext, 64); return ID; }
 {integer}       { yylval.intNum = atoi(yytext); return NUM_INT; }
 {real}          { yylval.floatNum = atof(yytext); return NUM_FLOAT; }
+{boolean}       { yylval.boolNum = (yytext[0] == 't'); return NUM_BOOL;  }
+{identifier}    { strncpy(yylval.str, yytext, 64); return ID; }
 {blank}         ;
 .               { fprintf(stderr, "Input parsing failure: %s.\n", yytext); }
 

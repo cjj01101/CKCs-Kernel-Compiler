@@ -20,6 +20,7 @@
 %union {
     int intNum;
     float floatNum;
+    bool boolNum;
     char str[MAXVARLEN];
     ASTNode *node;
     TypeNode *type;
@@ -38,8 +39,9 @@
 
 %token <intNum> NUM_INT
 %token <floatNum> NUM_FLOAT
+%token <boolNum> NUM_BOOL
 %token <str> ID
-%token TYPE_INT TYPE_FLOAT TYPE_BOOLEAN TYPE_VOID
+%token TYPE_INT TYPE_FLOAT TYPE_BOOL TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_NOT OP_LOGAND OP_LOGOR
@@ -90,6 +92,7 @@
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
                 | TYPE_FLOAT { $$ = new TypeNode(Type::FLOAT); }
+                | TYPE_BOOL { $$ = new TypeNode(Type::BOOLEAN); }
                 | TYPE_VOID { $$ = new TypeNode(Type::VOID); }
                 ;
 
@@ -177,6 +180,7 @@
      
        constant : NUM_INT { $$ = new IntegerNode($1); }
                 | NUM_FLOAT { $$ = new FloatNode($1); }
+                | NUM_BOOL { $$ = new BooleanNode($1); }
                 ;
 
       arguments : arguments COMMA expr { $$ = $1; $1->AppendArgument($3); }

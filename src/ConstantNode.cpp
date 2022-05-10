@@ -24,6 +24,10 @@ void FloatNode::PrintContentInLevel(int level) const {
 	printf("[float] %f\n", num);
 }
 
+void BooleanNode::PrintContentInLevel(int level) const {
+	printf("[bool] %s\n", num ? "true" : "false");
+}
+
 /*        PRINT FUNCTION END        */
 
 /*         GENERATE IR CODE         */
@@ -34,6 +38,10 @@ llvm::Value *IntegerNode::GenerateIR(CodeGenerator *generator) {
 
 llvm::Value *FloatNode::GenerateIR(CodeGenerator *generator) {
     return llvm::ConstantFP::get(generator->builder.getDoubleTy(), num);
+}
+
+llvm::Value *BooleanNode::GenerateIR(CodeGenerator *generator) {
+    return llvm::ConstantInt::getBool(generator->builder.getInt1Ty(), num);
 }
 
 /*       GENERATE IR CODE END       */

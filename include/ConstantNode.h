@@ -20,6 +20,7 @@ class IntegerNode : public ConstantNode {
 public:
 	IntegerNode(int num) : ConstantNode(Type::INTEGER), num(num) { }
 	~IntegerNode() {}
+
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
@@ -34,10 +35,26 @@ class FloatNode : public ConstantNode {
 public:
 	FloatNode(float num) : ConstantNode(Type::FLOAT), num(num) {}
 	~FloatNode() {}
+
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
 	float num;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class BooleanNode : public ConstantNode {
+
+public:
+	BooleanNode(bool num) : ConstantNode(Type::BOOLEAN), num(num) {}
+	~BooleanNode() {}
+	
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+	bool num;
 
 	virtual void PrintContentInLevel(int level) const override;
 

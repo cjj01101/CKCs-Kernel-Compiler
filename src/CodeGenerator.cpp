@@ -17,8 +17,9 @@ llvm::Type *CodeGenerator::ConvertToLLVMType(Type type) {
     {
         case Type::INTEGER: return llvm::Type::getInt32Ty(context);
         case Type::FLOAT: return llvm::Type::getDoubleTy(context);
+        case Type::BOOLEAN: return llvm::Type::getInt1Ty(context);
         case Type::VOID: return llvm::Type::getVoidTy(context);
-        default: return nullptr;
+        default: fprintf(stderr, "Unknown Type."); return nullptr;
     }
 }
 
@@ -27,8 +28,9 @@ llvm::Type *CodeGenerator::ConvertToLLVMPtrType(Type type) {
     {
         case Type::INTEGER: return llvm::Type::getInt32PtrTy(context);
         case Type::FLOAT: return llvm::Type::getDoublePtrTy(context);
+        case Type::BOOLEAN: return llvm::Type::getInt1PtrTy(context);
         case Type::VOID: return llvm::Type::getInt32PtrTy(context);
-        default: return nullptr;
+        default: fprintf(stderr, "Unknown Type."); return nullptr;
     }
 }
 
@@ -37,8 +39,9 @@ llvm::Constant *CodeGenerator::GetTypeDefaultValue(Type type) {
         // TO DO : analyze int a = 1 + b * 3; Type::VOID
         case Type::INTEGER: return llvm::ConstantInt::get(builder.getInt32Ty(), 0);
         case Type::FLOAT: return llvm::ConstantFP::get(builder.getDoubleTy(), 0.0);
-        case Type::VOID: return nullptr;
-        default: return nullptr;
+        case Type::BOOLEAN: return llvm::ConstantInt::getFalse(builder.getInt1Ty());
+        case Type::VOID: fprintf(stderr, "Type Void Has no Default Value."); return nullptr;
+        default: fprintf(stderr, "Unknown Type."); return nullptr;
     }
 }
 

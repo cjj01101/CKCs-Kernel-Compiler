@@ -56,41 +56,42 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     NUM_INT = 258,                 /* NUM_INT  */
     NUM_FLOAT = 259,               /* NUM_FLOAT  */
-    ID = 260,                      /* ID  */
-    TYPE_INT = 261,                /* TYPE_INT  */
-    TYPE_FLOAT = 262,              /* TYPE_FLOAT  */
-    TYPE_BOOLEAN = 263,            /* TYPE_BOOLEAN  */
-    TYPE_VOID = 264,               /* TYPE_VOID  */
-    OP_ADD = 265,                  /* OP_ADD  */
-    OP_SUB = 266,                  /* OP_SUB  */
-    OP_MUL = 267,                  /* OP_MUL  */
-    OP_DIV = 268,                  /* OP_DIV  */
-    OP_MOD = 269,                  /* OP_MOD  */
-    OP_GT = 270,                   /* OP_GT  */
-    OP_LT = 271,                   /* OP_LT  */
-    OP_GTE = 272,                  /* OP_GTE  */
-    OP_LTE = 273,                  /* OP_LTE  */
-    OP_EQ = 274,                   /* OP_EQ  */
-    OP_NEQ = 275,                  /* OP_NEQ  */
-    OP_AND = 276,                  /* OP_AND  */
-    OP_XOR = 277,                  /* OP_XOR  */
-    OP_OR = 278,                   /* OP_OR  */
-    OP_NOT = 279,                  /* OP_NOT  */
-    OP_LOGAND = 280,               /* OP_LOGAND  */
-    OP_LOGOR = 281,                /* OP_LOGOR  */
-    OP_ASSIGN = 282,               /* OP_ASSIGN  */
-    LP = 283,                      /* LP  */
-    RP = 284,                      /* RP  */
-    LBR = 285,                     /* LBR  */
-    RBR = 286,                     /* RBR  */
-    SEM = 287,                     /* SEM  */
-    COMMA = 288,                   /* COMMA  */
-    IF = 289,                      /* IF  */
-    ELSE = 290,                    /* ELSE  */
-    WHILE = 291,                   /* WHILE  */
-    FOR = 292,                     /* FOR  */
-    RETURN = 293,                  /* RETURN  */
-    IFX = 294                      /* IFX  */
+    NUM_BOOL = 260,                /* NUM_BOOL  */
+    ID = 261,                      /* ID  */
+    TYPE_INT = 262,                /* TYPE_INT  */
+    TYPE_FLOAT = 263,              /* TYPE_FLOAT  */
+    TYPE_BOOL = 264,               /* TYPE_BOOL  */
+    TYPE_VOID = 265,               /* TYPE_VOID  */
+    OP_ADD = 266,                  /* OP_ADD  */
+    OP_SUB = 267,                  /* OP_SUB  */
+    OP_MUL = 268,                  /* OP_MUL  */
+    OP_DIV = 269,                  /* OP_DIV  */
+    OP_MOD = 270,                  /* OP_MOD  */
+    OP_GT = 271,                   /* OP_GT  */
+    OP_LT = 272,                   /* OP_LT  */
+    OP_GTE = 273,                  /* OP_GTE  */
+    OP_LTE = 274,                  /* OP_LTE  */
+    OP_EQ = 275,                   /* OP_EQ  */
+    OP_NEQ = 276,                  /* OP_NEQ  */
+    OP_AND = 277,                  /* OP_AND  */
+    OP_XOR = 278,                  /* OP_XOR  */
+    OP_OR = 279,                   /* OP_OR  */
+    OP_NOT = 280,                  /* OP_NOT  */
+    OP_LOGAND = 281,               /* OP_LOGAND  */
+    OP_LOGOR = 282,                /* OP_LOGOR  */
+    OP_ASSIGN = 283,               /* OP_ASSIGN  */
+    LP = 284,                      /* LP  */
+    RP = 285,                      /* RP  */
+    LBR = 286,                     /* LBR  */
+    RBR = 287,                     /* RBR  */
+    SEM = 288,                     /* SEM  */
+    COMMA = 289,                   /* COMMA  */
+    IF = 290,                      /* IF  */
+    ELSE = 291,                    /* ELSE  */
+    WHILE = 292,                   /* WHILE  */
+    FOR = 293,                     /* FOR  */
+    RETURN = 294,                  /* RETURN  */
+    IFX = 295                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -101,41 +102,42 @@ extern int yydebug;
 #define YYUNDEF 257
 #define NUM_INT 258
 #define NUM_FLOAT 259
-#define ID 260
-#define TYPE_INT 261
-#define TYPE_FLOAT 262
-#define TYPE_BOOLEAN 263
-#define TYPE_VOID 264
-#define OP_ADD 265
-#define OP_SUB 266
-#define OP_MUL 267
-#define OP_DIV 268
-#define OP_MOD 269
-#define OP_GT 270
-#define OP_LT 271
-#define OP_GTE 272
-#define OP_LTE 273
-#define OP_EQ 274
-#define OP_NEQ 275
-#define OP_AND 276
-#define OP_XOR 277
-#define OP_OR 278
-#define OP_NOT 279
-#define OP_LOGAND 280
-#define OP_LOGOR 281
-#define OP_ASSIGN 282
-#define LP 283
-#define RP 284
-#define LBR 285
-#define RBR 286
-#define SEM 287
-#define COMMA 288
-#define IF 289
-#define ELSE 290
-#define WHILE 291
-#define FOR 292
-#define RETURN 293
-#define IFX 294
+#define NUM_BOOL 260
+#define ID 261
+#define TYPE_INT 262
+#define TYPE_FLOAT 263
+#define TYPE_BOOL 264
+#define TYPE_VOID 265
+#define OP_ADD 266
+#define OP_SUB 267
+#define OP_MUL 268
+#define OP_DIV 269
+#define OP_MOD 270
+#define OP_GT 271
+#define OP_LT 272
+#define OP_GTE 273
+#define OP_LTE 274
+#define OP_EQ 275
+#define OP_NEQ 276
+#define OP_AND 277
+#define OP_XOR 278
+#define OP_OR 279
+#define OP_NOT 280
+#define OP_LOGAND 281
+#define OP_LOGOR 282
+#define OP_ASSIGN 283
+#define LP 284
+#define RP 285
+#define LBR 286
+#define RBR 287
+#define SEM 288
+#define COMMA 289
+#define IF 290
+#define ELSE 291
+#define WHILE 292
+#define FOR 293
+#define RETURN 294
+#define IFX 295
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -145,6 +147,7 @@ union YYSTYPE
 
     int intNum;
     float floatNum;
+    bool boolNum;
     char str[MAXVARLEN];
     ASTNode *node;
     TypeNode *type;
@@ -160,7 +163,7 @@ union YYSTYPE
         IdentifierNode *name;
     } declarator;
 
-#line 164 "./include/y.tab.h"
+#line 167 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

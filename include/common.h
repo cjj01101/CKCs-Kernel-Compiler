@@ -24,6 +24,7 @@ class TranslationUnitNode;
 	OP(OR) OP(XOR) OP(AND) \
 	OP(EQ) OP(NEQ) \
 	OP(LT) OP(LTE) OP(GT) OP(GTE) \
+	OP(SHL) OP(SHR) \
 	OP(ADD) OP(SUB) OP(MUL) OP(DIV) OP(MOD)
 
 enum class Type : unsigned char {

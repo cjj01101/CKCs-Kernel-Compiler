@@ -43,8 +43,10 @@
 %token <str> ID
 %token TYPE_INT TYPE_FLOAT TYPE_BOOL TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
+%token OP_SHL OP_SHR
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
-%token OP_AND OP_XOR OP_OR OP_NOT OP_LOGAND OP_LOGOR
+%token OP_AND OP_XOR OP_OR OP_NOT
+%token OP_LOGAND OP_LOGOR
 %token OP_ASSIGN
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR RETURN
@@ -54,7 +56,7 @@
 %type <unit> program
 %type <compound> compoundstmt items
 %type <statement> statement exprstmt ctrlstmt jumpstmt
-%type <expression> optexpr expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr addexpr mulexpr primaryexpr constant
+%type <expression> optexpr expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
 %type <parameters> parameters
 %type <arguments> arguments
 %type <declarator> declarator
@@ -152,10 +154,15 @@
                 | cmprexpr { $$ = $1; }
                 ;
 
-       cmprexpr : cmprexpr OP_GT addexpr { $$ = new BinaryOpNode(Operator::GT, $1, $3); }
-                | cmprexpr OP_LT addexpr { $$ = new BinaryOpNode(Operator::LT, $1, $3); }
-                | cmprexpr OP_GTE addexpr { $$ = new BinaryOpNode(Operator::GTE, $1, $3); }
-                | cmprexpr OP_LTE addexpr { $$ = new BinaryOpNode(Operator::LTE, $1, $3); }
+       cmprexpr : cmprexpr OP_GT shiftexpr { $$ = new BinaryOpNode(Operator::GT, $1, $3); }
+                | cmprexpr OP_LT shiftexpr { $$ = new BinaryOpNode(Operator::LT, $1, $3); }
+                | cmprexpr OP_GTE shiftexpr { $$ = new BinaryOpNode(Operator::GTE, $1, $3); }
+                | cmprexpr OP_LTE shiftexpr { $$ = new BinaryOpNode(Operator::LTE, $1, $3); }
+                | shiftexpr { $$ = $1; }
+                ;
+
+      shiftexpr : shiftexpr OP_SHL addexpr { $$ = new BinaryOpNode(Operator::SHL, $1, $3); }
+                | shiftexpr OP_SHR addexpr { $$ = new BinaryOpNode(Operator::SHR, $1, $3); }
                 | addexpr { $$ = $1; }
                 ;
 

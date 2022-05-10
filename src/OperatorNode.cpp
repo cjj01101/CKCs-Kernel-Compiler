@@ -45,7 +45,7 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 	Type leftType = leftOperand->GetValueType();
 	Type rightType = rightOperand->GetValueType();
 
-	/* Validate Operand Types */
+    /* Validate Operand Types */
 	if((leftType == Type::VOID || rightType == Type::VOID) ||
 	   (IsIntegerOperator() && (leftType == Type::FLOAT || rightType == Type::FLOAT)))
 	{
@@ -180,6 +180,18 @@ llvm::Value *BinaryOpNode::GenerateIR(CodeGenerator *generator) {
             break;
 
         }
+        case Operator::SHL: {
+
+            res = generator->builder.CreateShl(L, R, "shltmp");
+            break;
+
+        }
+        case Operator::SHR: {
+
+            res = generator->builder.CreateAShr(L, R, "shrtmp");
+            break;
+
+        }
         case Operator::AND: {
 
             res = generator->builder.CreateAnd(L, R, "andtmp");
@@ -281,7 +293,8 @@ bool BinaryOpNode::IsArithmeticOperator() {
 
 bool BinaryOpNode::IsIntegerOperator() {
 	return (op == Operator::OR || op == Operator::XOR ||
-	   		op == Operator::AND || op == Operator::MOD);
+	   		op == Operator::AND || op == Operator::MOD ||
+            op == Operator::SHL || op == Operator::SHR);
 }
 
 bool BinaryOpNode::IsLogicalOperator() {

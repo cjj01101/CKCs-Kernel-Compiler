@@ -19,6 +19,8 @@ blank [ \f\n\r\t\v]+
 "*"             return OP_MUL;
 "/"             return OP_DIV;
 "%"             return OP_MOD;
+"<<"            return OP_SHL;
+">>"            return OP_SHR;
 ">"             return OP_GT;
 "<"             return OP_LT;
 ">="            return OP_GTE;

@@ -67,31 +67,33 @@ extern int yydebug;
     OP_MUL = 268,                  /* OP_MUL  */
     OP_DIV = 269,                  /* OP_DIV  */
     OP_MOD = 270,                  /* OP_MOD  */
-    OP_GT = 271,                   /* OP_GT  */
-    OP_LT = 272,                   /* OP_LT  */
-    OP_GTE = 273,                  /* OP_GTE  */
-    OP_LTE = 274,                  /* OP_LTE  */
-    OP_EQ = 275,                   /* OP_EQ  */
-    OP_NEQ = 276,                  /* OP_NEQ  */
-    OP_AND = 277,                  /* OP_AND  */
-    OP_XOR = 278,                  /* OP_XOR  */
-    OP_OR = 279,                   /* OP_OR  */
-    OP_NOT = 280,                  /* OP_NOT  */
-    OP_LOGAND = 281,               /* OP_LOGAND  */
-    OP_LOGOR = 282,                /* OP_LOGOR  */
-    OP_ASSIGN = 283,               /* OP_ASSIGN  */
-    LP = 284,                      /* LP  */
-    RP = 285,                      /* RP  */
-    LBR = 286,                     /* LBR  */
-    RBR = 287,                     /* RBR  */
-    SEM = 288,                     /* SEM  */
-    COMMA = 289,                   /* COMMA  */
-    IF = 290,                      /* IF  */
-    ELSE = 291,                    /* ELSE  */
-    WHILE = 292,                   /* WHILE  */
-    FOR = 293,                     /* FOR  */
-    RETURN = 294,                  /* RETURN  */
-    IFX = 295                      /* IFX  */
+    OP_SHL = 271,                  /* OP_SHL  */
+    OP_SHR = 272,                  /* OP_SHR  */
+    OP_GT = 273,                   /* OP_GT  */
+    OP_LT = 274,                   /* OP_LT  */
+    OP_GTE = 275,                  /* OP_GTE  */
+    OP_LTE = 276,                  /* OP_LTE  */
+    OP_EQ = 277,                   /* OP_EQ  */
+    OP_NEQ = 278,                  /* OP_NEQ  */
+    OP_AND = 279,                  /* OP_AND  */
+    OP_XOR = 280,                  /* OP_XOR  */
+    OP_OR = 281,                   /* OP_OR  */
+    OP_NOT = 282,                  /* OP_NOT  */
+    OP_LOGAND = 283,               /* OP_LOGAND  */
+    OP_LOGOR = 284,                /* OP_LOGOR  */
+    OP_ASSIGN = 285,               /* OP_ASSIGN  */
+    LP = 286,                      /* LP  */
+    RP = 287,                      /* RP  */
+    LBR = 288,                     /* LBR  */
+    RBR = 289,                     /* RBR  */
+    SEM = 290,                     /* SEM  */
+    COMMA = 291,                   /* COMMA  */
+    IF = 292,                      /* IF  */
+    ELSE = 293,                    /* ELSE  */
+    WHILE = 294,                   /* WHILE  */
+    FOR = 295,                     /* FOR  */
+    RETURN = 296,                  /* RETURN  */
+    IFX = 297                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -113,31 +115,33 @@ extern int yydebug;
 #define OP_MUL 268
 #define OP_DIV 269
 #define OP_MOD 270
-#define OP_GT 271
-#define OP_LT 272
-#define OP_GTE 273
-#define OP_LTE 274
-#define OP_EQ 275
-#define OP_NEQ 276
-#define OP_AND 277
-#define OP_XOR 278
-#define OP_OR 279
-#define OP_NOT 280
-#define OP_LOGAND 281
-#define OP_LOGOR 282
-#define OP_ASSIGN 283
-#define LP 284
-#define RP 285
-#define LBR 286
-#define RBR 287
-#define SEM 288
-#define COMMA 289
-#define IF 290
-#define ELSE 291
-#define WHILE 292
-#define FOR 293
-#define RETURN 294
-#define IFX 295
+#define OP_SHL 271
+#define OP_SHR 272
+#define OP_GT 273
+#define OP_LT 274
+#define OP_GTE 275
+#define OP_LTE 276
+#define OP_EQ 277
+#define OP_NEQ 278
+#define OP_AND 279
+#define OP_XOR 280
+#define OP_OR 281
+#define OP_NOT 282
+#define OP_LOGAND 283
+#define OP_LOGOR 284
+#define OP_ASSIGN 285
+#define LP 286
+#define RP 287
+#define LBR 288
+#define RBR 289
+#define SEM 290
+#define COMMA 291
+#define IF 292
+#define ELSE 293
+#define WHILE 294
+#define FOR 295
+#define RETURN 296
+#define IFX 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -163,7 +167,7 @@ union YYSTYPE
         IdentifierNode *name;
     } declarator;
 
-#line 167 "./include/y.tab.h"
+#line 171 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

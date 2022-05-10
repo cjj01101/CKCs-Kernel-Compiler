@@ -15,7 +15,7 @@ public:
 	bool IsRelationalOperator();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 	static const char *GetOperatorName(Operator op);
 
@@ -35,7 +35,7 @@ public:
 	~AssignOpNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
 	IdentifierNode *leftValue;

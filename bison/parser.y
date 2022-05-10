@@ -5,6 +5,7 @@
     #include "DeclarationNode.h"
     #include "FunctionNode.h"
     #include "StatementNode.h"
+    #include "FunctionCallNode.h"
     #include "OperatorNode.h"
     #include "ExpressionNode.h"
     #include "ConstantNode.h"
@@ -38,7 +39,7 @@
 %token <intNum> NUM_INT
 %token <floatNum> NUM_FLOAT
 %token <str> ID
-%token TYPE_INT TYPE_FLOAT TYPE_VOID
+%token TYPE_INT TYPE_FLOAT TYPE_BOOLEAN TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_NOT OP_LOGAND OP_LOGOR

@@ -3,6 +3,7 @@
 #include "TranslationUnitNode.h"
 #include "DeclarationNode.h"
 #include "FunctionNode.h"
+#include "CodeGenerator.h"
 
 /*         SEMANTIC ANALYZE         */
 
@@ -25,6 +26,33 @@ void TranslationUnitNode::PrintContentInLevel(int level) const {
 }
 
 /*        PRINT FUNCTION END        */
+
+/*         GENERATE IR CODE         */
+
+llvm::Value *TranslationUnitNode::GenerateIR(CodeGenerator *generator) {
+
+    /* Create Global Initialization Function */
+    llvm::FunctionType *funcType = llvm::FunctionType::get(generator->builder.getVoidTy(), false);
+    llvm::Function *function = llvm::Function::Create(funcType,
+                                                      llvm::Function::InternalLinkage,
+                                                      "GlobalInit",
+                                                      &generator->module);
+    llvm::BasicBlock *funcBody = generator->CreateBasicBlock("", function);
+
+    generator->JumpToBlock(funcBody);
+    llvm::ReturnInst *ret = generator->builder.CreateRetVoid();
+    generator->SetGlobalInitializerPoint(ret);
+    generator->JumpToVoid();
+
+    /* Start Generating Code */
+    generator->AddNewTable();
+    for (auto def : definitions) def->GenerateIR(generator);
+    generator->RemoveTable();
+
+    return nullptr;
+}
+
+/*       GENERATE IR CODE END       */
 
 /*        AUXILIARY FUNCTION        */
 

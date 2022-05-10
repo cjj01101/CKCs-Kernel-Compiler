@@ -23,7 +23,7 @@ int main(int argc, char ** argv){
 
         CodeGenerator::InitializeLLVM();
         CodeGenerator cg;
-        synTree.CodeGen(&cg);
+        synTree.GenerateIR(&cg);
 
         cg.PrintIR();
     } catch (ASTException &e) {

@@ -4,6 +4,7 @@
 #include "DeclarationNode.h"
 #include "StatementNode.h"
 #include "Utility.h"
+#include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -193,6 +194,119 @@ void ReturnStatementNode::PrintContentInLevel(int level) const {
 }
 
 /*        PRINT FUNCTION END        */
+
+/*         GENERATE IR CODE         */
+
+llvm::Value *CompoundStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    generator->AddNewTable();
+    for (auto item : items) item->GenerateIR(generator);
+    generator->RemoveTable();
+
+    return nullptr;
+}
+
+llvm::Value *ExpressionStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    expression->GenerateIR(generator);
+
+    return nullptr;
+}
+
+llvm::Value *IfStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    // Create Basic Blocks
+    llvm::BasicBlock *thenBlock = generator->CreateBasicBlock("if-then");
+    llvm::BasicBlock *elseBlock = generator->CreateBasicBlock("if-else");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-if");
+
+    // Generate Condition Branch Instructions
+    llvm::Value *condValue = condition->GenerateIR(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, thenBlock, elseBlock);
+
+    // Complete Then Block
+    generator->JumpToBlock(thenBlock);
+    thenStmt->GenerateIR(generator);
+    generator->builder.CreateBr(afterBlock);
+
+    // Complete Then Block
+    generator->JumpToBlock(elseBlock);
+    elseStmt->GenerateIR(generator);
+    generator->builder.CreateBr(afterBlock);
+
+    // Finish up
+    generator->JumpToBlock(afterBlock);
+
+    return nullptr;
+}
+
+llvm::Value *WhileStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    // Create Basic Blocks
+    llvm::BasicBlock *condBlock = generator->CreateBasicBlock("whlie-cond");
+    llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("while-loop");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-while");
+
+    // Complete Loop Condition Branch
+    generator->JumpToBlock(condBlock);
+    llvm::Value *condValue = condition->GenerateIR(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, loopBlock, afterBlock);
+
+    // Complete Loop Body
+    generator->JumpToBlock(loopBlock);
+    body->GenerateIR(generator);
+    generator->builder.CreateBr(condBlock);
+
+    // Finish up
+    generator->JumpToBlock(afterBlock);
+
+    return nullptr;
+}
+
+llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    // Generate IR for Initial Statement
+    generator->AddNewTable();
+    init->GenerateIR(generator);
+
+    // Create Basic Blocks
+    llvm::BasicBlock *condBlock = generator->CreateBasicBlock("for-cond");
+    llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("for-loop");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-for");
+
+    // Complete Loop Condition Branch
+    generator->JumpToBlock(condBlock);
+    llvm::Value *condValue = condition->GenerateIR(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, loopBlock, afterBlock);
+
+    // Complete Loop Body
+    generator->JumpToBlock(loopBlock);
+    body->GenerateIR(generator);
+    generator->builder.CreateBr(condBlock);
+    loop->GenerateIR(generator);
+
+    // Finish up
+    generator->JumpToBlock(afterBlock);
+    generator->RemoveTable();
+
+    return nullptr;
+}
+
+llvm::Value *ReturnStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) {
+        generator->builder.CreateRetVoid();
+    } else {
+        generator->builder.CreateRet(expression->GenerateIR(generator));
+    }
+
+    return nullptr;
+}
+
+/*       GENERATE IR CODE END       */
 
 /*        AUXILIARY FUNCTION        */
 

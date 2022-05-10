@@ -34,7 +34,7 @@ public:
 
 	void PrintInLevel(int level) const;
 	virtual void AnalyzeSemantic(SymbolTable *intab) = 0;
-	virtual llvm::Value *CodeGen(CodeGenerator *generator) = 0;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) = 0;
 
 protected:
 	

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <cstring>
 #include "ExpressionNode.h"
+#include "CodeGenerator.h"
 
 /*        CONSTRUCT FUNCTION        */
 
@@ -44,6 +45,21 @@ void IdentifierNode::PrintContentInLevel(int level) const {
 }
 
 /*        PRINT FUNCTION END        */
+
+/*         GENERATE IR CODE         */
+
+llvm::Value *EmptyExpressionNode::GenerateIR(CodeGenerator *generator) {
+    return nullptr;
+}
+
+llvm::Value *IdentifierNode::GenerateIR(CodeGenerator *generator) {
+    llvm::Value *value = generator->FindValue(std::string(id));
+    assert(value != nullptr);
+
+    return generator->builder.CreateLoad(generator->ConvertToLLVMType(valueType), value, "loadtmp");
+}
+
+/*       GENERATE IR CODE END       */
 
 /*        AUXILIARY FUNCTION        */
 

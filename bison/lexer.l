@@ -44,6 +44,7 @@ blank [ \f\n\r\t\v]+
 "return"        return RETURN;
 "int"           return TYPE_INT;
 "float"         return TYPE_FLOAT;
+"bool"          return TYPE_BOOLEAN;
 "void"          return TYPE_VOID;
 {identifier}    { strncpy(yylval.str, yytext, 64); return ID; }
 {integer}       { yylval.intNum = atoi(yytext); return NUM_INT; }

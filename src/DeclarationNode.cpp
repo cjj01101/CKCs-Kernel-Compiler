@@ -4,6 +4,7 @@
 #include "StatementNode.h"
 #include "ExpressionNode.h"
 #include "TypeNode.h"
+#include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -54,6 +55,52 @@ void DeclarationNode::PrintContentInLevel(int level) const {
 }
 
 /*        PRINT FUNCTION END        */
+
+/*         GENERATE IR CODE         */
+
+llvm::Value *DeclarationNode::GenerateIR(CodeGenerator *generator) {
+    
+    std::string dname = std::string(name->GetName());
+    Type dtype = type->GetType();
+
+    llvm::Value *var = nullptr;
+
+    /* Local Varible */
+    if(generator->builder.GetInsertBlock()) {
+
+        var = generator->builder.CreateAlloca(generator->ConvertToLLVMType(dtype), nullptr, dname);
+
+        if (initValue) {
+            llvm::Value *R = initValue->GenerateIR(generator);
+            R = generator->CastValueType(R, initValue->GetValueType(), dtype);
+            generator->builder.CreateStore(R, var);
+        }
+    }
+
+    /* Global Varible */
+    else {
+        var = new llvm::GlobalVariable(generator->module,
+                                       generator->ConvertToLLVMType(type->GetType()),
+                                       false,
+                                       llvm::GlobalValue::ExternalLinkage,
+                                       generator->GetTypeDefaultValue(type->GetType()),
+                                       dname);
+
+        if (initValue) {
+            generator->JumpToGlobalInitializer();
+            llvm::Value *R = initValue->GenerateIR(generator);
+            R = generator->CastValueType(R, initValue->GetValueType(), dtype);
+            generator->builder.CreateStore(R, var);
+            generator->JumpToVoid();
+        }
+    }
+
+    generator->RecordValue(dname, var);
+    
+    return nullptr;
+}
+
+/*       GENERATE IR CODE END       */
 
 /*        AUXILIARY FUNCTION        */
 

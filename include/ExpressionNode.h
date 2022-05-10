@@ -24,7 +24,7 @@ public:
 	~EmptyExpressionNode() {}
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
 	virtual void PrintContentInLevel(int level) const override;
@@ -40,7 +40,7 @@ public:
 	char *GetName() { return id; }
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
 	char id[MAXVARLEN];

@@ -1,5 +1,6 @@
 #include "TypeNode.h"
 #include "Utility.h"
+#include "CodeGenerator.h"
 
 /*         SEMANTIC ANALYZE         */
 
@@ -18,6 +19,14 @@ void TypeNode::PrintContentInLevel(int level) const {
 }
 
 /*        PRINT FUNCTION END        */
+
+/*         GENERATE IR CODE         */
+
+llvm::Value *TypeNode::GenerateIR(CodeGenerator *generator) {
+    return nullptr;
+}
+
+/*       GENERATE IR CODE END       */
 
 /*        AUXILIARY FUNCTION        */
 

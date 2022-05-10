@@ -6,6 +6,7 @@
 #include "ExpressionNode.h"
 #include "TypeNode.h"
 #include "Utility.h"
+#include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -27,22 +28,6 @@ FunctionNode::~FunctionNode() {
 
 ParameterListNode::~ParameterListNode() {
 	for(auto param : parameters) delete param;
-}
-
-FunctionCallNode::FunctionCallNode(IdentifierNode *name, ArgumentListNode *arguments)
-	: ExpressionNode(), name(name), arguments(arguments)
-{
-	assert(NOT_NULL(name));
-	assert(NOT_NULL(arguments));
-}
-
-FunctionCallNode::~FunctionCallNode() {
-	delete name;
-	delete arguments;
-}
-
-ArgumentListNode::~ArgumentListNode() {
-	for(auto arg : arguments) delete arg;
 }
 
 /*    (DE)CONSTRUCT FUNCTION END    */
@@ -85,57 +70,6 @@ void ParameterListNode::AnalyzeSemantic(SymbolTable *intab) {
 	for(auto &it : intab->entry) it.second.kind = SymbolKind::ARGUMENT;
 }
 
-void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
-
-	name->AnalyzeSemantic(intab);
-	arguments->AnalyzeSemantic(intab);
-
-	/* Start Type Checking */
-	char message[128];
-
-	/* Check Symbol Kind */
-	char *fname = name->GetName();
-	std::string sym(fname);
-	const auto &symbolContent = intab->FindSymbolOccurrence(sym)->entry.at(sym);
-	if(symbolContent.kind != SymbolKind::FUNCTION) {
-		sprintf(message, "'%s' is not a function.", fname);
-		throw ASTException(message);
-	}
-	
-	/* Get Parameter Types */
-	const auto &paramTypes = symbolContent.type.argTypes;
-	int paramNum = paramTypes.size();
-
-	/* Get Argument Types*/
-	std::vector<Type> argTypes;
-	for(auto arg : arguments->arguments) {
-		argTypes.push_back(arg->GetValueType());
-	}
-	int argNum = argTypes.size();
-
-	/* Validate Argument Types */
-	if(argNum != paramNum) {
-		sprintf(message, "function %s expects %d arguments, %d provided.", fname, paramNum, argNum);
-		throw ASTException(message);
-	}
-
-	for(int i = 0; i < paramNum; i++) {
-		if(!TypeUtils::CanConvert(argTypes[i], paramTypes[i])) {
-			sprintf(message, "cannot convert '%s' to '%s' in call to function %s.",
-				TypeUtils::GetTypeName(argTypes[i]), TypeUtils::GetTypeName(paramTypes[i]), fname);
-			throw ASTException(message);
-		}
-	}
-
-	/* Determine Value Type */
-	valueType = name->GetValueType();
-}
-
-void ArgumentListNode::AnalyzeSemantic(SymbolTable *intab) {
-
-	for(auto arg : arguments) arg->AnalyzeSemantic(intab);
-}
-
 /*       SEMANTIC ANALYZE END       */
 
 /*          PRINT FUNCTION          */
@@ -157,33 +91,69 @@ void ParameterListNode::PrintContentInLevel(int level) const {
 	}
 }
 
-void FunctionCallNode::PrintContentInLevel(int level) const {
-	printf("Function Call\n");
-
-	PRINT_CHILD_WITH_HINT(name, "NAME");
-	PRINT_CHILD_WITH_HINT(arguments, "ARGS");
-}
-
-void ArgumentListNode::PrintContentInLevel(int level) const {
-	printf("Argument List\n");
-
-	for(auto arg : arguments) {
-		PRINT_CHILD_WITH_HINT(arg, "ARG");
-	}
-}
-
 /*        PRINT FUNCTION END        */
+
+/*         GENERATE IR CODE         */
+
+llvm::Value *FunctionNode::GenerateIR(CodeGenerator *generator) {
+
+    /* Get Parameter Definition */
+    std::vector<llvm::Type*> paramTypes;
+    std::vector<std::string> paramNames;
+    for(auto param : parameters->parameters) {
+        paramTypes.push_back(generator->ConvertToLLVMType(param->GetType()));
+        paramNames.push_back(param->GetName());
+    }
+
+    /* Construct Function Node */
+    Type retType = returnType->GetType();
+    llvm::FunctionType *funcType = llvm::FunctionType::get(generator->ConvertToLLVMType(retType), paramTypes, false);
+    llvm::Function *function = llvm::Function::Create(funcType,
+                                                      llvm::Function::ExternalLinkage,
+                                                      name->GetName(),
+                                                      &generator->module);
+    llvm::BasicBlock *funcBody = generator->CreateBasicBlock("", function);
+    generator->JumpToBlock(funcBody);
+
+    /* Set Argument Names and Add to Value Table */
+    generator->AddNewTable();
+    unsigned int i = 0;
+    for (auto &arg : function->args()) {
+        arg.setName(paramNames[i]);
+        llvm::AllocaInst *alloc = generator->builder.CreateAlloca(paramTypes[i], nullptr, paramNames[i]);
+        generator->builder.CreateStore(&arg, alloc);
+        generator->RecordValue(paramNames[i], alloc);
+        i++;
+    }
+
+    /* Generate Function Body */
+    body->GenerateIR(generator);
+
+    /* Generate Default Return Instruction */
+    if(retType == Type::VOID) {
+        generator->builder.CreateRetVoid();
+    } else {
+        generator->builder.CreateRet(generator->GetTypeDefaultValue(retType));
+    }
+
+    /* Finish up */
+    generator->JumpToVoid();
+    generator->RemoveTable();
+    //verifyFunction(*function);
+    return function;
+}
+
+llvm::Value *ParameterListNode::GenerateIR(CodeGenerator *generator) {
+    return nullptr;
+}
+
+/*       GENERATE IR CODE END       */
 
 /*        AUXILIARY FUNCTION        */
 
 void ParameterListNode::AppendParameter(DeclarationNode *param) {
 	assert(NOT_NULL(param));
 	parameters.push_back(param);
-}
-
-void ArgumentListNode::AppendArgument(ExpressionNode *arg) {
-	assert(NOT_NULL(arg));
-	arguments.push_back(arg);
 }
 
 /*      AUXILIARY FUNCTION END      */

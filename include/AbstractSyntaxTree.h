@@ -13,7 +13,7 @@ public:
 
 	void Print() { if(root) root->PrintInLevel(0); }
 	void AnalyzeSemantic() { if(root) { SymbolTable symtab; root->AnalyzeSemantic(&symtab); } }
-	void CodeGen(CodeGenerator *generator) { if(root) root->CodeGen(generator); }
+	void GenerateIR(CodeGenerator *generator) { if(root) root->GenerateIR(generator); }
 
 private:
 	ASTNode *root;

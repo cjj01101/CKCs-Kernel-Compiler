@@ -5,6 +5,11 @@
 #include "SymbolTable.h"
 #include "common.h"
 
+/* FORWARD DECLARATION */
+namespace llvm { class Value; };
+class CodeGenerator;
+/* FORWARD DECLARATION */
+
 #define PRINT_CHILD_WITH_HINT(child, hint) \
 	do { \
 		for(int i = 0; i < level; i++) printf("|       "); \
@@ -29,6 +34,7 @@ public:
 
 	void PrintInLevel(int level) const;
 	virtual void AnalyzeSemantic(SymbolTable *intab) = 0;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) = 0;
 
 protected:
 	

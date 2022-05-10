@@ -61,4 +61,8 @@ Type DeclarationNode::GetType() {
 	return type->GetType();
 }
 
+char *DeclarationNode::GetName() {
+	return name->GetName();
+}
+
 /*      AUXILIARY FUNCTION END      */

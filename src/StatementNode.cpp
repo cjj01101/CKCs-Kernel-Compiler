@@ -3,7 +3,7 @@
 #include "ExpressionNode.h"
 #include "DeclarationNode.h"
 #include "StatementNode.h"
-#include "TypeNode.h"
+#include "Utility.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -60,10 +60,14 @@ ForStatementNode::~ForStatementNode() {
 	delete body;
 }
 
-ReturnStatementNode::ReturnStatementNode(ASTNode *exprStmt)
-	: StatementNode(), exprStmt(exprStmt)
+ReturnStatementNode::ReturnStatementNode(ExpressionNode *expression)
+	: StatementNode(), expression(expression)
 {
-	assert(NOT_NULL_OF_TYPE(exprStmt, ExpressionStatementNode*));
+	assert(NOT_NULL(expression));
+}
+
+ReturnStatementNode::~ReturnStatementNode() {
+	delete expression;
 }
 
 /*    (DE)CONSTRUCT FUNCTION END    */
@@ -91,8 +95,8 @@ void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	/* Validate Condition Expression Type */
 	Type condType = condition->GetValueType();
-	if(!TypeNode::IsTypeCompatible(condType, Type::INTEGER)) {
-		throw ASTException("cannot convert '" + std::string(TypeNode::GetTypeName(condType)) + "' to 'BOOL'.");
+	if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
+		throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
 	}
 
 }
@@ -104,8 +108,8 @@ void WhileStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	/* Validate Condition Expression Type */
 	Type condType = condition->GetValueType();
-	if(!TypeNode::IsTypeCompatible(condType, Type::INTEGER)) {
-		throw ASTException("cannot convert '" + std::string(TypeNode::GetTypeName(condType)) + "' to 'BOOL'.");
+	if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
+		throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
 	}
 
 }
@@ -123,15 +127,15 @@ void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	/* Validate Condition Expression Type */
 	if(!NOT_NULL_OF_TYPE(condition, EmptyExpressionNode*)) {
 		Type condType = condition->GetValueType();
-		if(!TypeNode::IsTypeCompatible(condType, Type::INTEGER)) {
-			throw ASTException("cannot convert '" + std::string(TypeNode::GetTypeName(condType)) + "' to 'BOOL'.");
+		if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
+			throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
 		}
 	}
 }
 
 void ReturnStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	
-	exprStmt->AnalyzeSemantic(intab);
+	expression->AnalyzeSemantic(intab);
 }
 
 /*       SEMANTIC ANALYZE END       */
@@ -183,7 +187,9 @@ void ForStatementNode::PrintContentInLevel(int level) const {
 void ReturnStatementNode::PrintContentInLevel(int level) const {
 	printf("Return Statement\n");
 
-	PRINT_CHILD_WITH_HINT(exprStmt, "RETURN VALUE");
+	if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) return;
+	
+	PRINT_CHILD_WITH_HINT(expression, "RETURN VALUE");
 }
 
 /*        PRINT FUNCTION END        */

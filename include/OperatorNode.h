@@ -9,10 +9,14 @@ public:
 	BinaryOpNode(Operator op, ExpressionNode *left, ExpressionNode *right);
 	~BinaryOpNode();
 
+	bool IsArithmeticOperator();
 	bool IsIntegerOperator();
+	bool IsLogicalOperator();
+	bool IsRelationalOperator();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 	static const char *GetOperatorName(Operator op);
 
 private:
@@ -31,7 +35,8 @@ public:
 	~AssignOpNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
 	IdentifierNode *leftValue;
 	ExpressionNode *rightValue;

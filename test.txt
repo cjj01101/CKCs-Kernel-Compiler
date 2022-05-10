@@ -1,0 +1,6 @@
+float g = 5; 
+int foo(int x) { return x*x; }
+void bar(int a) {
+   int b = foo(a);
+   a = b + g;
+}

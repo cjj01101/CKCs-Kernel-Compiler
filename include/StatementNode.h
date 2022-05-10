@@ -21,7 +21,8 @@ public:
 	~ExpressionStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
 	ExpressionNode *expression;
 
@@ -40,7 +41,8 @@ public:
 	void AppendStatement(ASTNode *item);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
 	std::vector<ASTNode*> items;
 
@@ -55,11 +57,12 @@ public:
 	~IfStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
 	ExpressionNode *condition;
-	ASTNode *thenStmt;
-	ASTNode *elseStmt;
+	StatementNode *thenStmt;
+	StatementNode *elseStmt;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -72,10 +75,11 @@ public:
 	~WhileStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	ExpressionNode *condition;
-	ASTNode *body;
+	StatementNode *body;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -88,12 +92,13 @@ public:
 	~ForStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	ASTNode *init;
 	ExpressionNode *condition;
 	ExpressionNode *loop;
-	ASTNode *body;
+	StatementNode *body;
 
 	virtual void PrintContentInLevel(int level) const override;
 
@@ -102,13 +107,14 @@ private:
 class ReturnStatementNode : public StatementNode {
 
 public:
-	ReturnStatementNode(ASTNode *exprStmt);
-	~ReturnStatementNode() { delete exprStmt; }
+	ReturnStatementNode(ExpressionNode *expression);
+	~ReturnStatementNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
-	ASTNode *exprStmt;
+	ExpressionNode *expression;
 
 	virtual void PrintContentInLevel(int level) const override;
 

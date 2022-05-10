@@ -10,7 +10,7 @@
     #include "ConstantNode.h"
     #include "TypeNode.h"
 
-    int yylex(void);
+    extern "C" int yylex(void);
     void yyerror(char *);
 
     ASTNode *root = nullptr;
@@ -194,7 +194,7 @@
                 | declaration { $$ = $1; }
                 ;
 
-       jumpstmt : RETURN exprstmt { $$ = new ReturnStatementNode($2); }
+       jumpstmt : RETURN optexpr SEM { $$ = new ReturnStatementNode($2); }
                 ;
 
 %%

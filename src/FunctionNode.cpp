@@ -5,6 +5,7 @@
 #include "StatementNode.h"
 #include "ExpressionNode.h"
 #include "TypeNode.h"
+#include "Utility.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -62,7 +63,9 @@ void FunctionNode::AnalyzeSemantic(SymbolTable *intab) {
 
 	/* Add Function Definition */
 	std::vector<Type> paramTypes;
-	parameters->GetParameterTypes(paramTypes);
+	for(auto param : parameters->parameters) {
+        paramTypes.push_back(param->GetType());
+    }
 	intab->AddEntry(
 		sym,
 		SymbolTableEntry(
@@ -88,29 +91,38 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 	arguments->AnalyzeSemantic(intab);
 
 	/* Start Type Checking */
+	char message[128];
 
-	/* Get Parameter Types*/
+	/* Check Symbol Kind */
 	char *fname = name->GetName();
 	std::string sym(fname);
-	const auto &paramTypes = intab->FindSymbolOccurrence(sym)->entry.at(sym).type.argTypes;
+	const auto &symbolContent = intab->FindSymbolOccurrence(sym)->entry.at(sym);
+	if(symbolContent.kind != SymbolKind::FUNCTION) {
+		sprintf(message, "'%s' is not a function.", fname);
+		throw ASTException(message);
+	}
+	
+	/* Get Parameter Types */
+	const auto &paramTypes = symbolContent.type.argTypes;
 	int paramNum = paramTypes.size();
 
 	/* Get Argument Types*/
 	std::vector<Type> argTypes;
-	arguments->GetArgumentTypes(argTypes);
+	for(auto arg : arguments->arguments) {
+		argTypes.push_back(arg->GetValueType());
+	}
 	int argNum = argTypes.size();
 
 	/* Validate Argument Types */
-	char message[128];
 	if(argNum != paramNum) {
 		sprintf(message, "function %s expects %d arguments, %d provided.", fname, paramNum, argNum);
 		throw ASTException(message);
 	}
 
 	for(int i = 0; i < paramNum; i++) {
-		if(!TypeNode::IsTypeCompatible(argTypes[i], paramTypes[i])) {
+		if(!TypeUtils::CanConvert(argTypes[i], paramTypes[i])) {
 			sprintf(message, "cannot convert '%s' to '%s' in call to function %s.",
-				TypeNode::GetTypeName(argTypes[i]), TypeNode::GetTypeName(paramTypes[i]), fname);
+				TypeUtils::GetTypeName(argTypes[i]), TypeUtils::GetTypeName(paramTypes[i]), fname);
 			throw ASTException(message);
 		}
 	}
@@ -169,17 +181,9 @@ void ParameterListNode::AppendParameter(DeclarationNode *param) {
 	parameters.push_back(param);
 }
 
-void ParameterListNode::GetParameterTypes(std::vector<Type> &types) {
-	for(auto param : parameters) types.push_back(param->GetType());
-}
-
 void ArgumentListNode::AppendArgument(ExpressionNode *arg) {
 	assert(NOT_NULL(arg));
 	arguments.push_back(arg);
-}
-
-void ArgumentListNode::GetArgumentTypes(std::vector<Type> &types) {
-	for(auto arg : arguments) types.push_back(arg->GetValueType());
 }
 
 /*      AUXILIARY FUNCTION END      */

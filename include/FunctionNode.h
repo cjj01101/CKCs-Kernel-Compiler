@@ -1,6 +1,7 @@
 #ifndef _FUNCTION_NODE_H_
 #define _FUNCTION_NODE_H_
 
+#include <string>
 #include <vector>
 #include "ExpressionNode.h"
 
@@ -11,7 +12,8 @@ public:
 	~FunctionNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
 	TypeNode *returnType;
 	IdentifierNode *name;
@@ -24,14 +26,16 @@ private:
 
 class ParameterListNode : public ASTNode {
 
+	friend class FunctionNode;
+
 public:
 	ParameterListNode() : ASTNode(), parameters() {}
 	~ParameterListNode();
 
 	void AppendParameter(DeclarationNode *param);
-	void GetParameterTypes(std::vector<Type> &types);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	std::vector<DeclarationNode*> parameters;
@@ -47,6 +51,7 @@ public:
 	~FunctionCallNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
 
 private:
 	IdentifierNode *name;
@@ -58,15 +63,17 @@ private:
 
 class ArgumentListNode : public ASTNode {
 
+	friend class FunctionCallNode;
+
 public:
 	ArgumentListNode() : ASTNode(), arguments() {}
 	~ArgumentListNode();
 
 	void AppendArgument(ExpressionNode *arg);
-	void GetArgumentTypes(std::vector<Type> &types);
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
-
+	virtual llvm::Value *CodeGen(CodeGenerator *generator) override;
+	
 private:
 	std::vector<ExpressionNode*> arguments;
 

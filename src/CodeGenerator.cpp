@@ -154,7 +154,7 @@ llvm::Value *DeclarationNode::CodeGen(CodeGenerator *generator) {
     else {
         var = new llvm::GlobalVariable(generator->module,
                                        generator->ConvertToLLVMType(type->GetType()),
-                                       true,
+                                       false,
                                        llvm::GlobalValue::ExternalLinkage,
                                        generator->GetTypeDefaultValue(type->GetType()),
                                        dname);

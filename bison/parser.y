@@ -22,13 +22,15 @@
     float floatNum;
     bool boolNum;
     char str[MAXVARLEN];
+    Declarator declarator;
     ASTNode *node;
     TypeNode *type;
     IdentifierNode *identifier;
     ExpressionNode *expression;
     StatementNode *statement;
-    DeclarationNode *declaration;
     CompoundStatementNode *compound;
+    DeclarationNode *declaration;
+    DeclaratorListNode *declarators;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
@@ -40,6 +42,7 @@
 %token <str> ID
 %token TYPE_INT TYPE_FLOAT TYPE_BOOL TYPE_VOID
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
+%token OP_DADD OP_DSUB
 %token OP_SHL OP_SHR
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_NOT
@@ -57,8 +60,10 @@
 %type <expression> optexpr expr assignexpr condexpr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
 %type <parameters> parameters
 %type <declaration> parameter
+%type <declarators> declarators
+%type <declarator> declarator
 %type <arguments> arguments
-%type <identifier> identifier declarator
+%type <identifier> identifier
 %type <type> type
 
 %nonassoc IFX
@@ -83,14 +88,20 @@
                 | /* empty */ { $$ = new ParameterListNode(); }
                 ;
 
-      parameter : type identifier { $$ = new DeclarationNode($1, $2); }
+      parameter : type identifier { auto list = new DeclaratorListNode();
+                                    list->AppendDeclarator({$2, nullptr});
+                                    $$ = new DeclarationNode($1, list); }
                 ;
 
-    declaration : type declarator SEM { $$ = new DeclarationNode($1, $2); }
-                | type declarator OP_ASSIGN expr SEM { $$ = new DeclarationNode($1, $2, $4); }
+    declaration : type declarators SEM { $$ = new DeclarationNode($1, $2); }
                 ;
 
-     declarator : identifier { $$ = $1; }
+    declarators : declarators COMMA declarator { $$ = $1; $$->AppendDeclarator($3); } 
+                | declarator { $$ = new DeclaratorListNode(); $$->AppendDeclarator($1); }
+                ; 
+
+     declarator : identifier { $$ = { $1, nullptr }; }
+                | identifier OP_ASSIGN assignexpr { $$ = { $1, $3 }; }
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
@@ -204,6 +215,8 @@
                 | OP_SUB primaryexpr { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
                 | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
                 | OP_LOGNOT primaryexpr { $$ = new BinaryOpNode(Operator::EQ, new IntegerNode(0), $2); }
+                | OP_DADD identifier { $$ = new AssignOpNode($2, new BinaryOpNode(Operator::ADD, $2, new IntegerNode(1))); }
+                | OP_DSUB identifier { $$ = new AssignOpNode($2, new BinaryOpNode(Operator::SUB, $2, new IntegerNode(1))); }
                 ;
      
        constant : NUM_INT { $$ = new IntegerNode($1); }

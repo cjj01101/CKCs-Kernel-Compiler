@@ -12,7 +12,7 @@ struct Declarator {
 class DeclarationNode : public ASTNode {
 
 public:
-	DeclarationNode(TypeNode *type, IdentifierNode *name, ExpressionNode *init = nullptr);
+	DeclarationNode(TypeNode *type, DeclaratorListNode *declarators);
 	~DeclarationNode();
 
 	Type GetType();
@@ -23,8 +23,27 @@ public:
 	
 private:
 	TypeNode *type;
-	IdentifierNode *name;
-	ExpressionNode *initValue;
+	DeclaratorListNode *declarators;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class DeclaratorListNode : public ASTNode {
+
+	friend class DeclarationNode;
+
+public:
+	DeclaratorListNode() : ASTNode(), declarators() {}
+	~DeclaratorListNode() {}
+
+	void AppendDeclarator(const Declarator &declarator);
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+	std::vector<Declarator> declarators;
 
 	virtual void PrintContentInLevel(int level) const override;
 

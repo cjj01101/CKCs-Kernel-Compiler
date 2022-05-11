@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include "common.h"
+    #include "DeclarationNode.h"
     #include "y.tab.h"
 
     extern "C" int yylex();
@@ -34,6 +35,8 @@ blank [ \f\n\r\t\v]+
 "&&"            return OP_LOGAND;
 "||"            return OP_LOGOR;
 "!"             return OP_LOGNOT;
+"++"            return OP_DADD;
+"--"            return OP_DSUB;
 "="             return OP_ASSIGN;
 "+="            return OP_ADD_ASSIGN;
 "-="            return OP_SUB_ASSIGN;

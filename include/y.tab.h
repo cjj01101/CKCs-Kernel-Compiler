@@ -67,46 +67,48 @@ extern int yydebug;
     OP_MUL = 268,                  /* OP_MUL  */
     OP_DIV = 269,                  /* OP_DIV  */
     OP_MOD = 270,                  /* OP_MOD  */
-    OP_SHL = 271,                  /* OP_SHL  */
-    OP_SHR = 272,                  /* OP_SHR  */
-    OP_GT = 273,                   /* OP_GT  */
-    OP_LT = 274,                   /* OP_LT  */
-    OP_GTE = 275,                  /* OP_GTE  */
-    OP_LTE = 276,                  /* OP_LTE  */
-    OP_EQ = 277,                   /* OP_EQ  */
-    OP_NEQ = 278,                  /* OP_NEQ  */
-    OP_AND = 279,                  /* OP_AND  */
-    OP_XOR = 280,                  /* OP_XOR  */
-    OP_OR = 281,                   /* OP_OR  */
-    OP_NOT = 282,                  /* OP_NOT  */
-    OP_LOGAND = 283,               /* OP_LOGAND  */
-    OP_LOGOR = 284,                /* OP_LOGOR  */
-    OP_LOGNOT = 285,               /* OP_LOGNOT  */
-    OP_ASSIGN = 286,               /* OP_ASSIGN  */
-    OP_ADD_ASSIGN = 287,           /* OP_ADD_ASSIGN  */
-    OP_SUB_ASSIGN = 288,           /* OP_SUB_ASSIGN  */
-    OP_MUL_ASSIGN = 289,           /* OP_MUL_ASSIGN  */
-    OP_DIV_ASSIGN = 290,           /* OP_DIV_ASSIGN  */
-    OP_MOD_ASSIGN = 291,           /* OP_MOD_ASSIGN  */
-    OP_SHL_ASSIGN = 292,           /* OP_SHL_ASSIGN  */
-    OP_SHR_ASSIGN = 293,           /* OP_SHR_ASSIGN  */
-    OP_AND_ASSIGN = 294,           /* OP_AND_ASSIGN  */
-    OP_OR_ASSIGN = 295,            /* OP_OR_ASSIGN  */
-    OP_XOR_ASSIGN = 296,           /* OP_XOR_ASSIGN  */
-    LP = 297,                      /* LP  */
-    RP = 298,                      /* RP  */
-    LBR = 299,                     /* LBR  */
-    RBR = 300,                     /* RBR  */
-    SEM = 301,                     /* SEM  */
-    COMMA = 302,                   /* COMMA  */
-    QUEST = 303,                   /* QUEST  */
-    COLON = 304,                   /* COLON  */
-    IF = 305,                      /* IF  */
-    ELSE = 306,                    /* ELSE  */
-    WHILE = 307,                   /* WHILE  */
-    FOR = 308,                     /* FOR  */
-    RETURN = 309,                  /* RETURN  */
-    IFX = 310                      /* IFX  */
+    OP_DADD = 271,                 /* OP_DADD  */
+    OP_DSUB = 272,                 /* OP_DSUB  */
+    OP_SHL = 273,                  /* OP_SHL  */
+    OP_SHR = 274,                  /* OP_SHR  */
+    OP_GT = 275,                   /* OP_GT  */
+    OP_LT = 276,                   /* OP_LT  */
+    OP_GTE = 277,                  /* OP_GTE  */
+    OP_LTE = 278,                  /* OP_LTE  */
+    OP_EQ = 279,                   /* OP_EQ  */
+    OP_NEQ = 280,                  /* OP_NEQ  */
+    OP_AND = 281,                  /* OP_AND  */
+    OP_XOR = 282,                  /* OP_XOR  */
+    OP_OR = 283,                   /* OP_OR  */
+    OP_NOT = 284,                  /* OP_NOT  */
+    OP_LOGAND = 285,               /* OP_LOGAND  */
+    OP_LOGOR = 286,                /* OP_LOGOR  */
+    OP_LOGNOT = 287,               /* OP_LOGNOT  */
+    OP_ASSIGN = 288,               /* OP_ASSIGN  */
+    OP_ADD_ASSIGN = 289,           /* OP_ADD_ASSIGN  */
+    OP_SUB_ASSIGN = 290,           /* OP_SUB_ASSIGN  */
+    OP_MUL_ASSIGN = 291,           /* OP_MUL_ASSIGN  */
+    OP_DIV_ASSIGN = 292,           /* OP_DIV_ASSIGN  */
+    OP_MOD_ASSIGN = 293,           /* OP_MOD_ASSIGN  */
+    OP_SHL_ASSIGN = 294,           /* OP_SHL_ASSIGN  */
+    OP_SHR_ASSIGN = 295,           /* OP_SHR_ASSIGN  */
+    OP_AND_ASSIGN = 296,           /* OP_AND_ASSIGN  */
+    OP_OR_ASSIGN = 297,            /* OP_OR_ASSIGN  */
+    OP_XOR_ASSIGN = 298,           /* OP_XOR_ASSIGN  */
+    LP = 299,                      /* LP  */
+    RP = 300,                      /* RP  */
+    LBR = 301,                     /* LBR  */
+    RBR = 302,                     /* RBR  */
+    SEM = 303,                     /* SEM  */
+    COMMA = 304,                   /* COMMA  */
+    QUEST = 305,                   /* QUEST  */
+    COLON = 306,                   /* COLON  */
+    IF = 307,                      /* IF  */
+    ELSE = 308,                    /* ELSE  */
+    WHILE = 309,                   /* WHILE  */
+    FOR = 310,                     /* FOR  */
+    RETURN = 311,                  /* RETURN  */
+    IFX = 312                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -128,46 +130,48 @@ extern int yydebug;
 #define OP_MUL 268
 #define OP_DIV 269
 #define OP_MOD 270
-#define OP_SHL 271
-#define OP_SHR 272
-#define OP_GT 273
-#define OP_LT 274
-#define OP_GTE 275
-#define OP_LTE 276
-#define OP_EQ 277
-#define OP_NEQ 278
-#define OP_AND 279
-#define OP_XOR 280
-#define OP_OR 281
-#define OP_NOT 282
-#define OP_LOGAND 283
-#define OP_LOGOR 284
-#define OP_LOGNOT 285
-#define OP_ASSIGN 286
-#define OP_ADD_ASSIGN 287
-#define OP_SUB_ASSIGN 288
-#define OP_MUL_ASSIGN 289
-#define OP_DIV_ASSIGN 290
-#define OP_MOD_ASSIGN 291
-#define OP_SHL_ASSIGN 292
-#define OP_SHR_ASSIGN 293
-#define OP_AND_ASSIGN 294
-#define OP_OR_ASSIGN 295
-#define OP_XOR_ASSIGN 296
-#define LP 297
-#define RP 298
-#define LBR 299
-#define RBR 300
-#define SEM 301
-#define COMMA 302
-#define QUEST 303
-#define COLON 304
-#define IF 305
-#define ELSE 306
-#define WHILE 307
-#define FOR 308
-#define RETURN 309
-#define IFX 310
+#define OP_DADD 271
+#define OP_DSUB 272
+#define OP_SHL 273
+#define OP_SHR 274
+#define OP_GT 275
+#define OP_LT 276
+#define OP_GTE 277
+#define OP_LTE 278
+#define OP_EQ 279
+#define OP_NEQ 280
+#define OP_AND 281
+#define OP_XOR 282
+#define OP_OR 283
+#define OP_NOT 284
+#define OP_LOGAND 285
+#define OP_LOGOR 286
+#define OP_LOGNOT 287
+#define OP_ASSIGN 288
+#define OP_ADD_ASSIGN 289
+#define OP_SUB_ASSIGN 290
+#define OP_MUL_ASSIGN 291
+#define OP_DIV_ASSIGN 292
+#define OP_MOD_ASSIGN 293
+#define OP_SHL_ASSIGN 294
+#define OP_SHR_ASSIGN 295
+#define OP_AND_ASSIGN 296
+#define OP_OR_ASSIGN 297
+#define OP_XOR_ASSIGN 298
+#define LP 299
+#define RP 300
+#define LBR 301
+#define RBR 302
+#define SEM 303
+#define COMMA 304
+#define QUEST 305
+#define COLON 306
+#define IF 307
+#define ELSE 308
+#define WHILE 309
+#define FOR 310
+#define RETURN 311
+#define IFX 312
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -179,18 +183,20 @@ union YYSTYPE
     float floatNum;
     bool boolNum;
     char str[MAXVARLEN];
+    Declarator declarator;
     ASTNode *node;
     TypeNode *type;
     IdentifierNode *identifier;
     ExpressionNode *expression;
     StatementNode *statement;
-    DeclarationNode *declaration;
     CompoundStatementNode *compound;
+    DeclarationNode *declaration;
+    DeclaratorListNode *declarators;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
 
-#line 194 "./include/y.tab.h"
+#line 200 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

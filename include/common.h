@@ -7,6 +7,7 @@ class TypeNode;
 class IdentifierNode;
 class ParameterListNode;
 class ArgumentListNode;
+class DeclaratorListNode;
 class ExpressionNode;
 class StatementNode;
 class CompoundStatementNode;

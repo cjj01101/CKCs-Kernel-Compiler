@@ -49,218 +49,238 @@
    31     | assignexpr
 
    32 assignexpr: identifier OP_ASSIGN assignexpr
-   33           | logorexpr
+   33           | identifier OP_ADD_ASSIGN assignexpr
+   34           | identifier OP_SUB_ASSIGN assignexpr
+   35           | identifier OP_MUL_ASSIGN assignexpr
+   36           | identifier OP_DIV_ASSIGN assignexpr
+   37           | identifier OP_MOD_ASSIGN assignexpr
+   38           | identifier OP_SHL_ASSIGN assignexpr
+   39           | identifier OP_SHR_ASSIGN assignexpr
+   40           | identifier OP_AND_ASSIGN assignexpr
+   41           | identifier OP_OR_ASSIGN assignexpr
+   42           | identifier OP_XOR_ASSIGN assignexpr
+   43           | logorexpr
 
-   34 logorexpr: logorexpr OP_LOGOR logandexpr
-   35          | logandexpr
+   44 logorexpr: logorexpr OP_LOGOR logandexpr
+   45          | logandexpr
 
-   36 logandexpr: logandexpr OP_LOGAND orexpr
-   37           | orexpr
+   46 logandexpr: logandexpr OP_LOGAND orexpr
+   47           | orexpr
 
-   38 orexpr: orexpr OP_OR xorexpr
-   39       | xorexpr
+   48 orexpr: orexpr OP_OR xorexpr
+   49       | xorexpr
 
-   40 xorexpr: xorexpr OP_XOR andexpr
-   41        | andexpr
+   50 xorexpr: xorexpr OP_XOR andexpr
+   51        | andexpr
 
-   42 andexpr: andexpr OP_AND ecmprexpr
-   43        | ecmprexpr
+   52 andexpr: andexpr OP_AND ecmprexpr
+   53        | ecmprexpr
 
-   44 ecmprexpr: ecmprexpr OP_EQ cmprexpr
-   45          | ecmprexpr OP_NEQ cmprexpr
-   46          | cmprexpr
+   54 ecmprexpr: ecmprexpr OP_EQ cmprexpr
+   55          | ecmprexpr OP_NEQ cmprexpr
+   56          | cmprexpr
 
-   47 cmprexpr: cmprexpr OP_GT shiftexpr
-   48         | cmprexpr OP_LT shiftexpr
-   49         | cmprexpr OP_GTE shiftexpr
-   50         | cmprexpr OP_LTE shiftexpr
-   51         | shiftexpr
+   57 cmprexpr: cmprexpr OP_GT shiftexpr
+   58         | cmprexpr OP_LT shiftexpr
+   59         | cmprexpr OP_GTE shiftexpr
+   60         | cmprexpr OP_LTE shiftexpr
+   61         | shiftexpr
 
-   52 shiftexpr: shiftexpr OP_SHL addexpr
-   53          | shiftexpr OP_SHR addexpr
-   54          | addexpr
+   62 shiftexpr: shiftexpr OP_SHL addexpr
+   63          | shiftexpr OP_SHR addexpr
+   64          | addexpr
 
-   55 addexpr: addexpr OP_ADD mulexpr
-   56        | addexpr OP_SUB mulexpr
-   57        | mulexpr
+   65 addexpr: addexpr OP_ADD mulexpr
+   66        | addexpr OP_SUB mulexpr
+   67        | mulexpr
 
-   58 mulexpr: mulexpr OP_MUL primaryexpr
-   59        | mulexpr OP_DIV primaryexpr
-   60        | mulexpr OP_MOD primaryexpr
-   61        | primaryexpr
+   68 mulexpr: mulexpr OP_MUL primaryexpr
+   69        | mulexpr OP_DIV primaryexpr
+   70        | mulexpr OP_MOD primaryexpr
+   71        | primaryexpr
 
-   62 primaryexpr: identifier
-   63            | constant
-   64            | LP expr RP
-   65            | identifier LP arguments RP
-   66            | OP_ADD primaryexpr
-   67            | OP_SUB primaryexpr
-   68            | OP_NOT primaryexpr
+   72 primaryexpr: identifier
+   73            | constant
+   74            | LP expr RP
+   75            | identifier LP arguments RP
+   76            | OP_ADD primaryexpr
+   77            | OP_SUB primaryexpr
+   78            | OP_NOT primaryexpr
 
-   69 constant: NUM_INT
-   70         | NUM_FLOAT
-   71         | NUM_BOOL
+   79 constant: NUM_INT
+   80         | NUM_FLOAT
+   81         | NUM_BOOL
 
-   72 arguments: arguments COMMA assignexpr
-   73          | assignexpr
-   74          | ε
+   82 arguments: arguments COMMA assignexpr
+   83          | assignexpr
+   84          | ε
 
-   75 ctrlstmt: IF LP expr RP statement
-   76         | IF LP expr RP statement ELSE statement
-   77         | WHILE LP expr RP statement
-   78         | FOR LP inititem optexpr SEM optexpr RP statement
+   85 ctrlstmt: IF LP expr RP statement
+   86         | IF LP expr RP statement ELSE statement
+   87         | WHILE LP expr RP statement
+   88         | FOR LP inititem optexpr SEM optexpr RP statement
 
-   79 inititem: exprstmt
-   80         | declaration
+   89 inititem: exprstmt
+   90         | declaration
 
-   81 jumpstmt: RETURN optexpr SEM
+   91 jumpstmt: RETURN optexpr SEM
 
 
 终结语词，附有它们出现处的规则
 
     $end (0) 0
     error (256)
-    NUM_INT <intNum> (258) 69
-    NUM_FLOAT <floatNum> (259) 70
-    NUM_BOOL <boolNum> (260) 71
+    NUM_INT <intNum> (258) 79
+    NUM_FLOAT <floatNum> (259) 80
+    NUM_BOOL <boolNum> (260) 81
     ID <str> (261) 17
     TYPE_INT (262) 13
     TYPE_FLOAT (263) 14
     TYPE_BOOL (264) 15
     TYPE_VOID (265) 8 16
-    OP_ADD (266) 55 66
-    OP_SUB (267) 56 67
-    OP_MUL (268) 58
-    OP_DIV (269) 59
-    OP_MOD (270) 60
-    OP_SHL (271) 52
-    OP_SHR (272) 53
-    OP_GT (273) 47
-    OP_LT (274) 48
-    OP_GTE (275) 49
-    OP_LTE (276) 50
-    OP_EQ (277) 44
-    OP_NEQ (278) 45
-    OP_AND (279) 42
-    OP_XOR (280) 40
-    OP_OR (281) 38
-    OP_NOT (282) 68
-    OP_LOGAND (283) 36
-    OP_LOGOR (284) 34
+    OP_ADD (266) 65 76
+    OP_SUB (267) 66 77
+    OP_MUL (268) 68
+    OP_DIV (269) 69
+    OP_MOD (270) 70
+    OP_SHL (271) 62
+    OP_SHR (272) 63
+    OP_GT (273) 57
+    OP_LT (274) 58
+    OP_GTE (275) 59
+    OP_LTE (276) 60
+    OP_EQ (277) 54
+    OP_NEQ (278) 55
+    OP_AND (279) 52
+    OP_XOR (280) 50
+    OP_OR (281) 48
+    OP_NOT (282) 78
+    OP_LOGAND (283) 46
+    OP_LOGOR (284) 44
     OP_ASSIGN (285) 11 32
-    LP (286) 5 64 65 75 76 77 78
-    RP (287) 5 64 65 75 76 77 78
-    LBR (288) 22
-    RBR (289) 22
-    SEM (290) 10 11 27 78 81
-    COMMA (291) 6 30 72
-    IF (292) 75 76
-    ELSE (293) 76
-    WHILE (294) 77
-    FOR (295) 78
-    RETURN (296) 81
-    IFX (297)
+    OP_ADD_ASSIGN (286) 33
+    OP_SUB_ASSIGN (287) 34
+    OP_MUL_ASSIGN (288) 35
+    OP_DIV_ASSIGN (289) 36
+    OP_MOD_ASSIGN (290) 37
+    OP_SHL_ASSIGN (291) 38
+    OP_SHR_ASSIGN (292) 39
+    OP_AND_ASSIGN (293) 40
+    OP_OR_ASSIGN (294) 41
+    OP_XOR_ASSIGN (295) 42
+    LP (296) 5 74 75 85 86 87 88
+    RP (297) 5 74 75 85 86 87 88
+    LBR (298) 22
+    RBR (299) 22
+    SEM (300) 10 11 27 88 91
+    COMMA (301) 6 30 82
+    IF (302) 85 86
+    ELSE (303) 86
+    WHILE (304) 87
+    FOR (305) 88
+    RETURN (306) 91
+    IFX (307)
 
 
 非终结语词，附有它们出现处的规则
 
-    $accept (43)
+    $accept (53)
         on left: 0
-    program <unit> (44)
+    program <unit> (54)
         on left: 1 2
         on right: 0 1
-    externdef <node> (45)
+    externdef <node> (55)
         on left: 3 4
         on right: 1
-    function <node> (46)
+    function <node> (56)
         on left: 5
         on right: 3
-    parameters <parameters> (47)
+    parameters <parameters> (57)
         on left: 6 7 8 9
         on right: 5 6
-    declaration <node> (48)
+    declaration <node> (58)
         on left: 10 11
-        on right: 4 25 80
-    declarator <declarator> (49)
+        on right: 4 25 90
+    declarator <declarator> (59)
         on left: 12
         on right: 5 6 7 10 11
-    type <type> (50)
+    type <type> (60)
         on left: 13 14 15 16
         on right: 12
-    identifier <identifier> (51)
+    identifier <identifier> (61)
         on left: 17
-        on right: 12 32 62 65
-    statement <statement> (52)
+        on right: 12 32 33 34 35 36 37 38 39 40 41 42 72 75
+    statement <statement> (62)
         on left: 18 19 20 21
-        on right: 26 75 76 77 78
-    compoundstmt <compound> (53)
+        on right: 26 85 86 87 88
+    compoundstmt <compound> (63)
         on left: 22
         on right: 5 18
-    items <compound> (54)
+    items <compound> (64)
         on left: 23 24
         on right: 22 23
-    item <node> (55)
+    item <node> (65)
         on left: 25 26
         on right: 23
-    exprstmt <statement> (56)
+    exprstmt <statement> (66)
         on left: 27
-        on right: 19 79
-    optexpr <expression> (57)
+        on right: 19 89
+    optexpr <expression> (67)
         on left: 28 29
-        on right: 27 78 81
-    expr <expression> (58)
+        on right: 27 88 91
+    expr <expression> (68)
         on left: 30 31
-        on right: 11 28 30 64 75 76 77
-    assignexpr <expression> (59)
-        on left: 32 33
-        on right: 30 31 32 72 73
-    logorexpr <expression> (60)
-        on left: 34 35
-        on right: 33 34
-    logandexpr <expression> (61)
-        on left: 36 37
-        on right: 34 35 36
-    orexpr <expression> (62)
-        on left: 38 39
-        on right: 36 37 38
-    xorexpr <expression> (63)
-        on left: 40 41
-        on right: 38 39 40
-    andexpr <expression> (64)
-        on left: 42 43
-        on right: 40 41 42
-    ecmprexpr <expression> (65)
-        on left: 44 45 46
-        on right: 42 43 44 45
-    cmprexpr <expression> (66)
-        on left: 47 48 49 50 51
-        on right: 44 45 46 47 48 49 50
-    shiftexpr <expression> (67)
-        on left: 52 53 54
-        on right: 47 48 49 50 51 52 53
-    addexpr <expression> (68)
-        on left: 55 56 57
-        on right: 52 53 54 55 56
-    mulexpr <expression> (69)
-        on left: 58 59 60 61
-        on right: 55 56 57 58 59 60
-    primaryexpr <expression> (70)
-        on left: 62 63 64 65 66 67 68
-        on right: 58 59 60 61 66 67 68
-    constant <expression> (71)
-        on left: 69 70 71
-        on right: 63
-    arguments <arguments> (72)
-        on left: 72 73 74
-        on right: 65 72
-    ctrlstmt <statement> (73)
-        on left: 75 76 77 78
+        on right: 11 28 30 74 85 86 87
+    assignexpr <expression> (69)
+        on left: 32 33 34 35 36 37 38 39 40 41 42 43
+        on right: 30 31 32 33 34 35 36 37 38 39 40 41 42 82 83
+    logorexpr <expression> (70)
+        on left: 44 45
+        on right: 43 44
+    logandexpr <expression> (71)
+        on left: 46 47
+        on right: 44 45 46
+    orexpr <expression> (72)
+        on left: 48 49
+        on right: 46 47 48
+    xorexpr <expression> (73)
+        on left: 50 51
+        on right: 48 49 50
+    andexpr <expression> (74)
+        on left: 52 53
+        on right: 50 51 52
+    ecmprexpr <expression> (75)
+        on left: 54 55 56
+        on right: 52 53 54 55
+    cmprexpr <expression> (76)
+        on left: 57 58 59 60 61
+        on right: 54 55 56 57 58 59 60
+    shiftexpr <expression> (77)
+        on left: 62 63 64
+        on right: 57 58 59 60 61 62 63
+    addexpr <expression> (78)
+        on left: 65 66 67
+        on right: 62 63 64 65 66
+    mulexpr <expression> (79)
+        on left: 68 69 70 71
+        on right: 65 66 67 68 69 70
+    primaryexpr <expression> (80)
+        on left: 72 73 74 75 76 77 78
+        on right: 68 69 70 71 76 77 78
+    constant <expression> (81)
+        on left: 79 80 81
+        on right: 73
+    arguments <arguments> (82)
+        on left: 82 83 84
+        on right: 75 82
+    ctrlstmt <statement> (83)
+        on left: 85 86 87 88
         on right: 20
-    inititem <node> (74)
-        on left: 79 80
-        on right: 78
-    jumpstmt <statement> (75)
-        on left: 81
+    inititem <node> (84)
+        on left: 89 90
+        on right: 88
+    jumpstmt <statement> (85)
+        on left: 91
         on right: 21
 
 
@@ -436,28 +456,28 @@
 
 状态 17
 
-   69 constant: NUM_INT •
+   79 constant: NUM_INT •
 
-    $default  使用规则 69 以归约 (constant)
+    $default  使用规则 79 以归约 (constant)
 
 
 状态 18
 
-   70 constant: NUM_FLOAT •
+   80 constant: NUM_FLOAT •
 
-    $default  使用规则 70 以归约 (constant)
+    $default  使用规则 80 以归约 (constant)
 
 
 状态 19
 
-   71 constant: NUM_BOOL •
+   81 constant: NUM_BOOL •
 
-    $default  使用规则 71 以归约 (constant)
+    $default  使用规则 81 以归约 (constant)
 
 
 状态 20
 
-   66 primaryexpr: OP_ADD • primaryexpr
+   76 primaryexpr: OP_ADD • primaryexpr
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -475,7 +495,7 @@
 
 状态 21
 
-   67 primaryexpr: OP_SUB • primaryexpr
+   77 primaryexpr: OP_SUB • primaryexpr
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -493,7 +513,7 @@
 
 状态 22
 
-   68 primaryexpr: OP_NOT • primaryexpr
+   78 primaryexpr: OP_NOT • primaryexpr
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -511,7 +531,7 @@
 
 状态 23
 
-   64 primaryexpr: LP • expr RP
+   74 primaryexpr: LP • expr RP
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -542,13 +562,33 @@
 状态 24
 
    32 assignexpr: identifier • OP_ASSIGN assignexpr
-   62 primaryexpr: identifier •
-   65            | identifier • LP arguments RP
+   33           | identifier • OP_ADD_ASSIGN assignexpr
+   34           | identifier • OP_SUB_ASSIGN assignexpr
+   35           | identifier • OP_MUL_ASSIGN assignexpr
+   36           | identifier • OP_DIV_ASSIGN assignexpr
+   37           | identifier • OP_MOD_ASSIGN assignexpr
+   38           | identifier • OP_SHL_ASSIGN assignexpr
+   39           | identifier • OP_SHR_ASSIGN assignexpr
+   40           | identifier • OP_AND_ASSIGN assignexpr
+   41           | identifier • OP_OR_ASSIGN assignexpr
+   42           | identifier • OP_XOR_ASSIGN assignexpr
+   72 primaryexpr: identifier •
+   75            | identifier • LP arguments RP
 
-    OP_ASSIGN  偏移，并进入状态 47
-    LP         偏移，并进入状态 48
+    OP_ASSIGN      偏移，并进入状态 47
+    OP_ADD_ASSIGN  偏移，并进入状态 48
+    OP_SUB_ASSIGN  偏移，并进入状态 49
+    OP_MUL_ASSIGN  偏移，并进入状态 50
+    OP_DIV_ASSIGN  偏移，并进入状态 51
+    OP_MOD_ASSIGN  偏移，并进入状态 52
+    OP_SHL_ASSIGN  偏移，并进入状态 53
+    OP_SHR_ASSIGN  偏移，并进入状态 54
+    OP_AND_ASSIGN  偏移，并进入状态 55
+    OP_OR_ASSIGN   偏移，并进入状态 56
+    OP_XOR_ASSIGN  偏移，并进入状态 57
+    LP             偏移，并进入状态 58
 
-    $default  使用规则 62 以归约 (primaryexpr)
+    $default  使用规则 72 以归约 (primaryexpr)
 
 
 状态 25
@@ -556,8 +596,8 @@
    11 declaration: declarator OP_ASSIGN expr • SEM
    30 expr: expr • COMMA assignexpr
 
-    SEM    偏移，并进入状态 49
-    COMMA  偏移，并进入状态 50
+    SEM    偏移，并进入状态 59
+    COMMA  偏移，并进入状态 60
 
 
 状态 26
@@ -569,132 +609,132 @@
 
 状态 27
 
-   33 assignexpr: logorexpr •
-   34 logorexpr: logorexpr • OP_LOGOR logandexpr
+   43 assignexpr: logorexpr •
+   44 logorexpr: logorexpr • OP_LOGOR logandexpr
 
-    OP_LOGOR  偏移，并进入状态 51
+    OP_LOGOR  偏移，并进入状态 61
 
-    $default  使用规则 33 以归约 (assignexpr)
+    $default  使用规则 43 以归约 (assignexpr)
 
 
 状态 28
 
-   35 logorexpr: logandexpr •
-   36 logandexpr: logandexpr • OP_LOGAND orexpr
+   45 logorexpr: logandexpr •
+   46 logandexpr: logandexpr • OP_LOGAND orexpr
 
-    OP_LOGAND  偏移，并进入状态 52
+    OP_LOGAND  偏移，并进入状态 62
 
-    $default  使用规则 35 以归约 (logorexpr)
+    $default  使用规则 45 以归约 (logorexpr)
 
 
 状态 29
 
-   37 logandexpr: orexpr •
-   38 orexpr: orexpr • OP_OR xorexpr
+   47 logandexpr: orexpr •
+   48 orexpr: orexpr • OP_OR xorexpr
 
-    OP_OR  偏移，并进入状态 53
+    OP_OR  偏移，并进入状态 63
 
-    $default  使用规则 37 以归约 (logandexpr)
+    $default  使用规则 47 以归约 (logandexpr)
 
 
 状态 30
 
-   39 orexpr: xorexpr •
-   40 xorexpr: xorexpr • OP_XOR andexpr
+   49 orexpr: xorexpr •
+   50 xorexpr: xorexpr • OP_XOR andexpr
 
-    OP_XOR  偏移，并进入状态 54
+    OP_XOR  偏移，并进入状态 64
 
-    $default  使用规则 39 以归约 (orexpr)
+    $default  使用规则 49 以归约 (orexpr)
 
 
 状态 31
 
-   41 xorexpr: andexpr •
-   42 andexpr: andexpr • OP_AND ecmprexpr
+   51 xorexpr: andexpr •
+   52 andexpr: andexpr • OP_AND ecmprexpr
 
-    OP_AND  偏移，并进入状态 55
+    OP_AND  偏移，并进入状态 65
 
-    $default  使用规则 41 以归约 (xorexpr)
+    $default  使用规则 51 以归约 (xorexpr)
 
 
 状态 32
 
-   43 andexpr: ecmprexpr •
-   44 ecmprexpr: ecmprexpr • OP_EQ cmprexpr
-   45          | ecmprexpr • OP_NEQ cmprexpr
+   53 andexpr: ecmprexpr •
+   54 ecmprexpr: ecmprexpr • OP_EQ cmprexpr
+   55          | ecmprexpr • OP_NEQ cmprexpr
 
-    OP_EQ   偏移，并进入状态 56
-    OP_NEQ  偏移，并进入状态 57
+    OP_EQ   偏移，并进入状态 66
+    OP_NEQ  偏移，并进入状态 67
 
-    $default  使用规则 43 以归约 (andexpr)
+    $default  使用规则 53 以归约 (andexpr)
 
 
 状态 33
 
-   46 ecmprexpr: cmprexpr •
-   47 cmprexpr: cmprexpr • OP_GT shiftexpr
-   48         | cmprexpr • OP_LT shiftexpr
-   49         | cmprexpr • OP_GTE shiftexpr
-   50         | cmprexpr • OP_LTE shiftexpr
+   56 ecmprexpr: cmprexpr •
+   57 cmprexpr: cmprexpr • OP_GT shiftexpr
+   58         | cmprexpr • OP_LT shiftexpr
+   59         | cmprexpr • OP_GTE shiftexpr
+   60         | cmprexpr • OP_LTE shiftexpr
 
-    OP_GT   偏移，并进入状态 58
-    OP_LT   偏移，并进入状态 59
-    OP_GTE  偏移，并进入状态 60
-    OP_LTE  偏移，并进入状态 61
+    OP_GT   偏移，并进入状态 68
+    OP_LT   偏移，并进入状态 69
+    OP_GTE  偏移，并进入状态 70
+    OP_LTE  偏移，并进入状态 71
 
-    $default  使用规则 46 以归约 (ecmprexpr)
+    $default  使用规则 56 以归约 (ecmprexpr)
 
 
 状态 34
 
-   51 cmprexpr: shiftexpr •
-   52 shiftexpr: shiftexpr • OP_SHL addexpr
-   53          | shiftexpr • OP_SHR addexpr
+   61 cmprexpr: shiftexpr •
+   62 shiftexpr: shiftexpr • OP_SHL addexpr
+   63          | shiftexpr • OP_SHR addexpr
 
-    OP_SHL  偏移，并进入状态 62
-    OP_SHR  偏移，并进入状态 63
+    OP_SHL  偏移，并进入状态 72
+    OP_SHR  偏移，并进入状态 73
 
-    $default  使用规则 51 以归约 (cmprexpr)
+    $default  使用规则 61 以归约 (cmprexpr)
 
 
 状态 35
 
-   54 shiftexpr: addexpr •
-   55 addexpr: addexpr • OP_ADD mulexpr
-   56        | addexpr • OP_SUB mulexpr
+   64 shiftexpr: addexpr •
+   65 addexpr: addexpr • OP_ADD mulexpr
+   66        | addexpr • OP_SUB mulexpr
 
-    OP_ADD  偏移，并进入状态 64
-    OP_SUB  偏移，并进入状态 65
+    OP_ADD  偏移，并进入状态 74
+    OP_SUB  偏移，并进入状态 75
 
-    $default  使用规则 54 以归约 (shiftexpr)
+    $default  使用规则 64 以归约 (shiftexpr)
 
 
 状态 36
 
-   57 addexpr: mulexpr •
-   58 mulexpr: mulexpr • OP_MUL primaryexpr
-   59        | mulexpr • OP_DIV primaryexpr
-   60        | mulexpr • OP_MOD primaryexpr
+   67 addexpr: mulexpr •
+   68 mulexpr: mulexpr • OP_MUL primaryexpr
+   69        | mulexpr • OP_DIV primaryexpr
+   70        | mulexpr • OP_MOD primaryexpr
 
-    OP_MUL  偏移，并进入状态 66
-    OP_DIV  偏移，并进入状态 67
-    OP_MOD  偏移，并进入状态 68
+    OP_MUL  偏移，并进入状态 76
+    OP_DIV  偏移，并进入状态 77
+    OP_MOD  偏移，并进入状态 78
 
-    $default  使用规则 57 以归约 (addexpr)
+    $default  使用规则 67 以归约 (addexpr)
 
 
 状态 37
 
-   61 mulexpr: primaryexpr •
+   71 mulexpr: primaryexpr •
 
-    $default  使用规则 61 以归约 (mulexpr)
+    $default  使用规则 71 以归约 (mulexpr)
 
 
 状态 38
 
-   63 primaryexpr: constant •
+   73 primaryexpr: constant •
 
-    $default  使用规则 63 以归约 (primaryexpr)
+    $default  使用规则 73 以归约 (primaryexpr)
 
 
 状态 39
@@ -711,8 +751,8 @@
     5 function: declarator LP parameters • RP compoundstmt
     6 parameters: parameters • COMMA declarator
 
-    RP     偏移，并进入状态 69
-    COMMA  偏移，并进入状态 70
+    RP     偏移，并进入状态 79
+    COMMA  偏移，并进入状态 80
 
 
 状态 41
@@ -724,42 +764,42 @@
 
 状态 42
 
-   62 primaryexpr: identifier •
-   65            | identifier • LP arguments RP
+   72 primaryexpr: identifier •
+   75            | identifier • LP arguments RP
 
-    LP  偏移，并进入状态 48
+    LP  偏移，并进入状态 58
 
-    $default  使用规则 62 以归约 (primaryexpr)
+    $default  使用规则 72 以归约 (primaryexpr)
 
 
 状态 43
 
-   66 primaryexpr: OP_ADD primaryexpr •
+   76 primaryexpr: OP_ADD primaryexpr •
 
-    $default  使用规则 66 以归约 (primaryexpr)
+    $default  使用规则 76 以归约 (primaryexpr)
 
 
 状态 44
 
-   67 primaryexpr: OP_SUB primaryexpr •
+   77 primaryexpr: OP_SUB primaryexpr •
 
-    $default  使用规则 67 以归约 (primaryexpr)
+    $default  使用规则 77 以归约 (primaryexpr)
 
 
 状态 45
 
-   68 primaryexpr: OP_NOT primaryexpr •
+   78 primaryexpr: OP_NOT primaryexpr •
 
-    $default  使用规则 68 以归约 (primaryexpr)
+    $default  使用规则 78 以归约 (primaryexpr)
 
 
 状态 46
 
    30 expr: expr • COMMA assignexpr
-   64 primaryexpr: LP expr • RP
+   74 primaryexpr: LP expr • RP
 
-    RP     偏移，并进入状态 71
-    COMMA  偏移，并进入状态 50
+    RP     偏移，并进入状态 81
+    COMMA  偏移，并进入状态 60
 
 
 状态 47
@@ -776,7 +816,7 @@
     LP         偏移，并进入状态 23
 
     identifier   转到状态 24
-    assignexpr   转到状态 72
+    assignexpr   转到状态 82
     logorexpr    转到状态 27
     logandexpr   转到状态 28
     orexpr       转到状态 29
@@ -793,7 +833,7 @@
 
 状态 48
 
-   65 primaryexpr: identifier LP • arguments RP
+   33 assignexpr: identifier OP_ADD_ASSIGN • assignexpr
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -804,10 +844,8 @@
     OP_NOT     偏移，并进入状态 22
     LP         偏移，并进入状态 23
 
-    $default  使用规则 74 以归约 (arguments)
-
     identifier   转到状态 24
-    assignexpr   转到状态 73
+    assignexpr   转到状态 83
     logorexpr    转到状态 27
     logandexpr   转到状态 28
     orexpr       转到状态 29
@@ -820,19 +858,11 @@
     mulexpr      转到状态 36
     primaryexpr  转到状态 37
     constant     转到状态 38
-    arguments    转到状态 74
 
 
 状态 49
 
-   11 declaration: declarator OP_ASSIGN expr SEM •
-
-    $default  使用规则 11 以归约 (declaration)
-
-
-状态 50
-
-   30 expr: expr COMMA • assignexpr
+   34 assignexpr: identifier OP_SUB_ASSIGN • assignexpr
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -844,7 +874,36 @@
     LP         偏移，并进入状态 23
 
     identifier   转到状态 24
-    assignexpr   转到状态 75
+    assignexpr   转到状态 84
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 50
+
+   35 assignexpr: identifier OP_MUL_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 85
     logorexpr    转到状态 27
     logandexpr   转到状态 28
     orexpr       转到状态 29
@@ -861,686 +920,7 @@
 
 状态 51
 
-   34 logorexpr: logorexpr OP_LOGOR • logandexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    logandexpr   转到状态 76
-    orexpr       转到状态 29
-    xorexpr      转到状态 30
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 52
-
-   36 logandexpr: logandexpr OP_LOGAND • orexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    orexpr       转到状态 77
-    xorexpr      转到状态 30
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 53
-
-   38 orexpr: orexpr OP_OR • xorexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    xorexpr      转到状态 78
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 54
-
-   40 xorexpr: xorexpr OP_XOR • andexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    andexpr      转到状态 79
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 55
-
-   42 andexpr: andexpr OP_AND • ecmprexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    ecmprexpr    转到状态 80
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 56
-
-   44 ecmprexpr: ecmprexpr OP_EQ • cmprexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    cmprexpr     转到状态 81
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 57
-
-   45 ecmprexpr: ecmprexpr OP_NEQ • cmprexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    cmprexpr     转到状态 82
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 58
-
-   47 cmprexpr: cmprexpr OP_GT • shiftexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    shiftexpr    转到状态 83
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 59
-
-   48 cmprexpr: cmprexpr OP_LT • shiftexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    shiftexpr    转到状态 84
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 60
-
-   49 cmprexpr: cmprexpr OP_GTE • shiftexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    shiftexpr    转到状态 85
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 61
-
-   50 cmprexpr: cmprexpr OP_LTE • shiftexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    shiftexpr    转到状态 86
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 62
-
-   52 shiftexpr: shiftexpr OP_SHL • addexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    addexpr      转到状态 87
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 63
-
-   53 shiftexpr: shiftexpr OP_SHR • addexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    addexpr      转到状态 88
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 64
-
-   55 addexpr: addexpr OP_ADD • mulexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    mulexpr      转到状态 89
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 65
-
-   56 addexpr: addexpr OP_SUB • mulexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    mulexpr      转到状态 90
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 66
-
-   58 mulexpr: mulexpr OP_MUL • primaryexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    primaryexpr  转到状态 91
-    constant     转到状态 38
-
-
-状态 67
-
-   59 mulexpr: mulexpr OP_DIV • primaryexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    primaryexpr  转到状态 92
-    constant     转到状态 38
-
-
-状态 68
-
-   60 mulexpr: mulexpr OP_MOD • primaryexpr
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 42
-    primaryexpr  转到状态 93
-    constant     转到状态 38
-
-
-状态 69
-
-    5 function: declarator LP parameters RP • compoundstmt
-
-    LBR  偏移，并进入状态 94
-
-    compoundstmt  转到状态 95
-
-
-状态 70
-
-    6 parameters: parameters COMMA • declarator
-
-    TYPE_INT    偏移，并进入状态 3
-    TYPE_FLOAT  偏移，并进入状态 4
-    TYPE_BOOL   偏移，并进入状态 5
-    TYPE_VOID   偏移，并进入状态 6
-
-    declarator  转到状态 96
-    type        转到状态 11
-
-
-状态 71
-
-   64 primaryexpr: LP expr RP •
-
-    $default  使用规则 64 以归约 (primaryexpr)
-
-
-状态 72
-
-   32 assignexpr: identifier OP_ASSIGN assignexpr •
-
-    $default  使用规则 32 以归约 (assignexpr)
-
-
-状态 73
-
-   73 arguments: assignexpr •
-
-    $default  使用规则 73 以归约 (arguments)
-
-
-状态 74
-
-   65 primaryexpr: identifier LP arguments • RP
-   72 arguments: arguments • COMMA assignexpr
-
-    RP     偏移，并进入状态 97
-    COMMA  偏移，并进入状态 98
-
-
-状态 75
-
-   30 expr: expr COMMA assignexpr •
-
-    $default  使用规则 30 以归约 (expr)
-
-
-状态 76
-
-   34 logorexpr: logorexpr OP_LOGOR logandexpr •
-   36 logandexpr: logandexpr • OP_LOGAND orexpr
-
-    OP_LOGAND  偏移，并进入状态 52
-
-    $default  使用规则 34 以归约 (logorexpr)
-
-
-状态 77
-
-   36 logandexpr: logandexpr OP_LOGAND orexpr •
-   38 orexpr: orexpr • OP_OR xorexpr
-
-    OP_OR  偏移，并进入状态 53
-
-    $default  使用规则 36 以归约 (logandexpr)
-
-
-状态 78
-
-   38 orexpr: orexpr OP_OR xorexpr •
-   40 xorexpr: xorexpr • OP_XOR andexpr
-
-    OP_XOR  偏移，并进入状态 54
-
-    $default  使用规则 38 以归约 (orexpr)
-
-
-状态 79
-
-   40 xorexpr: xorexpr OP_XOR andexpr •
-   42 andexpr: andexpr • OP_AND ecmprexpr
-
-    OP_AND  偏移，并进入状态 55
-
-    $default  使用规则 40 以归约 (xorexpr)
-
-
-状态 80
-
-   42 andexpr: andexpr OP_AND ecmprexpr •
-   44 ecmprexpr: ecmprexpr • OP_EQ cmprexpr
-   45          | ecmprexpr • OP_NEQ cmprexpr
-
-    OP_EQ   偏移，并进入状态 56
-    OP_NEQ  偏移，并进入状态 57
-
-    $default  使用规则 42 以归约 (andexpr)
-
-
-状态 81
-
-   44 ecmprexpr: ecmprexpr OP_EQ cmprexpr •
-   47 cmprexpr: cmprexpr • OP_GT shiftexpr
-   48         | cmprexpr • OP_LT shiftexpr
-   49         | cmprexpr • OP_GTE shiftexpr
-   50         | cmprexpr • OP_LTE shiftexpr
-
-    OP_GT   偏移，并进入状态 58
-    OP_LT   偏移，并进入状态 59
-    OP_GTE  偏移，并进入状态 60
-    OP_LTE  偏移，并进入状态 61
-
-    $default  使用规则 44 以归约 (ecmprexpr)
-
-
-状态 82
-
-   45 ecmprexpr: ecmprexpr OP_NEQ cmprexpr •
-   47 cmprexpr: cmprexpr • OP_GT shiftexpr
-   48         | cmprexpr • OP_LT shiftexpr
-   49         | cmprexpr • OP_GTE shiftexpr
-   50         | cmprexpr • OP_LTE shiftexpr
-
-    OP_GT   偏移，并进入状态 58
-    OP_LT   偏移，并进入状态 59
-    OP_GTE  偏移，并进入状态 60
-    OP_LTE  偏移，并进入状态 61
-
-    $default  使用规则 45 以归约 (ecmprexpr)
-
-
-状态 83
-
-   47 cmprexpr: cmprexpr OP_GT shiftexpr •
-   52 shiftexpr: shiftexpr • OP_SHL addexpr
-   53          | shiftexpr • OP_SHR addexpr
-
-    OP_SHL  偏移，并进入状态 62
-    OP_SHR  偏移，并进入状态 63
-
-    $default  使用规则 47 以归约 (cmprexpr)
-
-
-状态 84
-
-   48 cmprexpr: cmprexpr OP_LT shiftexpr •
-   52 shiftexpr: shiftexpr • OP_SHL addexpr
-   53          | shiftexpr • OP_SHR addexpr
-
-    OP_SHL  偏移，并进入状态 62
-    OP_SHR  偏移，并进入状态 63
-
-    $default  使用规则 48 以归约 (cmprexpr)
-
-
-状态 85
-
-   49 cmprexpr: cmprexpr OP_GTE shiftexpr •
-   52 shiftexpr: shiftexpr • OP_SHL addexpr
-   53          | shiftexpr • OP_SHR addexpr
-
-    OP_SHL  偏移，并进入状态 62
-    OP_SHR  偏移，并进入状态 63
-
-    $default  使用规则 49 以归约 (cmprexpr)
-
-
-状态 86
-
-   50 cmprexpr: cmprexpr OP_LTE shiftexpr •
-   52 shiftexpr: shiftexpr • OP_SHL addexpr
-   53          | shiftexpr • OP_SHR addexpr
-
-    OP_SHL  偏移，并进入状态 62
-    OP_SHR  偏移，并进入状态 63
-
-    $default  使用规则 50 以归约 (cmprexpr)
-
-
-状态 87
-
-   52 shiftexpr: shiftexpr OP_SHL addexpr •
-   55 addexpr: addexpr • OP_ADD mulexpr
-   56        | addexpr • OP_SUB mulexpr
-
-    OP_ADD  偏移，并进入状态 64
-    OP_SUB  偏移，并进入状态 65
-
-    $default  使用规则 52 以归约 (shiftexpr)
-
-
-状态 88
-
-   53 shiftexpr: shiftexpr OP_SHR addexpr •
-   55 addexpr: addexpr • OP_ADD mulexpr
-   56        | addexpr • OP_SUB mulexpr
-
-    OP_ADD  偏移，并进入状态 64
-    OP_SUB  偏移，并进入状态 65
-
-    $default  使用规则 53 以归约 (shiftexpr)
-
-
-状态 89
-
-   55 addexpr: addexpr OP_ADD mulexpr •
-   58 mulexpr: mulexpr • OP_MUL primaryexpr
-   59        | mulexpr • OP_DIV primaryexpr
-   60        | mulexpr • OP_MOD primaryexpr
-
-    OP_MUL  偏移，并进入状态 66
-    OP_DIV  偏移，并进入状态 67
-    OP_MOD  偏移，并进入状态 68
-
-    $default  使用规则 55 以归约 (addexpr)
-
-
-状态 90
-
-   56 addexpr: addexpr OP_SUB mulexpr •
-   58 mulexpr: mulexpr • OP_MUL primaryexpr
-   59        | mulexpr • OP_DIV primaryexpr
-   60        | mulexpr • OP_MOD primaryexpr
-
-    OP_MUL  偏移，并进入状态 66
-    OP_DIV  偏移，并进入状态 67
-    OP_MOD  偏移，并进入状态 68
-
-    $default  使用规则 56 以归约 (addexpr)
-
-
-状态 91
-
-   58 mulexpr: mulexpr OP_MUL primaryexpr •
-
-    $default  使用规则 58 以归约 (mulexpr)
-
-
-状态 92
-
-   59 mulexpr: mulexpr OP_DIV primaryexpr •
-
-    $default  使用规则 59 以归约 (mulexpr)
-
-
-状态 93
-
-   60 mulexpr: mulexpr OP_MOD primaryexpr •
-
-    $default  使用规则 60 以归约 (mulexpr)
-
-
-状态 94
-
-   22 compoundstmt: LBR • items RBR
-
-    $default  使用规则 24 以归约 (items)
-
-    items  转到状态 99
-
-
-状态 95
-
-    5 function: declarator LP parameters RP compoundstmt •
-
-    $default  使用规则 5 以归约 (function)
-
-
-状态 96
-
-    6 parameters: parameters COMMA declarator •
-
-    $default  使用规则 6 以归约 (parameters)
-
-
-状态 97
-
-   65 primaryexpr: identifier LP arguments RP •
-
-    $default  使用规则 65 以归约 (primaryexpr)
-
-
-状态 98
-
-   72 arguments: arguments COMMA • assignexpr
+   36 assignexpr: identifier OP_DIV_ASSIGN • assignexpr
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -1552,7 +932,7 @@
     LP         偏移，并进入状态 23
 
     identifier   转到状态 24
-    assignexpr   转到状态 100
+    assignexpr   转到状态 86
     logorexpr    转到状态 27
     logandexpr   转到状态 28
     orexpr       转到状态 29
@@ -1567,7 +947,1027 @@
     constant     转到状态 38
 
 
+状态 52
+
+   37 assignexpr: identifier OP_MOD_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 87
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 53
+
+   38 assignexpr: identifier OP_SHL_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 88
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 54
+
+   39 assignexpr: identifier OP_SHR_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 89
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 55
+
+   40 assignexpr: identifier OP_AND_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 90
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 56
+
+   41 assignexpr: identifier OP_OR_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 91
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 57
+
+   42 assignexpr: identifier OP_XOR_ASSIGN • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 92
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 58
+
+   75 primaryexpr: identifier LP • arguments RP
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    $default  使用规则 84 以归约 (arguments)
+
+    identifier   转到状态 24
+    assignexpr   转到状态 93
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+    arguments    转到状态 94
+
+
+状态 59
+
+   11 declaration: declarator OP_ASSIGN expr SEM •
+
+    $default  使用规则 11 以归约 (declaration)
+
+
+状态 60
+
+   30 expr: expr COMMA • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 95
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 61
+
+   44 logorexpr: logorexpr OP_LOGOR • logandexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    logandexpr   转到状态 96
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 62
+
+   46 logandexpr: logandexpr OP_LOGAND • orexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    orexpr       转到状态 97
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 63
+
+   48 orexpr: orexpr OP_OR • xorexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    xorexpr      转到状态 98
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 64
+
+   50 xorexpr: xorexpr OP_XOR • andexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    andexpr      转到状态 99
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 65
+
+   52 andexpr: andexpr OP_AND • ecmprexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    ecmprexpr    转到状态 100
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 66
+
+   54 ecmprexpr: ecmprexpr OP_EQ • cmprexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    cmprexpr     转到状态 101
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 67
+
+   55 ecmprexpr: ecmprexpr OP_NEQ • cmprexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    cmprexpr     转到状态 102
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 68
+
+   57 cmprexpr: cmprexpr OP_GT • shiftexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    shiftexpr    转到状态 103
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 69
+
+   58 cmprexpr: cmprexpr OP_LT • shiftexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    shiftexpr    转到状态 104
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 70
+
+   59 cmprexpr: cmprexpr OP_GTE • shiftexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    shiftexpr    转到状态 105
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 71
+
+   60 cmprexpr: cmprexpr OP_LTE • shiftexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    shiftexpr    转到状态 106
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 72
+
+   62 shiftexpr: shiftexpr OP_SHL • addexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    addexpr      转到状态 107
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 73
+
+   63 shiftexpr: shiftexpr OP_SHR • addexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    addexpr      转到状态 108
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 74
+
+   65 addexpr: addexpr OP_ADD • mulexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    mulexpr      转到状态 109
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 75
+
+   66 addexpr: addexpr OP_SUB • mulexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    mulexpr      转到状态 110
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 76
+
+   68 mulexpr: mulexpr OP_MUL • primaryexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    primaryexpr  转到状态 111
+    constant     转到状态 38
+
+
+状态 77
+
+   69 mulexpr: mulexpr OP_DIV • primaryexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    primaryexpr  转到状态 112
+    constant     转到状态 38
+
+
+状态 78
+
+   70 mulexpr: mulexpr OP_MOD • primaryexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 42
+    primaryexpr  转到状态 113
+    constant     转到状态 38
+
+
+状态 79
+
+    5 function: declarator LP parameters RP • compoundstmt
+
+    LBR  偏移，并进入状态 114
+
+    compoundstmt  转到状态 115
+
+
+状态 80
+
+    6 parameters: parameters COMMA • declarator
+
+    TYPE_INT    偏移，并进入状态 3
+    TYPE_FLOAT  偏移，并进入状态 4
+    TYPE_BOOL   偏移，并进入状态 5
+    TYPE_VOID   偏移，并进入状态 6
+
+    declarator  转到状态 116
+    type        转到状态 11
+
+
+状态 81
+
+   74 primaryexpr: LP expr RP •
+
+    $default  使用规则 74 以归约 (primaryexpr)
+
+
+状态 82
+
+   32 assignexpr: identifier OP_ASSIGN assignexpr •
+
+    $default  使用规则 32 以归约 (assignexpr)
+
+
+状态 83
+
+   33 assignexpr: identifier OP_ADD_ASSIGN assignexpr •
+
+    $default  使用规则 33 以归约 (assignexpr)
+
+
+状态 84
+
+   34 assignexpr: identifier OP_SUB_ASSIGN assignexpr •
+
+    $default  使用规则 34 以归约 (assignexpr)
+
+
+状态 85
+
+   35 assignexpr: identifier OP_MUL_ASSIGN assignexpr •
+
+    $default  使用规则 35 以归约 (assignexpr)
+
+
+状态 86
+
+   36 assignexpr: identifier OP_DIV_ASSIGN assignexpr •
+
+    $default  使用规则 36 以归约 (assignexpr)
+
+
+状态 87
+
+   37 assignexpr: identifier OP_MOD_ASSIGN assignexpr •
+
+    $default  使用规则 37 以归约 (assignexpr)
+
+
+状态 88
+
+   38 assignexpr: identifier OP_SHL_ASSIGN assignexpr •
+
+    $default  使用规则 38 以归约 (assignexpr)
+
+
+状态 89
+
+   39 assignexpr: identifier OP_SHR_ASSIGN assignexpr •
+
+    $default  使用规则 39 以归约 (assignexpr)
+
+
+状态 90
+
+   40 assignexpr: identifier OP_AND_ASSIGN assignexpr •
+
+    $default  使用规则 40 以归约 (assignexpr)
+
+
+状态 91
+
+   41 assignexpr: identifier OP_OR_ASSIGN assignexpr •
+
+    $default  使用规则 41 以归约 (assignexpr)
+
+
+状态 92
+
+   42 assignexpr: identifier OP_XOR_ASSIGN assignexpr •
+
+    $default  使用规则 42 以归约 (assignexpr)
+
+
+状态 93
+
+   83 arguments: assignexpr •
+
+    $default  使用规则 83 以归约 (arguments)
+
+
+状态 94
+
+   75 primaryexpr: identifier LP arguments • RP
+   82 arguments: arguments • COMMA assignexpr
+
+    RP     偏移，并进入状态 117
+    COMMA  偏移，并进入状态 118
+
+
+状态 95
+
+   30 expr: expr COMMA assignexpr •
+
+    $default  使用规则 30 以归约 (expr)
+
+
+状态 96
+
+   44 logorexpr: logorexpr OP_LOGOR logandexpr •
+   46 logandexpr: logandexpr • OP_LOGAND orexpr
+
+    OP_LOGAND  偏移，并进入状态 62
+
+    $default  使用规则 44 以归约 (logorexpr)
+
+
+状态 97
+
+   46 logandexpr: logandexpr OP_LOGAND orexpr •
+   48 orexpr: orexpr • OP_OR xorexpr
+
+    OP_OR  偏移，并进入状态 63
+
+    $default  使用规则 46 以归约 (logandexpr)
+
+
+状态 98
+
+   48 orexpr: orexpr OP_OR xorexpr •
+   50 xorexpr: xorexpr • OP_XOR andexpr
+
+    OP_XOR  偏移，并进入状态 64
+
+    $default  使用规则 48 以归约 (orexpr)
+
+
 状态 99
+
+   50 xorexpr: xorexpr OP_XOR andexpr •
+   52 andexpr: andexpr • OP_AND ecmprexpr
+
+    OP_AND  偏移，并进入状态 65
+
+    $default  使用规则 50 以归约 (xorexpr)
+
+
+状态 100
+
+   52 andexpr: andexpr OP_AND ecmprexpr •
+   54 ecmprexpr: ecmprexpr • OP_EQ cmprexpr
+   55          | ecmprexpr • OP_NEQ cmprexpr
+
+    OP_EQ   偏移，并进入状态 66
+    OP_NEQ  偏移，并进入状态 67
+
+    $default  使用规则 52 以归约 (andexpr)
+
+
+状态 101
+
+   54 ecmprexpr: ecmprexpr OP_EQ cmprexpr •
+   57 cmprexpr: cmprexpr • OP_GT shiftexpr
+   58         | cmprexpr • OP_LT shiftexpr
+   59         | cmprexpr • OP_GTE shiftexpr
+   60         | cmprexpr • OP_LTE shiftexpr
+
+    OP_GT   偏移，并进入状态 68
+    OP_LT   偏移，并进入状态 69
+    OP_GTE  偏移，并进入状态 70
+    OP_LTE  偏移，并进入状态 71
+
+    $default  使用规则 54 以归约 (ecmprexpr)
+
+
+状态 102
+
+   55 ecmprexpr: ecmprexpr OP_NEQ cmprexpr •
+   57 cmprexpr: cmprexpr • OP_GT shiftexpr
+   58         | cmprexpr • OP_LT shiftexpr
+   59         | cmprexpr • OP_GTE shiftexpr
+   60         | cmprexpr • OP_LTE shiftexpr
+
+    OP_GT   偏移，并进入状态 68
+    OP_LT   偏移，并进入状态 69
+    OP_GTE  偏移，并进入状态 70
+    OP_LTE  偏移，并进入状态 71
+
+    $default  使用规则 55 以归约 (ecmprexpr)
+
+
+状态 103
+
+   57 cmprexpr: cmprexpr OP_GT shiftexpr •
+   62 shiftexpr: shiftexpr • OP_SHL addexpr
+   63          | shiftexpr • OP_SHR addexpr
+
+    OP_SHL  偏移，并进入状态 72
+    OP_SHR  偏移，并进入状态 73
+
+    $default  使用规则 57 以归约 (cmprexpr)
+
+
+状态 104
+
+   58 cmprexpr: cmprexpr OP_LT shiftexpr •
+   62 shiftexpr: shiftexpr • OP_SHL addexpr
+   63          | shiftexpr • OP_SHR addexpr
+
+    OP_SHL  偏移，并进入状态 72
+    OP_SHR  偏移，并进入状态 73
+
+    $default  使用规则 58 以归约 (cmprexpr)
+
+
+状态 105
+
+   59 cmprexpr: cmprexpr OP_GTE shiftexpr •
+   62 shiftexpr: shiftexpr • OP_SHL addexpr
+   63          | shiftexpr • OP_SHR addexpr
+
+    OP_SHL  偏移，并进入状态 72
+    OP_SHR  偏移，并进入状态 73
+
+    $default  使用规则 59 以归约 (cmprexpr)
+
+
+状态 106
+
+   60 cmprexpr: cmprexpr OP_LTE shiftexpr •
+   62 shiftexpr: shiftexpr • OP_SHL addexpr
+   63          | shiftexpr • OP_SHR addexpr
+
+    OP_SHL  偏移，并进入状态 72
+    OP_SHR  偏移，并进入状态 73
+
+    $default  使用规则 60 以归约 (cmprexpr)
+
+
+状态 107
+
+   62 shiftexpr: shiftexpr OP_SHL addexpr •
+   65 addexpr: addexpr • OP_ADD mulexpr
+   66        | addexpr • OP_SUB mulexpr
+
+    OP_ADD  偏移，并进入状态 74
+    OP_SUB  偏移，并进入状态 75
+
+    $default  使用规则 62 以归约 (shiftexpr)
+
+
+状态 108
+
+   63 shiftexpr: shiftexpr OP_SHR addexpr •
+   65 addexpr: addexpr • OP_ADD mulexpr
+   66        | addexpr • OP_SUB mulexpr
+
+    OP_ADD  偏移，并进入状态 74
+    OP_SUB  偏移，并进入状态 75
+
+    $default  使用规则 63 以归约 (shiftexpr)
+
+
+状态 109
+
+   65 addexpr: addexpr OP_ADD mulexpr •
+   68 mulexpr: mulexpr • OP_MUL primaryexpr
+   69        | mulexpr • OP_DIV primaryexpr
+   70        | mulexpr • OP_MOD primaryexpr
+
+    OP_MUL  偏移，并进入状态 76
+    OP_DIV  偏移，并进入状态 77
+    OP_MOD  偏移，并进入状态 78
+
+    $default  使用规则 65 以归约 (addexpr)
+
+
+状态 110
+
+   66 addexpr: addexpr OP_SUB mulexpr •
+   68 mulexpr: mulexpr • OP_MUL primaryexpr
+   69        | mulexpr • OP_DIV primaryexpr
+   70        | mulexpr • OP_MOD primaryexpr
+
+    OP_MUL  偏移，并进入状态 76
+    OP_DIV  偏移，并进入状态 77
+    OP_MOD  偏移，并进入状态 78
+
+    $default  使用规则 66 以归约 (addexpr)
+
+
+状态 111
+
+   68 mulexpr: mulexpr OP_MUL primaryexpr •
+
+    $default  使用规则 68 以归约 (mulexpr)
+
+
+状态 112
+
+   69 mulexpr: mulexpr OP_DIV primaryexpr •
+
+    $default  使用规则 69 以归约 (mulexpr)
+
+
+状态 113
+
+   70 mulexpr: mulexpr OP_MOD primaryexpr •
+
+    $default  使用规则 70 以归约 (mulexpr)
+
+
+状态 114
+
+   22 compoundstmt: LBR • items RBR
+
+    $default  使用规则 24 以归约 (items)
+
+    items  转到状态 119
+
+
+状态 115
+
+    5 function: declarator LP parameters RP compoundstmt •
+
+    $default  使用规则 5 以归约 (function)
+
+
+状态 116
+
+    6 parameters: parameters COMMA declarator •
+
+    $default  使用规则 6 以归约 (parameters)
+
+
+状态 117
+
+   75 primaryexpr: identifier LP arguments RP •
+
+    $default  使用规则 75 以归约 (primaryexpr)
+
+
+状态 118
+
+   82 arguments: arguments COMMA • assignexpr
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    assignexpr   转到状态 120
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 119
 
    22 compoundstmt: LBR items • RBR
    23 items: items • item
@@ -1584,25 +1984,25 @@
     OP_SUB      偏移，并进入状态 21
     OP_NOT      偏移，并进入状态 22
     LP          偏移，并进入状态 23
-    LBR         偏移，并进入状态 94
-    RBR         偏移，并进入状态 101
-    IF          偏移，并进入状态 102
-    WHILE       偏移，并进入状态 103
-    FOR         偏移，并进入状态 104
-    RETURN      偏移，并进入状态 105
+    LBR         偏移，并进入状态 114
+    RBR         偏移，并进入状态 121
+    IF          偏移，并进入状态 122
+    WHILE       偏移，并进入状态 123
+    FOR         偏移，并进入状态 124
+    RETURN      偏移，并进入状态 125
 
     $default  使用规则 29 以归约 (optexpr)
 
-    declaration   转到状态 106
-    declarator    转到状态 107
+    declaration   转到状态 126
+    declarator    转到状态 127
     type          转到状态 11
     identifier    转到状态 24
-    statement     转到状态 108
-    compoundstmt  转到状态 109
-    item          转到状态 110
-    exprstmt      转到状态 111
-    optexpr       转到状态 112
-    expr          转到状态 113
+    statement     转到状态 128
+    compoundstmt  转到状态 129
+    item          转到状态 130
+    exprstmt      转到状态 131
+    optexpr       转到状态 132
+    expr          转到状态 133
     assignexpr    转到状态 26
     logorexpr     转到状态 27
     logandexpr    转到状态 28
@@ -1616,307 +2016,49 @@
     mulexpr       转到状态 36
     primaryexpr   转到状态 37
     constant      转到状态 38
-    ctrlstmt      转到状态 114
-    jumpstmt      转到状态 115
+    ctrlstmt      转到状态 134
+    jumpstmt      转到状态 135
 
 
-状态 100
+状态 120
 
-   72 arguments: arguments COMMA assignexpr •
+   82 arguments: arguments COMMA assignexpr •
 
-    $default  使用规则 72 以归约 (arguments)
+    $default  使用规则 82 以归约 (arguments)
 
 
-状态 101
+状态 121
 
    22 compoundstmt: LBR items RBR •
 
     $default  使用规则 22 以归约 (compoundstmt)
 
 
-状态 102
-
-   75 ctrlstmt: IF • LP expr RP statement
-   76         | IF • LP expr RP statement ELSE statement
-
-    LP  偏移，并进入状态 116
-
-
-状态 103
-
-   77 ctrlstmt: WHILE • LP expr RP statement
-
-    LP  偏移，并进入状态 117
-
-
-状态 104
-
-   78 ctrlstmt: FOR • LP inititem optexpr SEM optexpr RP statement
-
-    LP  偏移，并进入状态 118
-
-
-状态 105
-
-   81 jumpstmt: RETURN • optexpr SEM
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    $default  使用规则 29 以归约 (optexpr)
-
-    identifier   转到状态 24
-    optexpr      转到状态 119
-    expr         转到状态 113
-    assignexpr   转到状态 26
-    logorexpr    转到状态 27
-    logandexpr   转到状态 28
-    orexpr       转到状态 29
-    xorexpr      转到状态 30
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 106
-
-   25 item: declaration •
-
-    $default  使用规则 25 以归约 (item)
-
-
-状态 107
-
-   10 declaration: declarator • SEM
-   11            | declarator • OP_ASSIGN expr SEM
-
-    OP_ASSIGN  偏移，并进入状态 12
-    SEM        偏移，并进入状态 14
-
-
-状态 108
-
-   26 item: statement •
-
-    $default  使用规则 26 以归约 (item)
-
-
-状态 109
-
-   18 statement: compoundstmt •
-
-    $default  使用规则 18 以归约 (statement)
-
-
-状态 110
-
-   23 items: items item •
-
-    $default  使用规则 23 以归约 (items)
-
-
-状态 111
-
-   19 statement: exprstmt •
-
-    $default  使用规则 19 以归约 (statement)
-
-
-状态 112
-
-   27 exprstmt: optexpr • SEM
-
-    SEM  偏移，并进入状态 120
-
-
-状态 113
-
-   28 optexpr: expr •
-   30 expr: expr • COMMA assignexpr
-
-    COMMA  偏移，并进入状态 50
-
-    $default  使用规则 28 以归约 (optexpr)
-
-
-状态 114
-
-   20 statement: ctrlstmt •
-
-    $default  使用规则 20 以归约 (statement)
-
-
-状态 115
-
-   21 statement: jumpstmt •
-
-    $default  使用规则 21 以归约 (statement)
-
-
-状态 116
-
-   75 ctrlstmt: IF LP • expr RP statement
-   76         | IF LP • expr RP statement ELSE statement
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 24
-    expr         转到状态 121
-    assignexpr   转到状态 26
-    logorexpr    转到状态 27
-    logandexpr   转到状态 28
-    orexpr       转到状态 29
-    xorexpr      转到状态 30
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 117
-
-   77 ctrlstmt: WHILE LP • expr RP statement
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-
-    identifier   转到状态 24
-    expr         转到状态 122
-    assignexpr   转到状态 26
-    logorexpr    转到状态 27
-    logandexpr   转到状态 28
-    orexpr       转到状态 29
-    xorexpr      转到状态 30
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-
-
-状态 118
-
-   78 ctrlstmt: FOR LP • inititem optexpr SEM optexpr RP statement
-
-    NUM_INT     偏移，并进入状态 17
-    NUM_FLOAT   偏移，并进入状态 18
-    NUM_BOOL    偏移，并进入状态 19
-    ID          偏移，并进入状态 15
-    TYPE_INT    偏移，并进入状态 3
-    TYPE_FLOAT  偏移，并进入状态 4
-    TYPE_BOOL   偏移，并进入状态 5
-    TYPE_VOID   偏移，并进入状态 6
-    OP_ADD      偏移，并进入状态 20
-    OP_SUB      偏移，并进入状态 21
-    OP_NOT      偏移，并进入状态 22
-    LP          偏移，并进入状态 23
-
-    $default  使用规则 29 以归约 (optexpr)
-
-    declaration  转到状态 123
-    declarator   转到状态 107
-    type         转到状态 11
-    identifier   转到状态 24
-    exprstmt     转到状态 124
-    optexpr      转到状态 112
-    expr         转到状态 113
-    assignexpr   转到状态 26
-    logorexpr    转到状态 27
-    logandexpr   转到状态 28
-    orexpr       转到状态 29
-    xorexpr      转到状态 30
-    andexpr      转到状态 31
-    ecmprexpr    转到状态 32
-    cmprexpr     转到状态 33
-    shiftexpr    转到状态 34
-    addexpr      转到状态 35
-    mulexpr      转到状态 36
-    primaryexpr  转到状态 37
-    constant     转到状态 38
-    inititem     转到状态 125
-
-
-状态 119
-
-   81 jumpstmt: RETURN optexpr • SEM
-
-    SEM  偏移，并进入状态 126
-
-
-状态 120
-
-   27 exprstmt: optexpr SEM •
-
-    $default  使用规则 27 以归约 (exprstmt)
-
-
-状态 121
-
-   30 expr: expr • COMMA assignexpr
-   75 ctrlstmt: IF LP expr • RP statement
-   76         | IF LP expr • RP statement ELSE statement
-
-    RP     偏移，并进入状态 127
-    COMMA  偏移，并进入状态 50
-
-
 状态 122
 
-   30 expr: expr • COMMA assignexpr
-   77 ctrlstmt: WHILE LP expr • RP statement
+   85 ctrlstmt: IF • LP expr RP statement
+   86         | IF • LP expr RP statement ELSE statement
 
-    RP     偏移，并进入状态 128
-    COMMA  偏移，并进入状态 50
+    LP  偏移，并进入状态 136
 
 
 状态 123
 
-   80 inititem: declaration •
+   87 ctrlstmt: WHILE • LP expr RP statement
 
-    $default  使用规则 80 以归约 (inititem)
+    LP  偏移，并进入状态 137
 
 
 状态 124
 
-   79 inititem: exprstmt •
+   88 ctrlstmt: FOR • LP inititem optexpr SEM optexpr RP statement
 
-    $default  使用规则 79 以归约 (inititem)
+    LP  偏移，并进入状态 138
 
 
 状态 125
 
-   78 ctrlstmt: FOR LP inititem • optexpr SEM optexpr RP statement
+   91 jumpstmt: RETURN • optexpr SEM
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -1930,8 +2072,8 @@
     $default  使用规则 29 以归约 (optexpr)
 
     identifier   转到状态 24
-    optexpr      转到状态 129
-    expr         转到状态 113
+    optexpr      转到状态 139
+    expr         转到状态 133
     assignexpr   转到状态 26
     logorexpr    转到状态 27
     logandexpr   转到状态 28
@@ -1949,125 +2091,83 @@
 
 状态 126
 
-   81 jumpstmt: RETURN optexpr SEM •
+   25 item: declaration •
 
-    $default  使用规则 81 以归约 (jumpstmt)
+    $default  使用规则 25 以归约 (item)
 
 
 状态 127
 
-   75 ctrlstmt: IF LP expr RP • statement
-   76         | IF LP expr RP • statement ELSE statement
+   10 declaration: declarator • SEM
+   11            | declarator • OP_ASSIGN expr SEM
 
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-    LBR        偏移，并进入状态 94
-    IF         偏移，并进入状态 102
-    WHILE      偏移，并进入状态 103
-    FOR        偏移，并进入状态 104
-    RETURN     偏移，并进入状态 105
-
-    $default  使用规则 29 以归约 (optexpr)
-
-    identifier    转到状态 24
-    statement     转到状态 130
-    compoundstmt  转到状态 109
-    exprstmt      转到状态 111
-    optexpr       转到状态 112
-    expr          转到状态 113
-    assignexpr    转到状态 26
-    logorexpr     转到状态 27
-    logandexpr    转到状态 28
-    orexpr        转到状态 29
-    xorexpr       转到状态 30
-    andexpr       转到状态 31
-    ecmprexpr     转到状态 32
-    cmprexpr      转到状态 33
-    shiftexpr     转到状态 34
-    addexpr       转到状态 35
-    mulexpr       转到状态 36
-    primaryexpr   转到状态 37
-    constant      转到状态 38
-    ctrlstmt      转到状态 114
-    jumpstmt      转到状态 115
+    OP_ASSIGN  偏移，并进入状态 12
+    SEM        偏移，并进入状态 14
 
 
 状态 128
 
-   77 ctrlstmt: WHILE LP expr RP • statement
+   26 item: statement •
 
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-    LBR        偏移，并进入状态 94
-    IF         偏移，并进入状态 102
-    WHILE      偏移，并进入状态 103
-    FOR        偏移，并进入状态 104
-    RETURN     偏移，并进入状态 105
-
-    $default  使用规则 29 以归约 (optexpr)
-
-    identifier    转到状态 24
-    statement     转到状态 131
-    compoundstmt  转到状态 109
-    exprstmt      转到状态 111
-    optexpr       转到状态 112
-    expr          转到状态 113
-    assignexpr    转到状态 26
-    logorexpr     转到状态 27
-    logandexpr    转到状态 28
-    orexpr        转到状态 29
-    xorexpr       转到状态 30
-    andexpr       转到状态 31
-    ecmprexpr     转到状态 32
-    cmprexpr      转到状态 33
-    shiftexpr     转到状态 34
-    addexpr       转到状态 35
-    mulexpr       转到状态 36
-    primaryexpr   转到状态 37
-    constant      转到状态 38
-    ctrlstmt      转到状态 114
-    jumpstmt      转到状态 115
+    $default  使用规则 26 以归约 (item)
 
 
 状态 129
 
-   78 ctrlstmt: FOR LP inititem optexpr • SEM optexpr RP statement
+   18 statement: compoundstmt •
 
-    SEM  偏移，并进入状态 132
+    $default  使用规则 18 以归约 (statement)
 
 
 状态 130
 
-   75 ctrlstmt: IF LP expr RP statement •
-   76         | IF LP expr RP statement • ELSE statement
+   23 items: items item •
 
-    ELSE  偏移，并进入状态 133
-
-    $default  使用规则 75 以归约 (ctrlstmt)
+    $default  使用规则 23 以归约 (items)
 
 
 状态 131
 
-   77 ctrlstmt: WHILE LP expr RP statement •
+   19 statement: exprstmt •
 
-    $default  使用规则 77 以归约 (ctrlstmt)
+    $default  使用规则 19 以归约 (statement)
 
 
 状态 132
 
-   78 ctrlstmt: FOR LP inititem optexpr SEM • optexpr RP statement
+   27 exprstmt: optexpr • SEM
+
+    SEM  偏移，并进入状态 140
+
+
+状态 133
+
+   28 optexpr: expr •
+   30 expr: expr • COMMA assignexpr
+
+    COMMA  偏移，并进入状态 60
+
+    $default  使用规则 28 以归约 (optexpr)
+
+
+状态 134
+
+   20 statement: ctrlstmt •
+
+    $default  使用规则 20 以归约 (statement)
+
+
+状态 135
+
+   21 statement: jumpstmt •
+
+    $default  使用规则 21 以归约 (statement)
+
+
+状态 136
+
+   85 ctrlstmt: IF LP • expr RP statement
+   86         | IF LP • expr RP statement ELSE statement
 
     NUM_INT    偏移，并进入状态 17
     NUM_FLOAT  偏移，并进入状态 18
@@ -2078,11 +2178,8 @@
     OP_NOT     偏移，并进入状态 22
     LP         偏移，并进入状态 23
 
-    $default  使用规则 29 以归约 (optexpr)
-
     identifier   转到状态 24
-    optexpr      转到状态 134
-    expr         转到状态 113
+    expr         转到状态 141
     assignexpr   转到状态 26
     logorexpr    转到状态 27
     logandexpr   转到状态 28
@@ -2098,108 +2195,411 @@
     constant     转到状态 38
 
 
-状态 133
-
-   76 ctrlstmt: IF LP expr RP statement ELSE • statement
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-    LBR        偏移，并进入状态 94
-    IF         偏移，并进入状态 102
-    WHILE      偏移，并进入状态 103
-    FOR        偏移，并进入状态 104
-    RETURN     偏移，并进入状态 105
-
-    $default  使用规则 29 以归约 (optexpr)
-
-    identifier    转到状态 24
-    statement     转到状态 135
-    compoundstmt  转到状态 109
-    exprstmt      转到状态 111
-    optexpr       转到状态 112
-    expr          转到状态 113
-    assignexpr    转到状态 26
-    logorexpr     转到状态 27
-    logandexpr    转到状态 28
-    orexpr        转到状态 29
-    xorexpr       转到状态 30
-    andexpr       转到状态 31
-    ecmprexpr     转到状态 32
-    cmprexpr      转到状态 33
-    shiftexpr     转到状态 34
-    addexpr       转到状态 35
-    mulexpr       转到状态 36
-    primaryexpr   转到状态 37
-    constant      转到状态 38
-    ctrlstmt      转到状态 114
-    jumpstmt      转到状态 115
-
-
-状态 134
-
-   78 ctrlstmt: FOR LP inititem optexpr SEM optexpr • RP statement
-
-    RP  偏移，并进入状态 136
-
-
-状态 135
-
-   76 ctrlstmt: IF LP expr RP statement ELSE statement •
-
-    $default  使用规则 76 以归约 (ctrlstmt)
-
-
-状态 136
-
-   78 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP • statement
-
-    NUM_INT    偏移，并进入状态 17
-    NUM_FLOAT  偏移，并进入状态 18
-    NUM_BOOL   偏移，并进入状态 19
-    ID         偏移，并进入状态 15
-    OP_ADD     偏移，并进入状态 20
-    OP_SUB     偏移，并进入状态 21
-    OP_NOT     偏移，并进入状态 22
-    LP         偏移，并进入状态 23
-    LBR        偏移，并进入状态 94
-    IF         偏移，并进入状态 102
-    WHILE      偏移，并进入状态 103
-    FOR        偏移，并进入状态 104
-    RETURN     偏移，并进入状态 105
-
-    $default  使用规则 29 以归约 (optexpr)
-
-    identifier    转到状态 24
-    statement     转到状态 137
-    compoundstmt  转到状态 109
-    exprstmt      转到状态 111
-    optexpr       转到状态 112
-    expr          转到状态 113
-    assignexpr    转到状态 26
-    logorexpr     转到状态 27
-    logandexpr    转到状态 28
-    orexpr        转到状态 29
-    xorexpr       转到状态 30
-    andexpr       转到状态 31
-    ecmprexpr     转到状态 32
-    cmprexpr      转到状态 33
-    shiftexpr     转到状态 34
-    addexpr       转到状态 35
-    mulexpr       转到状态 36
-    primaryexpr   转到状态 37
-    constant      转到状态 38
-    ctrlstmt      转到状态 114
-    jumpstmt      转到状态 115
-
-
 状态 137
 
-   78 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP statement •
+   87 ctrlstmt: WHILE LP • expr RP statement
 
-    $default  使用规则 78 以归约 (ctrlstmt)
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    identifier   转到状态 24
+    expr         转到状态 142
+    assignexpr   转到状态 26
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 138
+
+   88 ctrlstmt: FOR LP • inititem optexpr SEM optexpr RP statement
+
+    NUM_INT     偏移，并进入状态 17
+    NUM_FLOAT   偏移，并进入状态 18
+    NUM_BOOL    偏移，并进入状态 19
+    ID          偏移，并进入状态 15
+    TYPE_INT    偏移，并进入状态 3
+    TYPE_FLOAT  偏移，并进入状态 4
+    TYPE_BOOL   偏移，并进入状态 5
+    TYPE_VOID   偏移，并进入状态 6
+    OP_ADD      偏移，并进入状态 20
+    OP_SUB      偏移，并进入状态 21
+    OP_NOT      偏移，并进入状态 22
+    LP          偏移，并进入状态 23
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    declaration  转到状态 143
+    declarator   转到状态 127
+    type         转到状态 11
+    identifier   转到状态 24
+    exprstmt     转到状态 144
+    optexpr      转到状态 132
+    expr         转到状态 133
+    assignexpr   转到状态 26
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+    inititem     转到状态 145
+
+
+状态 139
+
+   91 jumpstmt: RETURN optexpr • SEM
+
+    SEM  偏移，并进入状态 146
+
+
+状态 140
+
+   27 exprstmt: optexpr SEM •
+
+    $default  使用规则 27 以归约 (exprstmt)
+
+
+状态 141
+
+   30 expr: expr • COMMA assignexpr
+   85 ctrlstmt: IF LP expr • RP statement
+   86         | IF LP expr • RP statement ELSE statement
+
+    RP     偏移，并进入状态 147
+    COMMA  偏移，并进入状态 60
+
+
+状态 142
+
+   30 expr: expr • COMMA assignexpr
+   87 ctrlstmt: WHILE LP expr • RP statement
+
+    RP     偏移，并进入状态 148
+    COMMA  偏移，并进入状态 60
+
+
+状态 143
+
+   90 inititem: declaration •
+
+    $default  使用规则 90 以归约 (inititem)
+
+
+状态 144
+
+   89 inititem: exprstmt •
+
+    $default  使用规则 89 以归约 (inititem)
+
+
+状态 145
+
+   88 ctrlstmt: FOR LP inititem • optexpr SEM optexpr RP statement
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    identifier   转到状态 24
+    optexpr      转到状态 149
+    expr         转到状态 133
+    assignexpr   转到状态 26
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 146
+
+   91 jumpstmt: RETURN optexpr SEM •
+
+    $default  使用规则 91 以归约 (jumpstmt)
+
+
+状态 147
+
+   85 ctrlstmt: IF LP expr RP • statement
+   86         | IF LP expr RP • statement ELSE statement
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+    LBR        偏移，并进入状态 114
+    IF         偏移，并进入状态 122
+    WHILE      偏移，并进入状态 123
+    FOR        偏移，并进入状态 124
+    RETURN     偏移，并进入状态 125
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    identifier    转到状态 24
+    statement     转到状态 150
+    compoundstmt  转到状态 129
+    exprstmt      转到状态 131
+    optexpr       转到状态 132
+    expr          转到状态 133
+    assignexpr    转到状态 26
+    logorexpr     转到状态 27
+    logandexpr    转到状态 28
+    orexpr        转到状态 29
+    xorexpr       转到状态 30
+    andexpr       转到状态 31
+    ecmprexpr     转到状态 32
+    cmprexpr      转到状态 33
+    shiftexpr     转到状态 34
+    addexpr       转到状态 35
+    mulexpr       转到状态 36
+    primaryexpr   转到状态 37
+    constant      转到状态 38
+    ctrlstmt      转到状态 134
+    jumpstmt      转到状态 135
+
+
+状态 148
+
+   87 ctrlstmt: WHILE LP expr RP • statement
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+    LBR        偏移，并进入状态 114
+    IF         偏移，并进入状态 122
+    WHILE      偏移，并进入状态 123
+    FOR        偏移，并进入状态 124
+    RETURN     偏移，并进入状态 125
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    identifier    转到状态 24
+    statement     转到状态 151
+    compoundstmt  转到状态 129
+    exprstmt      转到状态 131
+    optexpr       转到状态 132
+    expr          转到状态 133
+    assignexpr    转到状态 26
+    logorexpr     转到状态 27
+    logandexpr    转到状态 28
+    orexpr        转到状态 29
+    xorexpr       转到状态 30
+    andexpr       转到状态 31
+    ecmprexpr     转到状态 32
+    cmprexpr      转到状态 33
+    shiftexpr     转到状态 34
+    addexpr       转到状态 35
+    mulexpr       转到状态 36
+    primaryexpr   转到状态 37
+    constant      转到状态 38
+    ctrlstmt      转到状态 134
+    jumpstmt      转到状态 135
+
+
+状态 149
+
+   88 ctrlstmt: FOR LP inititem optexpr • SEM optexpr RP statement
+
+    SEM  偏移，并进入状态 152
+
+
+状态 150
+
+   85 ctrlstmt: IF LP expr RP statement •
+   86         | IF LP expr RP statement • ELSE statement
+
+    ELSE  偏移，并进入状态 153
+
+    $default  使用规则 85 以归约 (ctrlstmt)
+
+
+状态 151
+
+   87 ctrlstmt: WHILE LP expr RP statement •
+
+    $default  使用规则 87 以归约 (ctrlstmt)
+
+
+状态 152
+
+   88 ctrlstmt: FOR LP inititem optexpr SEM • optexpr RP statement
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    identifier   转到状态 24
+    optexpr      转到状态 154
+    expr         转到状态 133
+    assignexpr   转到状态 26
+    logorexpr    转到状态 27
+    logandexpr   转到状态 28
+    orexpr       转到状态 29
+    xorexpr      转到状态 30
+    andexpr      转到状态 31
+    ecmprexpr    转到状态 32
+    cmprexpr     转到状态 33
+    shiftexpr    转到状态 34
+    addexpr      转到状态 35
+    mulexpr      转到状态 36
+    primaryexpr  转到状态 37
+    constant     转到状态 38
+
+
+状态 153
+
+   86 ctrlstmt: IF LP expr RP statement ELSE • statement
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+    LBR        偏移，并进入状态 114
+    IF         偏移，并进入状态 122
+    WHILE      偏移，并进入状态 123
+    FOR        偏移，并进入状态 124
+    RETURN     偏移，并进入状态 125
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    identifier    转到状态 24
+    statement     转到状态 155
+    compoundstmt  转到状态 129
+    exprstmt      转到状态 131
+    optexpr       转到状态 132
+    expr          转到状态 133
+    assignexpr    转到状态 26
+    logorexpr     转到状态 27
+    logandexpr    转到状态 28
+    orexpr        转到状态 29
+    xorexpr       转到状态 30
+    andexpr       转到状态 31
+    ecmprexpr     转到状态 32
+    cmprexpr      转到状态 33
+    shiftexpr     转到状态 34
+    addexpr       转到状态 35
+    mulexpr       转到状态 36
+    primaryexpr   转到状态 37
+    constant      转到状态 38
+    ctrlstmt      转到状态 134
+    jumpstmt      转到状态 135
+
+
+状态 154
+
+   88 ctrlstmt: FOR LP inititem optexpr SEM optexpr • RP statement
+
+    RP  偏移，并进入状态 156
+
+
+状态 155
+
+   86 ctrlstmt: IF LP expr RP statement ELSE statement •
+
+    $default  使用规则 86 以归约 (ctrlstmt)
+
+
+状态 156
+
+   88 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP • statement
+
+    NUM_INT    偏移，并进入状态 17
+    NUM_FLOAT  偏移，并进入状态 18
+    NUM_BOOL   偏移，并进入状态 19
+    ID         偏移，并进入状态 15
+    OP_ADD     偏移，并进入状态 20
+    OP_SUB     偏移，并进入状态 21
+    OP_NOT     偏移，并进入状态 22
+    LP         偏移，并进入状态 23
+    LBR        偏移，并进入状态 114
+    IF         偏移，并进入状态 122
+    WHILE      偏移，并进入状态 123
+    FOR        偏移，并进入状态 124
+    RETURN     偏移，并进入状态 125
+
+    $default  使用规则 29 以归约 (optexpr)
+
+    identifier    转到状态 24
+    statement     转到状态 157
+    compoundstmt  转到状态 129
+    exprstmt      转到状态 131
+    optexpr       转到状态 132
+    expr          转到状态 133
+    assignexpr    转到状态 26
+    logorexpr     转到状态 27
+    logandexpr    转到状态 28
+    orexpr        转到状态 29
+    xorexpr       转到状态 30
+    andexpr       转到状态 31
+    ecmprexpr     转到状态 32
+    cmprexpr      转到状态 33
+    shiftexpr     转到状态 34
+    addexpr       转到状态 35
+    mulexpr       转到状态 36
+    primaryexpr   转到状态 37
+    constant      转到状态 38
+    ctrlstmt      转到状态 134
+    jumpstmt      转到状态 135
+
+
+状态 157
+
+   88 ctrlstmt: FOR LP inititem optexpr SEM optexpr RP statement •
+
+    $default  使用规则 88 以归约 (ctrlstmt)

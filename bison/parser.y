@@ -47,7 +47,8 @@
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_NOT
 %token OP_LOGAND OP_LOGOR
-%token OP_ASSIGN
+%token OP_ASSIGN OP_ADD_ASSIGN OP_SUB_ASSIGN OP_MUL_ASSIGN OP_DIV_ASSIGN OP_MOD_ASSIGN
+%token OP_SHL_ASSIGN OP_SHR_ASSIGN OP_AND_ASSIGN OP_OR_ASSIGN OP_XOR_ASSIGN
 %token LP RP LBR RBR SEM COMMA
 %token IF ELSE WHILE FOR RETURN
 
@@ -130,6 +131,16 @@
                 ;
 
      assignexpr : identifier OP_ASSIGN assignexpr { $$ = new AssignOpNode($1, $3); }
+                | identifier OP_ADD_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::ADD, $1, $3)); }
+                | identifier OP_SUB_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::SUB, $1, $3)); }
+                | identifier OP_MUL_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::MUL, $1, $3)); }
+                | identifier OP_DIV_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::DIV, $1, $3)); }
+                | identifier OP_MOD_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::MOD, $1, $3)); }
+                | identifier OP_SHL_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::SHL, $1, $3)); }
+                | identifier OP_SHR_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::SHR, $1, $3)); }
+                | identifier OP_AND_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::AND, $1, $3)); }
+                | identifier OP_OR_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::OR, $1, $3)); }
+                | identifier OP_XOR_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::XOR, $1, $3)); }
                 | logorexpr { $$ = $1; }
                 ;
 

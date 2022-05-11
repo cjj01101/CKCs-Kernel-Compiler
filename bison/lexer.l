@@ -34,6 +34,16 @@ blank [ \f\n\r\t\v]+
 "&&"            return OP_LOGAND;
 "||"            return OP_LOGOR;
 "="             return OP_ASSIGN;
+"+="            return OP_ADD_ASSIGN;
+"-="            return OP_SUB_ASSIGN;
+"*="            return OP_MUL_ASSIGN;
+"/="            return OP_DIV_ASSIGN;
+"%="            return OP_MOD_ASSIGN;
+"<<="           return OP_SHL_ASSIGN;
+">>="           return OP_SHR_ASSIGN;
+"&="            return OP_AND_ASSIGN;
+"|="            return OP_OR_ASSIGN;
+"^="            return OP_XOR_ASSIGN;
 "("             return LP;
 ")"             return RP;
 "{"             return LBR;

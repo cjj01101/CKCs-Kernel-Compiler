@@ -110,7 +110,7 @@ llvm::Value *FunctionCallNode::GenerateIR(CodeGenerator *generator) {
         args.push_back(arg->GenerateIR(generator));
     }
 
-    return generator->builder.CreateCall(function, args, "call");
+    return generator->builder.CreateCall(function, args, "calltmp");
 }
 
 llvm::Value *ArgumentListNode::GenerateIR(CodeGenerator *generator) {

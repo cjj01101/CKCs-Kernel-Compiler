@@ -3,18 +3,22 @@ int b;
 int c;
 float f = 6.247;
 int foo(int b, float c) {
-  int x = b*b;
-  a = b + c;
+    int x = b*b;
+    a = b + c;
 }
 int bar(){
-  for(int i = 0; i < 10; i += 1) {
-    if(i < 5) a *= b/c;
-    else if ( i < 8 ) {
-      a /= b&c;
+    for(int i = 0; i < 10; i += 1) {
+        if(i < 5) a *= b/c;
+        else if ( i < 8 ) {
+            a /= b&c;
+        }
+        while( a > 0 ) {
+            a -= foo(a, b-c);
+        }
     }
-    while( a > 0 ) {
-      a -= foo(a, b-c);
-    }
-  }
-  return a+b+c;
+    return a+b+c;
+}
+
+int main() {
+    foo(bar(), foo(-2, bar()));
 }

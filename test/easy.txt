@@ -4,3 +4,7 @@ void bar(int a) {
    int b = foo(a);
    a = b + g;
 }
+
+int main() {
+   bar(2);
+}

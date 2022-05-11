@@ -8,9 +8,13 @@
 /*         SEMANTIC ANALYZE         */
 
 void TranslationUnitNode::AnalyzeSemantic(SymbolTable *intab) {
-	for(auto def : definitions) {
-		def->AnalyzeSemantic(intab);
-	}
+    for(auto def : definitions) {
+    	def->AnalyzeSemantic(intab);
+    }
+
+    if(!intab->HasSymbol(std::string(ENTRANCE))) {
+        throw ASTException("definition of entrance function '" ENTRANCE "' not found.");
+    }
 }
 
 /*       SEMANTIC ANALYZE END       */
@@ -35,7 +39,7 @@ llvm::Value *TranslationUnitNode::GenerateIR(CodeGenerator *generator) {
     llvm::FunctionType *funcType = llvm::FunctionType::get(generator->builder.getVoidTy(), false);
     llvm::Function *function = llvm::Function::Create(funcType,
                                                       llvm::Function::InternalLinkage,
-                                                      "GlobalInit",
+                                                      GLOBALINIT,
                                                       &generator->module);
     llvm::BasicBlock *funcBody = generator->CreateBasicBlock("", function);
 

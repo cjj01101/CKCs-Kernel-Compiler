@@ -9,3 +9,7 @@ int bar(float y) {
     int a = y + foo(y);
     return foo(a);
 }
+
+int main() {
+    return bar(1.0) + bar(0.25);   
+}

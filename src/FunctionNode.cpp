@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <cstring>
 #include "FunctionNode.h"
 #include "DeclarationNode.h"
 #include "StatementNode.h"
@@ -97,7 +98,7 @@ void ParameterListNode::PrintContentInLevel(int level) const {
 
 llvm::Value *FunctionNode::GenerateIR(CodeGenerator *generator) {
 
-    /* Get Parameter Definition */
+	/* Get Parameter Definition */
     std::vector<llvm::Type*> paramTypes;
     std::vector<std::string> paramNames;
     for(auto param : parameters->parameters) {
@@ -124,6 +125,11 @@ llvm::Value *FunctionNode::GenerateIR(CodeGenerator *generator) {
         generator->builder.CreateStore(&arg, alloc);
         generator->RecordValue(paramNames[i], alloc);
         i++;
+    }
+
+    /* Jump to Global Initialization if in Function "main" */
+    if(strcmp(name->GetName(), ENTRANCE) == 0) {
+    	generator->builder.CreateCall(generator->module.getFunction(std::string(GLOBALINIT)));
     }
 
     /* Generate Function Body */

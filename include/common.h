@@ -17,6 +17,9 @@ class TranslationUnitNode;
 
 #define MAXVARLEN 64
 
+#define ENTRANCE "main"
+#define GLOBALINIT "GlobalInit"
+
 #define TYPES \
 	TYPE(INTEGER) TYPE(FLOAT) TYPE(BOOLEAN) TYPE(VOID)
 

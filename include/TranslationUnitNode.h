@@ -12,7 +12,7 @@ public:
 
 	void AppendDefinition(ASTNode *def);
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:

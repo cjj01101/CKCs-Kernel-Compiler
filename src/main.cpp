@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "AbstractSyntaxTree.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 extern ASTNode *parse_and_generate_syntax_tree(FILE *input);
@@ -17,15 +18,16 @@ int main(int argc, char ** argv){
     AbstractSyntaxTree synTree(root);
 
     try {
-        synTree.AnalyzeSemantic();
+        SemanticAnalyzer analyzer;
+        synTree.AnalyzeSemantic(&analyzer);
 
         synTree.Print();
 
         CodeGenerator::InitializeLLVM();
-        CodeGenerator cg;
-        synTree.GenerateIR(&cg);
+        CodeGenerator generator;
+        synTree.GenerateIR(&generator);
 
-        cg.PrintIR();
+        generator.PrintIR();
     } catch (ASTException &e) {
         e.PrintMessage();
     }

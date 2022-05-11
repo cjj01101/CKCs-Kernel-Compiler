@@ -11,7 +11,7 @@ public:
 
 	Type GetType() { return type; }
 	
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:

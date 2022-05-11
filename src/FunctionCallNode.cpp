@@ -3,6 +3,7 @@
 #include "FunctionCallNode.h"
 #include "ExpressionNode.h"
 #include "Utility.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
@@ -27,10 +28,10 @@ ArgumentListNode::~ArgumentListNode() {
 
 /*         SEMANTIC ANALYZE         */
 
-void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
+void FunctionCallNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-	name->AnalyzeSemantic(intab);
-	arguments->AnalyzeSemantic(intab);
+	name->AnalyzeSemantic(analyzer);
+	arguments->AnalyzeSemantic(analyzer);
 
 	/* Start Type Checking */
 	char message[128];
@@ -38,7 +39,7 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 	/* Check Symbol Kind */
 	char *fname = name->GetName();
 	std::string sym(fname);
-	const auto &symbolContent = intab->FindSymbolOccurrence(sym)->entry.at(sym);
+	const auto &symbolContent = analyzer->FindSymbolOccurrence(sym)->at(sym);
 	if(symbolContent.kind != SymbolKind::FUNCTION) {
 		sprintf(message, "'%s' is not a function.", fname);
 		throw ASTException(message);
@@ -73,9 +74,9 @@ void FunctionCallNode::AnalyzeSemantic(SymbolTable *intab) {
 	valueType = name->GetValueType();
 }
 
-void ArgumentListNode::AnalyzeSemantic(SymbolTable *intab) {
+void ArgumentListNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-	for(auto arg : arguments) arg->AnalyzeSemantic(intab);
+	for(auto arg : arguments) arg->AnalyzeSemantic(analyzer);
 }
 
 /*       SEMANTIC ANALYZE END       */

@@ -15,7 +15,7 @@ public:
 	bool IsRelationalOperator();
 	bool IsCommaOperator();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
@@ -33,7 +33,7 @@ public:
 	TernaryOpNode(ExpressionNode *cond, ExpressionNode *trueExpr, ExpressionNode *falseExpr);
 	~TernaryOpNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
@@ -51,7 +51,7 @@ public:
 	AssignOpNode(IdentifierNode *left, ExpressionNode *right);
 	~AssignOpNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:

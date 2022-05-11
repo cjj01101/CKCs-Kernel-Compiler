@@ -4,7 +4,7 @@
 
 /*         SEMANTIC ANALYZE         */
 
-void TypeNode::AnalyzeSemantic(SymbolTable *intab) {
+void TypeNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
 }
 

@@ -3,18 +3,24 @@
 #include "TranslationUnitNode.h"
 #include "DeclarationNode.h"
 #include "FunctionNode.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 /*         SEMANTIC ANALYZE         */
 
-void TranslationUnitNode::AnalyzeSemantic(SymbolTable *intab) {
+void TranslationUnitNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
+
+    analyzer->AddNewTable();
+
     for(auto def : definitions) {
-    	def->AnalyzeSemantic(intab);
+    	def->AnalyzeSemantic(analyzer);
     }
 
-    if(!intab->HasSymbol(std::string(ENTRANCE))) {
+    if(!analyzer->HasSymbol(std::string(ENTRANCE))) {
         throw ASTException("definition of entrance function '" ENTRANCE "' not found.");
     }
+
+    analyzer->RemoveTable();
 }
 
 /*       SEMANTIC ANALYZE END       */

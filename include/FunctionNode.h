@@ -10,7 +10,7 @@ public:
 	FunctionNode(TypeNode *returnType, IdentifierNode *name, ParameterListNode *parameters, CompoundStatementNode *body);
 	~FunctionNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
@@ -33,7 +33,7 @@ public:
 
 	void AppendParameter(DeclarationNode *param);
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:

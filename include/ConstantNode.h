@@ -9,7 +9,7 @@ public:
 	ConstantNode(Type type) : ExpressionNode() { valueType = type; }
 	virtual ~ConstantNode() {}
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 
 protected:
 

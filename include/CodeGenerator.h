@@ -12,7 +12,7 @@ class CodeGenerator {
 public:
 	using ValueTable = std::unordered_map<std::string, llvm::Value*>;
 
-	CodeGenerator() : context(), module("CKC IR Code", context), builder(context) {}
+	CodeGenerator() : context(), module("CKC IR Code", context), builder(context), initializer(nullptr), tables() {}
 	~CodeGenerator() {}
 
 	static void InitializeLLVM();

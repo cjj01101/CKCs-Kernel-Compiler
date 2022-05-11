@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "ConstantNode.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
@@ -8,7 +9,7 @@
 
 /*         SEMANTIC ANALYZE         */
 
-void ConstantNode::AnalyzeSemantic(SymbolTable *intab) {
+void ConstantNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
 }
 

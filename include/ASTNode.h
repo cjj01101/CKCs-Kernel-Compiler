@@ -2,12 +2,12 @@
 #define _ASTNODE_H_
 
 #include <string>
-#include "SymbolTable.h"
 #include "common.h"
 
 /* FORWARD DECLARATION */
 namespace llvm { class Value; };
 class CodeGenerator;
+class SemanticAnalyzer;
 /* FORWARD DECLARATION */
 
 #define PRINT_CHILD_WITH_HINT(child, hint) \
@@ -33,7 +33,7 @@ public:
 	virtual ~ASTNode() {}
 
 	void PrintInLevel(int level) const;
-	virtual void AnalyzeSemantic(SymbolTable *intab) = 0;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) = 0;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) = 0;
 
 protected:

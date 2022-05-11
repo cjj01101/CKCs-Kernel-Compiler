@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "OperatorNode.h"
 #include "Utility.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 using namespace TypeUtils;
@@ -51,10 +52,10 @@ AssignOpNode::~AssignOpNode() {
 
 /*         SEMANTIC ANALYZE         */
 
-void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
+void BinaryOpNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-	leftOperand->AnalyzeSemantic(intab);
-	rightOperand->AnalyzeSemantic(intab);
+	leftOperand->AnalyzeSemantic(analyzer);
+	rightOperand->AnalyzeSemantic(analyzer);
 
 	/* Start Type Checking */
 	Type leftType = leftOperand->GetValueType();
@@ -79,11 +80,11 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 			  : PromoteArithmeticType(leftType, rightType);
 }
 
-void TernaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
+void TernaryOpNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-    condition->AnalyzeSemantic(intab);
-    trueExpression->AnalyzeSemantic(intab);
-    falseExpression->AnalyzeSemantic(intab);
+    condition->AnalyzeSemantic(analyzer);
+    trueExpression->AnalyzeSemantic(analyzer);
+    falseExpression->AnalyzeSemantic(analyzer);
 
     /* Start Type Checking */
 
@@ -108,10 +109,10 @@ void TernaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
     valueType = (trueType == Type::VOID) ? Type::VOID : PromoteArithmeticType(trueType, falseType);
 }
 
-void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
+void AssignOpNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	leftValue->AnalyzeSemantic(intab);
-	rightValue->AnalyzeSemantic(intab);
+	leftValue->AnalyzeSemantic(analyzer);
+	rightValue->AnalyzeSemantic(analyzer);
 
 	/* Start Type Checking */
 	Type leftType = leftValue->GetValueType();

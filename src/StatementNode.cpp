@@ -4,6 +4,7 @@
 #include "DeclarationNode.h"
 #include "StatementNode.h"
 #include "Utility.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
@@ -75,24 +76,24 @@ ReturnStatementNode::~ReturnStatementNode() {
 
 /*         SEMANTIC ANALYZE         */
 
-void ExpressionStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+void ExpressionStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	expression->AnalyzeSemantic(intab);
+	expression->AnalyzeSemantic(analyzer);
 }
 
-void CompoundStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+void CompoundStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	SymbolTable symtab;
-	symtab.prev = intab;
-	for(auto item : items) item->AnalyzeSemantic(&symtab);
+	analyzer->AddNewTable();
+	for(auto item : items) item->AnalyzeSemantic(analyzer);
+	analyzer->RemoveTable();
 
 }
 
-void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+void IfStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	condition->AnalyzeSemantic(intab);
-	thenStmt->AnalyzeSemantic(intab);
-	elseStmt->AnalyzeSemantic(intab);
+	condition->AnalyzeSemantic(analyzer);
+	thenStmt->AnalyzeSemantic(analyzer);
+	elseStmt->AnalyzeSemantic(analyzer);
 
 	/* Verify Condition Expression Type */
 	Type condType = condition->GetValueType();
@@ -102,10 +103,10 @@ void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 
 }
 
-void WhileStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+void WhileStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	condition->AnalyzeSemantic(intab);
-	body->AnalyzeSemantic(intab);
+	condition->AnalyzeSemantic(analyzer);
+	body->AnalyzeSemantic(analyzer);
 
 	/* Verify Condition Expression Type */
 	Type condType = condition->GetValueType();
@@ -115,15 +116,14 @@ void WhileStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 
 }
 
-void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+void ForStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	SymbolTable symtab;
-	symtab.prev = intab;
+	analyzer->AddNewTable();
 
-	init->AnalyzeSemantic(&symtab);
-	condition->AnalyzeSemantic(&symtab);
-	loop->AnalyzeSemantic(&symtab);
-	body->AnalyzeSemantic(&symtab);
+	init->AnalyzeSemantic(analyzer);
+	condition->AnalyzeSemantic(analyzer);
+	loop->AnalyzeSemantic(analyzer);
+	body->AnalyzeSemantic(analyzer);
 
 	/* Verify Condition Expression Type */
 	if(!NOT_NULL_OF_TYPE(condition, EmptyExpressionNode*)) {
@@ -132,11 +132,13 @@ void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 			throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
 		}
 	}
+
+	analyzer->RemoveTable();
 }
 
-void ReturnStatementNode::AnalyzeSemantic(SymbolTable *intab) {
+void ReturnStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
-	expression->AnalyzeSemantic(intab);
+	expression->AnalyzeSemantic(analyzer);
 }
 
 /*       SEMANTIC ANALYZE END       */
@@ -279,7 +281,8 @@ llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
     // Complete Loop Condition Branch
     generator->JumpToBlock(condBlock);
     llvm::Value *condValue = condition->GenerateIR(generator);
-    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    if(!condValue) condValue = llvm::ConstantInt::getTrue(generator->builder.getInt1Ty()); // Empty Condition
+    else condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
     generator->builder.CreateCondBr(condValue, loopBlock, afterBlock);
 
     // Complete Loop Body

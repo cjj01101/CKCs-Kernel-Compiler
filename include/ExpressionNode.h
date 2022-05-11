@@ -23,7 +23,7 @@ public:
 	EmptyExpressionNode() : ExpressionNode() {}
 	~EmptyExpressionNode() {}
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
@@ -39,7 +39,7 @@ public:
 
 	char *GetName() { return id; }
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <cstring>
 #include "ExpressionNode.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 /*        CONSTRUCT FUNCTION        */
@@ -16,18 +17,19 @@ IdentifierNode::IdentifierNode(char *name) : ExpressionNode() {
 
 /*         SEMANTIC ANALYZE         */
 
-void EmptyExpressionNode::AnalyzeSemantic(SymbolTable *intab) {
+void EmptyExpressionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	valueType = Type::VOID;
 }
 
-void IdentifierNode::AnalyzeSemantic(SymbolTable *intab) {
+void IdentifierNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 	std::string sym = std::string(id);
-	SymbolTable *occtab = intab->FindSymbolOccurrence(sym);
-	if(occtab == nullptr) {
+	//SymbolTable *occtab = intab->FindSymbolOccurrence(sym);
+	auto occtab = analyzer->FindSymbolOccurrence(sym);
+	if(occtab == analyzer->NoTable()) {
 		throw ASTException("'" + sym + "' was not declared in this scope.");
 	} else {
-		valueType = occtab->entry.at(sym).type.type;
+		valueType = occtab->at(sym).type.type;
 	}
 	
 }

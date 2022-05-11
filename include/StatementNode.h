@@ -20,7 +20,7 @@ public:
 	ExpressionStatementNode(ExpressionNode *exp);
 	~ExpressionStatementNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
@@ -40,7 +40,7 @@ public:
 
 	void AppendStatement(ASTNode *item);
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
@@ -56,7 +56,7 @@ public:
 	IfStatementNode(ExpressionNode *condition, StatementNode *thenStmt, StatementNode *elseStmt);
 	~IfStatementNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
@@ -74,7 +74,7 @@ public:
 	WhileStatementNode(ExpressionNode *condition, StatementNode *body);
 	~WhileStatementNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
@@ -91,7 +91,7 @@ public:
 	ForStatementNode(ASTNode *init, ExpressionNode *cond, ExpressionNode *loop, StatementNode *body);
 	~ForStatementNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
@@ -110,7 +110,7 @@ public:
 	ReturnStatementNode(ExpressionNode *expression);
 	~ReturnStatementNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:

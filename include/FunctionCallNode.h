@@ -9,7 +9,7 @@ public:
 	FunctionCallNode(IdentifierNode *name, ArgumentListNode *arguments);
 	~FunctionCallNode();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:
@@ -30,7 +30,7 @@ public:
 
 	void AppendArgument(ExpressionNode *arg);
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:

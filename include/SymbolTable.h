@@ -30,29 +30,6 @@ struct SymbolTableEntry {
 	SymbolType type;
 };
 
-struct SymbolTable {
-
-	SymbolTable() : entry(), prev(nullptr) {}
-	~SymbolTable() {}
-
-	bool HasSymbol(const std::string &sym) {
-		return (entry.find(sym) != entry.end());
-	}
-
-	SymbolTable *FindSymbolOccurrence(const std::string &sym){
-		for(SymbolTable *tab = this; tab != nullptr; tab = tab->prev) {
-			if(tab->HasSymbol(sym)) return tab;
-		}
-		return nullptr;
-	}
-
-	void AddEntry(const std::string &sym, const SymbolTableEntry &content) {
-		entry.insert({sym, content});
-	}
-
-	std::unordered_map<std::string, SymbolTableEntry> entry;
-	SymbolTable *prev;
-
-};
+using SymbolTable = std::unordered_map<std::string, SymbolTableEntry>;
 
 #endif

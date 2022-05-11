@@ -4,8 +4,9 @@
 #include "StatementNode.h"
 #include "ExpressionNode.h"
 #include "TypeNode.h"
-#include "CodeGenerator.h"
 #include "Utility.h"
+#include "SemanticAnalyzer.h"
+#include "CodeGenerator.h"
 
 using namespace TypeUtils;
 
@@ -23,11 +24,18 @@ DeclarationNode::~DeclarationNode() {
     delete declarators;
 }
 
+DeclaratorListNode::~DeclaratorListNode() {
+    for(auto decl : declarators) {
+        delete decl.name;
+        delete decl.initValue;
+    }
+}
+
 /*    (DE)CONSTRUCT FUNCTION END    */
 
 /*         SEMANTIC ANALYZE         */
 
-void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
+void DeclarationNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
     /* Verify Declaration Type */
     Type dtype = type->GetType();
@@ -39,13 +47,13 @@ void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
 
         /* Check Symbol Redefinition */
         std::string sym(decl.name->GetName());
-        if(intab->HasSymbol(sym)) {
+        if(analyzer->HasSymbol(sym)) {
             throw ASTException("redeclaration of symbol '" + sym + "'.");
         }
 
         /* Verify Operand Types */
         if(decl.initValue) {
-            decl.initValue->AnalyzeSemantic(intab);
+            decl.initValue->AnalyzeSemantic(analyzer);
 
             Type initType = decl.initValue->GetValueType();
             if(!CanConvert(initType, dtype)) {
@@ -57,11 +65,11 @@ void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
         }
 
         /* Update Symbol Table */
-        intab->AddEntry(sym, SymbolTableEntry(SymbolKind::VARIABLE, dtype));
+        analyzer->AddSymbol(sym, SymbolTableEntry(SymbolKind::VARIABLE, dtype));
     }
 }
 
-void DeclaratorListNode::AnalyzeSemantic(SymbolTable *intab) {
+void DeclaratorListNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
     
 }
 

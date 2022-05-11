@@ -18,7 +18,7 @@ public:
 	Type GetType();
 	char *GetName();
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 	
 private:
@@ -35,11 +35,11 @@ class DeclaratorListNode : public ASTNode {
 
 public:
 	DeclaratorListNode() : ASTNode(), declarators() {}
-	~DeclaratorListNode() {}
+	~DeclaratorListNode();
 
 	void AppendDeclarator(const Declarator &declarator);
 
-	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
 
 private:

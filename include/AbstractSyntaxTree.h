@@ -3,6 +3,7 @@
 
 #include "ASTNode.h"
 
+class SemanticAnalyzer;
 class CodeGenerator;
 
 class AbstractSyntaxTree {
@@ -12,7 +13,7 @@ public:
 	~AbstractSyntaxTree() { delete root; }
 
 	void Print() { if(root) root->PrintInLevel(0); }
-	void AnalyzeSemantic() { if(root) { SymbolTable symtab; root->AnalyzeSemantic(&symtab); } }
+	void AnalyzeSemantic(SemanticAnalyzer *analyzer) { if(root) { root->AnalyzeSemantic(analyzer); } }
 	void GenerateIR(CodeGenerator *generator) { if(root) root->GenerateIR(generator); }
 
 private:

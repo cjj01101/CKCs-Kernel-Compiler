@@ -7,6 +7,7 @@
 #include "ExpressionNode.h"
 #include "TypeNode.h"
 #include "Utility.h"
+#include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
 /*      (DE)CONSTRUCT FUNCTION      */
@@ -35,40 +36,42 @@ ParameterListNode::~ParameterListNode() {
 
 /*         SEMANTIC ANALYZE         */
 
-void FunctionNode::AnalyzeSemantic(SymbolTable *intab) {
+void FunctionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
+	/* Check Redeclaration */
 	std::string sym(name->GetName());
-	if(intab->HasSymbol(sym)) {
+	if(analyzer->HasSymbol(sym)) {
 		throw ASTException("Redeclaration of symbol '" + sym + "'.");
 	}
 
 	/* Create Symbol Table in Function Scope */
-	SymbolTable symtab;
-	symtab.prev = intab;
-	parameters->AnalyzeSemantic(&symtab);
+	analyzer->AddNewTable();
+	parameters->AnalyzeSemantic(analyzer);
+
+	/* Move into Function Body */
+	body->AnalyzeSemantic(analyzer);
+
+	/* Leave Function */
+	analyzer->RemoveTable();
 
 	/* Add Function Definition */
 	std::vector<Type> paramTypes;
 	for(auto param : parameters->parameters) {
         paramTypes.push_back(param->GetType());
     }
-	intab->AddEntry(
+	analyzer->AddSymbol(
 		sym,
 		SymbolTableEntry(
 			SymbolKind::FUNCTION,
 			SymbolType(returnType->GetType(), paramTypes)
 		)
 	);
-
-	/* Move into Function Body */
-	body->AnalyzeSemantic(&symtab);
-
 }
 
-void ParameterListNode::AnalyzeSemantic(SymbolTable *intab) {
+void ParameterListNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-	for(auto param : parameters) param->AnalyzeSemantic(intab);
-	for(auto &it : intab->entry) it.second.kind = SymbolKind::ARGUMENT;
+	for(auto param : parameters) param->AnalyzeSemantic(analyzer);
+	for(auto &it : analyzer->GetCurrentTable()) it.second.kind = SymbolKind::ARGUMENT;
 }
 
 /*       SEMANTIC ANALYZE END       */

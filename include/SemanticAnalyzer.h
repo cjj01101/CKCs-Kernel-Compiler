@@ -21,9 +21,17 @@ public:
 	TablePointer FindSymbolOccurrence(const std::string &sym);
 	TablePointer NoTable() { return tables.rend(); }
 
+	void EnterFunction(Type returnType) { inFunction = true; this->returnType = returnType; }
+	void LeaveFunction() { inFunction = false; }
+	bool IsInFunction() { return inFunction; }
+	Type GetReturnType()  { return returnType; }
+
 private:
 
 	std::vector<SymbolTable> tables;
+
+	bool inFunction;
+	Type returnType;
 
 };
 

@@ -45,6 +45,7 @@ void FunctionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	}
 
 	/* Create Symbol Table in Function Scope */
+	analyzer->EnterFunction(returnType->GetType());
 	analyzer->AddNewTable();
 	parameters->AnalyzeSemantic(analyzer);
 
@@ -53,6 +54,7 @@ void FunctionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 	/* Leave Function */
 	analyzer->RemoveTable();
+	analyzer->LeaveFunction();
 
 	/* Add Function Definition */
 	std::vector<Type> paramTypes;

@@ -7,6 +7,8 @@
 #include "SemanticAnalyzer.h"
 #include "CodeGenerator.h"
 
+using namespace TypeUtils;
+
 /*      (DE)CONSTRUCT FUNCTION      */
 
 ExpressionStatementNode::ExpressionStatementNode(ExpressionNode *exp)
@@ -97,8 +99,8 @@ void IfStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 	/* Verify Condition Expression Type */
 	Type condType = condition->GetValueType();
-	if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
-		throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
+	if(!CanConvert(condType, Type::BOOLEAN)) {
+		throw ASTException("cannot convert '" + std::string(GetTypeName(condType)) + "' to 'BOOL'.");
 	}
 
 }
@@ -110,8 +112,8 @@ void WhileStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 	/* Verify Condition Expression Type */
 	Type condType = condition->GetValueType();
-	if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
-		throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
+	if(!CanConvert(condType, Type::BOOLEAN)) {
+		throw ASTException("cannot convert '" + std::string(GetTypeName(condType)) + "' to 'BOOL'.");
 	}
 
 }
@@ -128,8 +130,8 @@ void ForStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	/* Verify Condition Expression Type */
 	if(!NOT_NULL_OF_TYPE(condition, EmptyExpressionNode*)) {
 		Type condType = condition->GetValueType();
-		if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
-			throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
+		if(!CanConvert(condType, Type::BOOLEAN)) {
+			throw ASTException("cannot convert '" + std::string(GetTypeName(condType)) + "' to 'BOOL'.");
 		}
 	}
 
@@ -138,7 +140,23 @@ void ForStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 void ReturnStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
+	/* Check if in Function Scope */	
+	if(!analyzer->IsInFunction()) {
+		throw ASTException("expected function before ‘return’");
+	}
+	
+	/* Analyze Return Expression */
 	expression->AnalyzeSemantic(analyzer);
+
+	/* Check Return Type */
+	Type exprType = expression->GetValueType();
+	Type returnType = analyzer->GetReturnType();
+	if(!CanConvert(exprType, returnType)) {
+		char message[128];
+		sprintf(message, "return-statement of type '%s', in function returning ‘%s’.",
+			GetTypeName(exprType), GetTypeName(returnType));
+		throw ASTException(message);
+	}
 }
 
 /*       SEMANTIC ANALYZE END       */

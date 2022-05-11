@@ -60,6 +60,8 @@ blank [ \f\n\r\t\v]+
 "else"          return ELSE;
 "while"         return WHILE;
 "for"           return FOR;
+"break"         return BREAK;
+"continue"      return CONTINUE;
 "return"        return RETURN;
 "int"           return TYPE_INT;
 "float"         return TYPE_FLOAT;

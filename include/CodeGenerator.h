@@ -12,7 +12,8 @@ class CodeGenerator {
 public:
 	using ValueTable = std::unordered_map<std::string, llvm::Value*>;
 
-	CodeGenerator() : context(), module("CKC IR Code", context), builder(context), initializer(nullptr), tables() {}
+	CodeGenerator() : context(), module("CKC IR Code", context), builder(context), initializer(nullptr),
+		tables(), breakTargets(), continueTargets() {}
 	~CodeGenerator() {}
 
 	static void InitializeLLVM();
@@ -38,6 +39,12 @@ public:
 	void RecordValue(const std::string &name, llvm::Value *value) { tables.back().insert({name, value}); }
 	llvm::Value *FindValue(const std::string &name);
 
+	void PushLoopTargets(llvm::BasicBlock* cond, llvm::BasicBlock *after)
+		{ continueTargets.push_back(cond); breakTargets.push_back(after); }
+	void PopLoopTargets() { continueTargets.pop_back(); breakTargets.pop_back(); }
+	llvm::BasicBlock* GetBreakTarget() { return breakTargets.back(); }
+	llvm::BasicBlock* GetContinueTarget() { return continueTargets.back(); }
+
 private:
 
 	llvm::LLVMContext context;
@@ -51,6 +58,8 @@ private:
 
 	llvm::Instruction *initializer;
 	std::vector<ValueTable> tables;
+	std::vector<llvm::BasicBlock*> breakTargets;
+	std::vector<llvm::BasicBlock*> continueTargets;
 
 };
 

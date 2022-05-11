@@ -50,7 +50,7 @@
 %token OP_ASSIGN OP_ADD_ASSIGN OP_SUB_ASSIGN OP_MUL_ASSIGN OP_DIV_ASSIGN OP_MOD_ASSIGN
 %token OP_SHL_ASSIGN OP_SHR_ASSIGN OP_AND_ASSIGN OP_OR_ASSIGN OP_XOR_ASSIGN
 %token LP RP LBR RBR SEM COMMA QUEST COLON
-%token IF ELSE WHILE FOR RETURN
+%token IF ELSE WHILE FOR BREAK CONTINUE RETURN
 
 %type <node> externdef function item inititem declaration
 
@@ -241,6 +241,8 @@
                 ;
 
        jumpstmt : RETURN optexpr SEM { $$ = new ReturnStatementNode($2); }
+                | BREAK SEM { $$ = new BreakStatementNode(); }
+                | CONTINUE SEM { $$ = new ContinueStatementNode(); }
                 ;
 
 %%

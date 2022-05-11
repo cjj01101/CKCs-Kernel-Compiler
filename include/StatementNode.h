@@ -120,4 +120,34 @@ private:
 
 };
 
+class BreakStatementNode : public StatementNode {
+
+public:
+	BreakStatementNode() : StatementNode() {}
+	~BreakStatementNode() {}
+
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
+class ContinueStatementNode : public StatementNode {
+
+public:
+	ContinueStatementNode() : StatementNode() {}
+	~ContinueStatementNode() {}
+
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
 #endif

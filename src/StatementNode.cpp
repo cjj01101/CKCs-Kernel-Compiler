@@ -106,7 +106,9 @@ void IfStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 }
 
 void WhileStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
-	
+		
+	analyzer->EnterControlBlock();
+
 	condition->AnalyzeSemantic(analyzer);
 	body->AnalyzeSemantic(analyzer);
 
@@ -116,10 +118,13 @@ void WhileStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 		throw ASTException("cannot convert '" + std::string(GetTypeName(condType)) + "' to 'BOOL'.");
 	}
 
+	analyzer->LeaveControlBlock();
+
 }
 
 void ForStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	
+	analyzer->EnterControlBlock();
 	analyzer->AddNewTable();
 
 	init->AnalyzeSemantic(analyzer);
@@ -136,6 +141,7 @@ void ForStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	}
 
 	analyzer->RemoveTable();
+	analyzer->LeaveControlBlock();
 }
 
 void ReturnStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
@@ -156,6 +162,22 @@ void ReturnStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 		sprintf(message, "return-statement of type '%s', in function returning ‘%s’.",
 			GetTypeName(exprType), GetTypeName(returnType));
 		throw ASTException(message);
+	}
+}
+
+void BreakStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
+	
+	/* Check if in Loop or Switch */	
+	if(!analyzer->IsInControlBlock()) {
+		throw ASTException("break statement not within loop or switch.");
+	}
+}
+
+void ContinueStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
+	
+	/* Check if in Loop or Switch */	
+	if(!analyzer->IsInControlBlock()) {
+		throw ASTException("continue statement not within loop or switch.");
 	}
 }
 
@@ -213,6 +235,14 @@ void ReturnStatementNode::PrintContentInLevel(int level) const {
 	PRINT_CHILD_WITH_HINT(expression, "RETURN VALUE");
 }
 
+void BreakStatementNode::PrintContentInLevel(int level) const {
+	printf("Break Statement\n");
+}
+
+void ContinueStatementNode::PrintContentInLevel(int level) const {
+	printf("Continue Statement\n");
+}
+
 /*        PRINT FUNCTION END        */
 
 /*         GENERATE IR CODE         */
@@ -268,6 +298,9 @@ llvm::Value *WhileStatementNode::GenerateIR(CodeGenerator *generator) {
     llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("while-loop");
     llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-while");
 
+    // Record Blocks for Control Statement
+    generator->PushLoopTargets(condBlock, afterBlock);
+
     // Complete Loop Condition Branch
     generator->JumpToBlock(condBlock);
     llvm::Value *condValue = condition->GenerateIR(generator);
@@ -280,6 +313,7 @@ llvm::Value *WhileStatementNode::GenerateIR(CodeGenerator *generator) {
     generator->builder.CreateBr(condBlock);
 
     // Finish up
+    generator->PopLoopTargets();
     generator->JumpToBlock(afterBlock);
 
     return nullptr;
@@ -296,6 +330,9 @@ llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
     llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("for-loop");
     llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-for");
 
+    // Record Blocks for Control Statement
+    generator->PushLoopTargets(condBlock, afterBlock);
+
     // Complete Loop Condition Branch
     generator->JumpToBlock(condBlock);
     llvm::Value *condValue = condition->GenerateIR(generator);
@@ -310,8 +347,9 @@ llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
     loop->GenerateIR(generator);
 
     // Finish up
-    generator->JumpToBlock(afterBlock);
+    generator->PopLoopTargets();
     generator->RemoveTable();
+    generator->JumpToBlock(afterBlock);
 
     return nullptr;
 }
@@ -323,6 +361,20 @@ llvm::Value *ReturnStatementNode::GenerateIR(CodeGenerator *generator) {
     } else {
         generator->builder.CreateRet(expression->GenerateIR(generator));
     }
+
+    return nullptr;
+}
+
+llvm::Value *BreakStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+	generator->builder.CreateBr(generator->GetBreakTarget());
+
+    return nullptr;
+}
+
+llvm::Value *ContinueStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+	generator->builder.CreateBr(generator->GetContinueTarget());
 
     return nullptr;
 }

@@ -20,6 +20,20 @@ BinaryOpNode::~BinaryOpNode() {
 	delete rightOperand;
 }
 
+TernaryOpNode::TernaryOpNode(ExpressionNode *cond, ExpressionNode *trueExpr, ExpressionNode *falseExpr)
+    : ExpressionNode(), condition(cond), trueExpression(trueExpr), falseExpression(falseExpr)
+{
+    assert(NOT_NULL(cond));
+    assert(NOT_NULL(trueExpr));
+    assert(NOT_NULL(falseExpr));
+}
+
+TernaryOpNode::~TernaryOpNode() {
+    delete condition;
+    delete trueExpression;
+    delete falseExpression;
+}
+
 AssignOpNode::AssignOpNode(IdentifierNode *left, ExpressionNode *right)
 	: ExpressionNode(), leftValue(left), rightValue(right)
 { 
@@ -64,6 +78,35 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 			  : GetPromotedTypeBetween(leftType, rightType);
 }
 
+void TernaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
+
+    condition->AnalyzeSemantic(intab);
+    trueExpression->AnalyzeSemantic(intab);
+    falseExpression->AnalyzeSemantic(intab);
+
+    /* Start Type Checking */
+
+    /* Verify Condition Expression Type */
+    Type condType = condition->GetValueType();
+    if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
+        throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
+    }
+
+    /* Validate Operand Types */
+    Type trueType = trueExpression->GetValueType();
+    Type falseType = falseExpression->GetValueType();
+    if(!IsCompatible(trueType, falseType))
+    {
+        char message[128];
+        sprintf(message, "invalid operands of type '%s' and '%s' in the conditional expression.",
+            GetTypeName(trueType), GetTypeName(falseType));
+        throw ASTException(message);
+    }
+
+    /* Determine Value Type */
+    valueType = (trueType == Type::VOID) ? Type::VOID : GetPromotedTypeBetween(trueType, falseType);
+}
+
 void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
 	
 	leftValue->AnalyzeSemantic(intab);
@@ -94,8 +137,18 @@ void BinaryOpNode::PrintContentInLevel(int level) const {
 
 	printf("%s(%s)\n", GetOperatorName(op), GetTypeName(valueType));
 
-	if(leftOperand) PRINT_CHILD_WITH_HINT(leftOperand, "LEFT");
-	if(rightOperand) PRINT_CHILD_WITH_HINT(rightOperand, "RIGHT");
+	PRINT_CHILD_WITH_HINT(leftOperand, "LEFT");
+	PRINT_CHILD_WITH_HINT(rightOperand, "RIGHT");
+
+}
+
+void TernaryOpNode::PrintContentInLevel(int level) const {
+
+    printf("Conditional Expression\n");
+
+    PRINT_CHILD_WITH_HINT(condition, "COND");
+    PRINT_CHILD_WITH_HINT(trueExpression, "TRUE");
+    PRINT_CHILD_WITH_HINT(falseExpression, "FALSE");
 
 }
 
@@ -280,6 +333,19 @@ llvm::Value *BinaryOpNode::GenerateIR(CodeGenerator *generator) {
 
     assert(res != nullptr);
     return res;
+}
+
+llvm::Value *TernaryOpNode::GenerateIR(CodeGenerator *generator) {
+    
+    llvm::Value *condValue = condition->GenerateIR(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    
+    llvm::Value *T = trueExpression->GenerateIR(generator);
+    llvm::Value *F = falseExpression->GenerateIR(generator);
+
+    assert(T != nullptr && F != nullptr);
+
+    return generator->builder.CreateSelect(condValue, T, F, "selecttmp");
 }
 
 llvm::Value *AssignOpNode::GenerateIR(CodeGenerator *generator) {

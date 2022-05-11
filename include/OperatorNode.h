@@ -29,6 +29,24 @@ private:
 
 };
 
+class TernaryOpNode : public ExpressionNode {
+
+public:
+	TernaryOpNode(ExpressionNode *cond, ExpressionNode *trueExpr, ExpressionNode *falseExpr);
+	~TernaryOpNode();
+
+	virtual void AnalyzeSemantic(SymbolTable *intab) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+	ExpressionNode *condition;
+	ExpressionNode *trueExpression;
+	ExpressionNode *falseExpression;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
 class AssignOpNode : public ExpressionNode {
 
 public:

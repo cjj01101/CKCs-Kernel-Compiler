@@ -94,7 +94,7 @@ void IfStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	thenStmt->AnalyzeSemantic(intab);
 	elseStmt->AnalyzeSemantic(intab);
 
-	/* Validate Condition Expression Type */
+	/* Verify Condition Expression Type */
 	Type condType = condition->GetValueType();
 	if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
 		throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
@@ -107,7 +107,7 @@ void WhileStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	condition->AnalyzeSemantic(intab);
 	body->AnalyzeSemantic(intab);
 
-	/* Validate Condition Expression Type */
+	/* Verify Condition Expression Type */
 	Type condType = condition->GetValueType();
 	if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {
 		throw ASTException("cannot convert '" + std::string(TypeUtils::GetTypeName(condType)) + "' to 'BOOL'.");
@@ -125,7 +125,7 @@ void ForStatementNode::AnalyzeSemantic(SymbolTable *intab) {
 	loop->AnalyzeSemantic(&symtab);
 	body->AnalyzeSemantic(&symtab);
 
-	/* Validate Condition Expression Type */
+	/* Verify Condition Expression Type */
 	if(!NOT_NULL_OF_TYPE(condition, EmptyExpressionNode*)) {
 		Type condType = condition->GetValueType();
 		if(!TypeUtils::CanConvert(condType, Type::BOOLEAN)) {

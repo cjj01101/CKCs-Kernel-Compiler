@@ -98,12 +98,14 @@ extern int yydebug;
     RBR = 299,                     /* RBR  */
     SEM = 300,                     /* SEM  */
     COMMA = 301,                   /* COMMA  */
-    IF = 302,                      /* IF  */
-    ELSE = 303,                    /* ELSE  */
-    WHILE = 304,                   /* WHILE  */
-    FOR = 305,                     /* FOR  */
-    RETURN = 306,                  /* RETURN  */
-    IFX = 307                      /* IFX  */
+    QUEST = 302,                   /* QUEST  */
+    COLON = 303,                   /* COLON  */
+    IF = 304,                      /* IF  */
+    ELSE = 305,                    /* ELSE  */
+    WHILE = 306,                   /* WHILE  */
+    FOR = 307,                     /* FOR  */
+    RETURN = 308,                  /* RETURN  */
+    IFX = 309                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -156,12 +158,14 @@ extern int yydebug;
 #define RBR 299
 #define SEM 300
 #define COMMA 301
-#define IF 302
-#define ELSE 303
-#define WHILE 304
-#define FOR 305
-#define RETURN 306
-#define IFX 307
+#define QUEST 302
+#define COLON 303
+#define IF 304
+#define ELSE 305
+#define WHILE 306
+#define FOR 307
+#define RETURN 308
+#define IFX 309
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -187,7 +191,7 @@ union YYSTYPE
         IdentifierNode *name;
     } declarator;
 
-#line 191 "./include/y.tab.h"
+#line 195 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

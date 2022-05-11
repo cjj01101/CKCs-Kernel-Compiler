@@ -49,7 +49,7 @@
 %token OP_LOGAND OP_LOGOR
 %token OP_ASSIGN OP_ADD_ASSIGN OP_SUB_ASSIGN OP_MUL_ASSIGN OP_DIV_ASSIGN OP_MOD_ASSIGN
 %token OP_SHL_ASSIGN OP_SHR_ASSIGN OP_AND_ASSIGN OP_OR_ASSIGN OP_XOR_ASSIGN
-%token LP RP LBR RBR SEM COMMA
+%token LP RP LBR RBR SEM COMMA QUEST COLON
 %token IF ELSE WHILE FOR RETURN
 
 %type <node> externdef function item inititem declaration
@@ -57,7 +57,7 @@
 %type <unit> program
 %type <compound> compoundstmt items
 %type <statement> statement exprstmt ctrlstmt jumpstmt
-%type <expression> optexpr expr assignexpr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
+%type <expression> optexpr expr assignexpr condexpr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
 %type <parameters> parameters
 %type <arguments> arguments
 %type <declarator> declarator
@@ -141,6 +141,10 @@
                 | identifier OP_AND_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::AND, $1, $3)); }
                 | identifier OP_OR_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::OR, $1, $3)); }
                 | identifier OP_XOR_ASSIGN assignexpr { $$ = new AssignOpNode($1, new BinaryOpNode(Operator::XOR, $1, $3)); }
+                | condexpr { $$ = $1; }
+                ;
+
+       condexpr : logorexpr QUEST expr COLON condexpr { $$ = new TernaryOpNode($1, $3, $5); }
                 | logorexpr { $$ = $1; }
                 ;
 

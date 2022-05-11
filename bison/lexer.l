@@ -50,6 +50,8 @@ blank [ \f\n\r\t\v]+
 "}"             return RBR;
 ";"             return SEM;
 ","             return COMMA;
+"?"             return QUEST;
+":"             return COLON;
 "if"            return IF;
 "else"          return ELSE;
 "while"         return WHILE;

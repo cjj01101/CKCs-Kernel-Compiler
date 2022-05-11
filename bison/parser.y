@@ -56,7 +56,7 @@
 %type <unit> program
 %type <compound> compoundstmt items
 %type <statement> statement exprstmt ctrlstmt jumpstmt
-%type <expression> optexpr expr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
+%type <expression> optexpr expr assignexpr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
 %type <parameters> parameters
 %type <arguments> arguments
 %type <declarator> declarator
@@ -125,7 +125,11 @@
                 | /* empty */ { $$ = new EmptyExpressionNode(); }
                 ;
 
-           expr : identifier OP_ASSIGN expr { $$ = new AssignOpNode($1, $3); }
+           expr : expr COMMA assignexpr { $$ = new BinaryOpNode(Operator::COM, $1, $3); }
+                | assignexpr { $$ = $1; }
+                ;
+
+     assignexpr : identifier OP_ASSIGN assignexpr { $$ = new AssignOpNode($1, $3); }
                 | logorexpr { $$ = $1; }
                 ;
 
@@ -181,6 +185,7 @@
                 | constant { $$ = $1; }
                 | LP expr RP { $$ = $2; }
                 | identifier LP arguments RP { $$ = new FunctionCallNode($1, $3); }
+                | OP_ADD primaryexpr { $$ = $2; }
                 | OP_SUB primaryexpr { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
                 | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
                 ;
@@ -190,8 +195,8 @@
                 | NUM_BOOL { $$ = new BooleanNode($1); }
                 ;
 
-      arguments : arguments COMMA expr { $$ = $1; $1->AppendArgument($3); }
-                | expr { $$ = new ArgumentListNode(); $$->AppendArgument($1); }
+      arguments : arguments COMMA assignexpr { $$ = $1; $1->AppendArgument($3); }
+                | assignexpr { $$ = new ArgumentListNode(); $$->AppendArgument($1); }
                 | /* empty */ { $$ = new ArgumentListNode(); }
                 ;
 

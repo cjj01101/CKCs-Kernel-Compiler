@@ -5,6 +5,9 @@
 #include "ExpressionNode.h"
 #include "TypeNode.h"
 #include "CodeGenerator.h"
+#include "Utility.h"
+
+using namespace TypeUtils;
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
@@ -27,19 +30,31 @@ DeclarationNode::~DeclarationNode() {
 
 void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
 
-	std::string sym(name->GetName());
+    std::string sym(name->GetName());
 	if(intab->HasSymbol(sym)) {
 		throw ASTException("redeclaration of symbol '" + sym + "'.");
 	}
 
-	Type t = type->GetType();
-	if(t == Type::VOID) {
+    /* Verify Declaration Type */
+	Type dtype = type->GetType();
+	if(dtype == Type::VOID) {
 		throw ASTException("variable or argument '" + sym + "' declared void.");
 	}
 
-	if(initValue) initValue->AnalyzeSemantic(intab);
+    /* Verify Operand Types */
+    if(initValue) {
+        initValue->AnalyzeSemantic(intab);
+        Type initType = initValue->GetValueType();
+
+        if(!CanConvert(initType, dtype)) {
+            char message[128];
+            sprintf(message, "cannot convert '%s' to '%s' in initialization.",
+                GetTypeName(initType), GetTypeName(dtype));
+            throw ASTException(message);
+        }
+    }
 	
-	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::VARIABLE, t));
+	intab->AddEntry(sym, SymbolTableEntry(SymbolKind::VARIABLE, dtype));
 }
 
 /*       SEMANTIC ANALYZE END       */

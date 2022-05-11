@@ -20,6 +20,7 @@ class TranslationUnitNode;
 	TYPE(INTEGER) TYPE(FLOAT) TYPE(BOOLEAN) TYPE(VOID)
 
 #define OPERATORS \
+	OP(COM) \
 	OP(LOGOR) OP(LOGAND) \
 	OP(OR) OP(XOR) OP(AND) \
 	OP(EQ) OP(NEQ) \

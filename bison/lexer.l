@@ -6,7 +6,7 @@
     extern "C" int yylex();
 %}
 
-integer (\+|-)?([1-9]+[0-9]*|0)
+integer ([1-9]+[0-9]*|0)
 real {integer}(\.[0-9]+)
 boolean (true|false)
 identifier [A-Za-z_][0-9A-Za-z_]*

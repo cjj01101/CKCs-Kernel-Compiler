@@ -46,7 +46,7 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 	Type rightType = rightOperand->GetValueType();
 
     /* Validate Operand Types */
-	if((leftType == Type::VOID || rightType == Type::VOID) ||
+	if((!IsCommaOperator() && (leftType == Type::VOID || rightType == Type::VOID)) ||
 	   (IsIntegerOperator() && (leftType == Type::FLOAT || rightType == Type::FLOAT)))
 	{
 	   	char message[128];
@@ -55,10 +55,11 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 		throw ASTException(message);
 	}
 
-	/* Determine Value Type */
+    /* Determine Value Type */
 	valueType = IsLogicalOperator() ? Type::BOOLEAN
 			  : IsRelationalOperator() ? Type::BOOLEAN
 			  : IsIntegerOperator() ? Type::INTEGER
+              : IsCommaOperator() ? rightType
 			  : IsArithmeticOperator() ? GetPromotedTypeBetween(Type::INTEGER, GetPromotedTypeBetween(leftType, rightType))
 			  : GetPromotedTypeBetween(leftType, rightType);
 }
@@ -72,15 +73,15 @@ void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
 	Type leftType = leftValue->GetValueType();
 	Type rightType = rightValue->GetValueType();
 
-	/* Validate Operand Types */
+	/* Verify Operand Types */
 	if(!CanConvert(rightType, leftType)) {
 		char message[128];
 		sprintf(message, "cannot convert '%s' to '%s' in initialization.",
-			GetTypeName(leftType), GetTypeName(rightType));
+			GetTypeName(rightType), GetTypeName(leftType));
 		throw ASTException(message);
 	}
 
-	/* Determine Value Type */
+    /* Determine Value Type */
 	valueType = leftType;
 
 }
@@ -116,11 +117,16 @@ llvm::Value *BinaryOpNode::GenerateIR(CodeGenerator *generator) {
 
     assert(L != nullptr && R != nullptr);
 
+    /* Directly Return Right Value if Comma Operation */
+    if(IsCommaOperator()) return R;
+
+    /*---------------------*/
+    /* Cast Operands Types */
+    /*---------------------*/
+
     Type leftType = leftOperand->GetValueType();
     Type rightType = rightOperand->GetValueType();
     Type opType = TypeUtils::GetPromotedTypeBetween(leftType, rightType);
-
-    /* Cast Operands */
 
     /* Downcast to BOOLEAN if Logical Operation */
     if(IsLogicalOperator()) {
@@ -264,6 +270,12 @@ llvm::Value *BinaryOpNode::GenerateIR(CodeGenerator *generator) {
             break;
 
         }
+        case Operator::COM: {
+
+            res = generator->builder.CreateLogicalOr(L, R, "logicortmp");
+            break;
+
+        }
     }
 
     assert(res != nullptr);
@@ -305,6 +317,10 @@ bool BinaryOpNode::IsRelationalOperator() {
 	return (op == Operator::EQ || op == Operator::NEQ ||
 			op == Operator::LT || op == Operator::LTE || 
 			op == Operator::GT || op == Operator::GTE);
+}
+
+bool BinaryOpNode::IsCommaOperator() {
+    return (op == Operator::COM);
 }
 
 const char *BinaryOpNode::GetOperatorName(Operator op) {

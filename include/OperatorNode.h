@@ -13,6 +13,7 @@ public:
 	bool IsIntegerOperator();
 	bool IsLogicalOperator();
 	bool IsRelationalOperator();
+	bool IsCommaOperator();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;

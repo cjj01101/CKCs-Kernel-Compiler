@@ -30,9 +30,10 @@ blank [ \f\n\r\t\v]+
 "&"             return OP_AND;
 "^"             return OP_XOR;
 "|"             return OP_OR;
-"!"             return OP_NOT;
+"~"             return OP_NOT;
 "&&"            return OP_LOGAND;
 "||"            return OP_LOGOR;
+"!"             return OP_LOGNOT;
 "="             return OP_ASSIGN;
 "+="            return OP_ADD_ASSIGN;
 "-="            return OP_SUB_ASSIGN;

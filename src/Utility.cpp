@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "Utility.h"
 
 namespace TypeUtils {
@@ -25,19 +26,43 @@ namespace TypeUtils {
 		return CanConvert(first, second) || CanConvert(second, first);
 	}
 
-	Type GetPromotedTypeBetween(Type first, Type second) {
+	bool IsIntegerType(Type type) {
+		return (type == Type::INTEGER || type == Type::BOOLEAN);
+	}
 
-		if(!IsCompatible(first, second)) return Type::VOID;
+	bool IsArithmeticType(Type type) {
+		return (IsIntegerType(type) || type == Type::FLOAT);
+	}
+
+	Type PromoteArithmeticType(Type first, Type second) {
+
+		assert(IsArithmeticType(first) && IsArithmeticType(second));
 
 		if(first == Type::FLOAT || second == Type::FLOAT) {
 			return Type::FLOAT;
 		} else if(first == Type::INTEGER || second == Type::INTEGER) {
 			return Type::INTEGER;
-		}  else if(first == Type::BOOLEAN || second == Type::BOOLEAN) {
+		} else if(first == Type::BOOLEAN || second == Type::BOOLEAN) {
 			return Type::BOOLEAN;
 		} else {
 			return Type::VOID;
 		}
+	}
+
+}
+
+namespace OperatorUtils {
+
+	const char *GetOperatorName(Operator op) {
+
+		const static char *operatorName[] = {
+			#define OP(op) #op,
+			OPERATORS
+			#undef OP
+		};
+
+		return operatorName[static_cast<int>(op)];
+
 	}
 
 }

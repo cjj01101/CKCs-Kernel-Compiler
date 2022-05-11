@@ -27,14 +27,11 @@
     IdentifierNode *identifier;
     ExpressionNode *expression;
     StatementNode *statement;
+    DeclarationNode *declaration;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
-    struct {
-        TypeNode *type;
-        IdentifierNode *name;
-    } declarator;
 }
 
 %token <intNum> NUM_INT
@@ -46,7 +43,7 @@
 %token OP_SHL OP_SHR
 %token OP_GT OP_LT OP_GTE OP_LTE OP_EQ OP_NEQ
 %token OP_AND OP_XOR OP_OR OP_NOT
-%token OP_LOGAND OP_LOGOR
+%token OP_LOGAND OP_LOGOR OP_LOGNOT
 %token OP_ASSIGN OP_ADD_ASSIGN OP_SUB_ASSIGN OP_MUL_ASSIGN OP_DIV_ASSIGN OP_MOD_ASSIGN
 %token OP_SHL_ASSIGN OP_SHR_ASSIGN OP_AND_ASSIGN OP_OR_ASSIGN OP_XOR_ASSIGN
 %token LP RP LBR RBR SEM COMMA QUEST COLON
@@ -59,9 +56,9 @@
 %type <statement> statement exprstmt ctrlstmt jumpstmt
 %type <expression> optexpr expr assignexpr condexpr logorexpr logandexpr orexpr xorexpr andexpr ecmprexpr cmprexpr shiftexpr addexpr mulexpr primaryexpr constant
 %type <parameters> parameters
+%type <declaration> parameter
 %type <arguments> arguments
-%type <declarator> declarator
-%type <identifier> identifier
+%type <identifier> identifier declarator
 %type <type> type
 
 %nonassoc IFX
@@ -77,20 +74,23 @@
                 | declaration { $$ = $1; }
                 ;
 
-       function : declarator LP parameters RP compoundstmt { $$ = new FunctionNode($1.name, $1.type, $3, $5); }
+       function : type identifier LP parameters RP compoundstmt { $$ = new FunctionNode($1, $2, $4, $6); }
                 ;
 
-     parameters : parameters COMMA declarator { $$ = $1; $1->AppendParameter(new DeclarationNode($3.name, $3.type)); }
-                | declarator { $$ = new ParameterListNode(); $$->AppendParameter(new DeclarationNode($1.name, $1.type)); }
+     parameters : parameters COMMA parameter { $$ = $1; $1->AppendParameter($3); }
+                | parameter { $$ = new ParameterListNode(); $$->AppendParameter($1); }
                 | TYPE_VOID { $$ = new ParameterListNode(); }
                 | /* empty */ { $$ = new ParameterListNode(); }
                 ;
 
-    declaration : declarator SEM { $$ = new DeclarationNode($1.name, $1.type); }
-                | declarator OP_ASSIGN expr SEM { $$ = new DeclarationNode($1.name, $1.type, $3); }
+      parameter : type identifier { $$ = new DeclarationNode($1, $2); }
                 ;
 
-     declarator : type identifier { $$ = { $1, $2 }; }
+    declaration : type declarator SEM { $$ = new DeclarationNode($1, $2); }
+                | type declarator OP_ASSIGN expr SEM { $$ = new DeclarationNode($1, $2, $4); }
+                ;
+
+     declarator : identifier { $$ = $1; }
                 ;
 
            type : TYPE_INT { $$ = new TypeNode(Type::INTEGER); }
@@ -203,6 +203,7 @@
                 | OP_ADD primaryexpr { $$ = $2; }
                 | OP_SUB primaryexpr { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
                 | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
+                | OP_LOGNOT primaryexpr { $$ = new BinaryOpNode(Operator::EQ, new IntegerNode(0), $2); }
                 ;
      
        constant : NUM_INT { $$ = new IntegerNode($1); }

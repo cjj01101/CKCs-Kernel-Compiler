@@ -7,7 +7,7 @@
 class FunctionNode : public ASTNode {
 
 public:
-	FunctionNode(IdentifierNode *name, TypeNode *returnType, ParameterListNode *parameters, CompoundStatementNode *body);
+	FunctionNode(TypeNode *returnType, IdentifierNode *name, ParameterListNode *parameters, CompoundStatementNode *body);
 	~FunctionNode();
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;

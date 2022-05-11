@@ -1,17 +1,18 @@
 #ifndef _DECLARATION_NODE_H_
 #define _DECLARATION_NODE_H_
 
+#include <vector>
 #include "ASTNode.h"
 
-typedef struct {
-    TypeNode *type;
-    IdentifierNode *name;
-} Declarator;
+struct Declarator {
+	IdentifierNode *name;
+	ExpressionNode *initValue;
+};
 
 class DeclarationNode : public ASTNode {
 
 public:
-	DeclarationNode(IdentifierNode *name, TypeNode *type, ExpressionNode *init = nullptr);
+	DeclarationNode(TypeNode *type, IdentifierNode *name, ExpressionNode *init = nullptr);
 	~DeclarationNode();
 
 	Type GetType();

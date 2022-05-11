@@ -10,7 +10,7 @@
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
-FunctionNode::FunctionNode(IdentifierNode *name, TypeNode *returnType, ParameterListNode *parameters, CompoundStatementNode *body)
+FunctionNode::FunctionNode(TypeNode *returnType, IdentifierNode *name, ParameterListNode *parameters, CompoundStatementNode *body)
 	: ASTNode(), returnType(returnType), name(name), parameters(parameters), body(body)
 {
 	assert(NOT_NULL(returnType));

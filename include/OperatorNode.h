@@ -17,8 +17,6 @@ public:
 
 	virtual void AnalyzeSemantic(SymbolTable *intab) override;
 	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
-	
-	static const char *GetOperatorName(Operator op);
 
 private:
 	ExpressionNode *leftOperand;

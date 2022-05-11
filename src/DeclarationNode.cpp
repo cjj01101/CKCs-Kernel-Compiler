@@ -11,11 +11,11 @@ using namespace TypeUtils;
 
 /*      (DE)CONSTRUCT FUNCTION      */
 
-DeclarationNode::DeclarationNode(IdentifierNode *name, TypeNode *type, ExpressionNode *init)
-	: ASTNode(), name(name), type(type), initValue(init)
+DeclarationNode::DeclarationNode(TypeNode *type, IdentifierNode *name, ExpressionNode *init)
+	: ASTNode(), type(type), name(name), initValue(init)
 {
-	assert(NOT_NULL(name));
 	assert(NOT_NULL(type));
+	assert(NOT_NULL(name));
 }
 
 DeclarationNode::~DeclarationNode() {
@@ -30,6 +30,7 @@ DeclarationNode::~DeclarationNode() {
 
 void DeclarationNode::AnalyzeSemantic(SymbolTable *intab) {
 
+    /* Check Symbol Redefinition */
     std::string sym(name->GetName());
 	if(intab->HasSymbol(sym)) {
 		throw ASTException("redeclaration of symbol '" + sym + "'.");

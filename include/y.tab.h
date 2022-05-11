@@ -81,31 +81,32 @@ extern int yydebug;
     OP_NOT = 282,                  /* OP_NOT  */
     OP_LOGAND = 283,               /* OP_LOGAND  */
     OP_LOGOR = 284,                /* OP_LOGOR  */
-    OP_ASSIGN = 285,               /* OP_ASSIGN  */
-    OP_ADD_ASSIGN = 286,           /* OP_ADD_ASSIGN  */
-    OP_SUB_ASSIGN = 287,           /* OP_SUB_ASSIGN  */
-    OP_MUL_ASSIGN = 288,           /* OP_MUL_ASSIGN  */
-    OP_DIV_ASSIGN = 289,           /* OP_DIV_ASSIGN  */
-    OP_MOD_ASSIGN = 290,           /* OP_MOD_ASSIGN  */
-    OP_SHL_ASSIGN = 291,           /* OP_SHL_ASSIGN  */
-    OP_SHR_ASSIGN = 292,           /* OP_SHR_ASSIGN  */
-    OP_AND_ASSIGN = 293,           /* OP_AND_ASSIGN  */
-    OP_OR_ASSIGN = 294,            /* OP_OR_ASSIGN  */
-    OP_XOR_ASSIGN = 295,           /* OP_XOR_ASSIGN  */
-    LP = 296,                      /* LP  */
-    RP = 297,                      /* RP  */
-    LBR = 298,                     /* LBR  */
-    RBR = 299,                     /* RBR  */
-    SEM = 300,                     /* SEM  */
-    COMMA = 301,                   /* COMMA  */
-    QUEST = 302,                   /* QUEST  */
-    COLON = 303,                   /* COLON  */
-    IF = 304,                      /* IF  */
-    ELSE = 305,                    /* ELSE  */
-    WHILE = 306,                   /* WHILE  */
-    FOR = 307,                     /* FOR  */
-    RETURN = 308,                  /* RETURN  */
-    IFX = 309                      /* IFX  */
+    OP_LOGNOT = 285,               /* OP_LOGNOT  */
+    OP_ASSIGN = 286,               /* OP_ASSIGN  */
+    OP_ADD_ASSIGN = 287,           /* OP_ADD_ASSIGN  */
+    OP_SUB_ASSIGN = 288,           /* OP_SUB_ASSIGN  */
+    OP_MUL_ASSIGN = 289,           /* OP_MUL_ASSIGN  */
+    OP_DIV_ASSIGN = 290,           /* OP_DIV_ASSIGN  */
+    OP_MOD_ASSIGN = 291,           /* OP_MOD_ASSIGN  */
+    OP_SHL_ASSIGN = 292,           /* OP_SHL_ASSIGN  */
+    OP_SHR_ASSIGN = 293,           /* OP_SHR_ASSIGN  */
+    OP_AND_ASSIGN = 294,           /* OP_AND_ASSIGN  */
+    OP_OR_ASSIGN = 295,            /* OP_OR_ASSIGN  */
+    OP_XOR_ASSIGN = 296,           /* OP_XOR_ASSIGN  */
+    LP = 297,                      /* LP  */
+    RP = 298,                      /* RP  */
+    LBR = 299,                     /* LBR  */
+    RBR = 300,                     /* RBR  */
+    SEM = 301,                     /* SEM  */
+    COMMA = 302,                   /* COMMA  */
+    QUEST = 303,                   /* QUEST  */
+    COLON = 304,                   /* COLON  */
+    IF = 305,                      /* IF  */
+    ELSE = 306,                    /* ELSE  */
+    WHILE = 307,                   /* WHILE  */
+    FOR = 308,                     /* FOR  */
+    RETURN = 309,                  /* RETURN  */
+    IFX = 310                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -141,31 +142,32 @@ extern int yydebug;
 #define OP_NOT 282
 #define OP_LOGAND 283
 #define OP_LOGOR 284
-#define OP_ASSIGN 285
-#define OP_ADD_ASSIGN 286
-#define OP_SUB_ASSIGN 287
-#define OP_MUL_ASSIGN 288
-#define OP_DIV_ASSIGN 289
-#define OP_MOD_ASSIGN 290
-#define OP_SHL_ASSIGN 291
-#define OP_SHR_ASSIGN 292
-#define OP_AND_ASSIGN 293
-#define OP_OR_ASSIGN 294
-#define OP_XOR_ASSIGN 295
-#define LP 296
-#define RP 297
-#define LBR 298
-#define RBR 299
-#define SEM 300
-#define COMMA 301
-#define QUEST 302
-#define COLON 303
-#define IF 304
-#define ELSE 305
-#define WHILE 306
-#define FOR 307
-#define RETURN 308
-#define IFX 309
+#define OP_LOGNOT 285
+#define OP_ASSIGN 286
+#define OP_ADD_ASSIGN 287
+#define OP_SUB_ASSIGN 288
+#define OP_MUL_ASSIGN 289
+#define OP_DIV_ASSIGN 290
+#define OP_MOD_ASSIGN 291
+#define OP_SHL_ASSIGN 292
+#define OP_SHR_ASSIGN 293
+#define OP_AND_ASSIGN 294
+#define OP_OR_ASSIGN 295
+#define OP_XOR_ASSIGN 296
+#define LP 297
+#define RP 298
+#define LBR 299
+#define RBR 300
+#define SEM 301
+#define COMMA 302
+#define QUEST 303
+#define COLON 304
+#define IF 305
+#define ELSE 306
+#define WHILE 307
+#define FOR 308
+#define RETURN 309
+#define IFX 310
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -182,16 +184,13 @@ union YYSTYPE
     IdentifierNode *identifier;
     ExpressionNode *expression;
     StatementNode *statement;
+    DeclarationNode *declaration;
     CompoundStatementNode *compound;
     ParameterListNode *parameters;
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
-    struct {
-        TypeNode *type;
-        IdentifierNode *name;
-    } declarator;
 
-#line 195 "./include/y.tab.h"
+#line 194 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -5,6 +5,7 @@
 #include "CodeGenerator.h"
 
 using namespace TypeUtils;
+using namespace OperatorUtils;
 
 /*        CONSTRUCT FUNCTION        */
 
@@ -61,7 +62,7 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 
     /* Validate Operand Types */
 	if((!IsCommaOperator() && (leftType == Type::VOID || rightType == Type::VOID)) ||
-	   (IsIntegerOperator() && (leftType == Type::FLOAT || rightType == Type::FLOAT)))
+	   (IsIntegerOperator() && (!IsIntegerType(leftType) || !IsIntegerType(rightType))))
 	{
 	   	char message[128];
 		sprintf(message, "invalid operands of type '%s' and '%s' to binary operator '%s'.",
@@ -74,8 +75,8 @@ void BinaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
 			  : IsRelationalOperator() ? Type::BOOLEAN
 			  : IsIntegerOperator() ? Type::INTEGER
               : IsCommaOperator() ? rightType
-			  : IsArithmeticOperator() ? GetPromotedTypeBetween(Type::INTEGER, GetPromotedTypeBetween(leftType, rightType))
-			  : GetPromotedTypeBetween(leftType, rightType);
+			  : IsArithmeticOperator() ? PromoteArithmeticType(Type::INTEGER, PromoteArithmeticType(leftType, rightType))
+			  : PromoteArithmeticType(leftType, rightType);
 }
 
 void TernaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -104,7 +105,7 @@ void TernaryOpNode::AnalyzeSemantic(SymbolTable *intab) {
     }
 
     /* Determine Value Type */
-    valueType = (trueType == Type::VOID) ? Type::VOID : GetPromotedTypeBetween(trueType, falseType);
+    valueType = (trueType == Type::VOID) ? Type::VOID : PromoteArithmeticType(trueType, falseType);
 }
 
 void AssignOpNode::AnalyzeSemantic(SymbolTable *intab) {
@@ -179,7 +180,7 @@ llvm::Value *BinaryOpNode::GenerateIR(CodeGenerator *generator) {
 
     Type leftType = leftOperand->GetValueType();
     Type rightType = rightOperand->GetValueType();
-    Type opType = TypeUtils::GetPromotedTypeBetween(leftType, rightType);
+    Type opType = TypeUtils::PromoteArithmeticType(leftType, rightType);
 
     /* Downcast to BOOLEAN if Logical Operation */
     if(IsLogicalOperator()) {
@@ -387,18 +388,6 @@ bool BinaryOpNode::IsRelationalOperator() {
 
 bool BinaryOpNode::IsCommaOperator() {
     return (op == Operator::COM);
-}
-
-const char *BinaryOpNode::GetOperatorName(Operator op) {
-
-	const static char *operatorName[] = {
-		#define OP(op) #op,
-		OPERATORS
-		#undef OP
-	};
-
-	return operatorName[static_cast<int>(op)];
-
 }
 
 /*      AUXILIARY FUNCTION END      */

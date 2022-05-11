@@ -6,9 +6,17 @@
 namespace TypeUtils {
 
 	const char *GetTypeName(Type type);
+	bool IsIntegerType(Type type);
+	bool IsArithmeticType(Type type);
 	bool CanConvert(Type from, Type to);
 	bool IsCompatible(Type first, Type second);
-	Type GetPromotedTypeBetween(Type first, Type second);
+	Type PromoteArithmeticType(Type first, Type second);
+
+}
+
+namespace OperatorUtils {
+
+	const char *GetOperatorName(Operator op);
 
 }
 

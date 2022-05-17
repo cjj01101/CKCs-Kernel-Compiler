@@ -426,8 +426,8 @@ llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
 }
 
 llvm::Value *ReturnStatementNode::GenerateIR(CodeGenerator *generator) {
-    
-    if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) {
+
+	if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) {
         generator->builder.CreateRetVoid();
     } else {
         generator->builder.CreateRet(expression->GenerateIR(generator));

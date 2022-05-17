@@ -5,6 +5,7 @@
 #include <string>
 
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LegacyPassManager.h"
 #include "common.h"
 
 class CodeGenerator {
@@ -55,6 +56,8 @@ public:
 
 	llvm::Module module;
 	llvm::IRBuilder<> builder;
+
+	llvm::legacy::FunctionPassManager functionOptimizer;
 
 private:
 

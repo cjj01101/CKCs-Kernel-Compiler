@@ -25,5 +25,5 @@ int bar(){
 
 int main() {
     c=2;
-    foo(bar(), foo(-2, bar()));
+    puti(foo(bar(), foo(-2, bar())));
 }

@@ -6,12 +6,20 @@
 #include "llvm/Support/Host.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Target/TargetOptions.h"
-#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
 
 CodeGenerator::CodeGenerator() 
-    : context(), module("CKC IR Code", context), builder(context), initializer(nullptr),
-    tables(), breakTargets(), continueTargets()
+    : context(), module("CKC IR Code", context), builder(context), functionOptimizer(&module),
+    initializer(nullptr), tables(), breakTargets(), continueTargets()
 {
+    functionOptimizer.add(llvm::createInstructionCombiningPass());
+    functionOptimizer.add(llvm::createReassociatePass());
+    functionOptimizer.add(llvm::createGVNPass());
+    functionOptimizer.add(llvm::createCFGSimplificationPass());
+    functionOptimizer.doInitialization();
+
     llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(context),
                                                             {llvm::Type::getInt32Ty(context)},
                                                             false);
@@ -19,7 +27,6 @@ CodeGenerator::CodeGenerator()
                                                       llvm::Function::ExternalLinkage,
                                                       "printf",
                                                       &module);
-    function->setCallingConv(llvm::CallingConv::C);
 }
 
 void CodeGenerator::InitializeLLVM() {
@@ -31,6 +38,9 @@ void CodeGenerator::InitializeLLVM() {
 }
 
 void CodeGenerator::PrintIR() {
+    for(llvm::Function &func : module) {
+        if (!func.isIntrinsic()) functionOptimizer.run(func);
+    }
     module.print(llvm::outs(), nullptr);
 }
 

@@ -1,11 +1,13 @@
-int a;
-
 int fibb(int n) {
-	int res = 1;
-	if(n != 1 && n != 2) res = fibb(n-1) + fibb(n-2);
-	return res;
+	if(n != 1 && n != 2) return fibb(n-1) + fibb(n-2);
+	return 1;
+}
+
+int min(int x, int y) {
+	return x < y ? x : y;
 }
 
 int main() {
+	puti(min(2,4));
 	puti(fibb(10));
 }

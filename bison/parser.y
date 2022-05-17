@@ -50,7 +50,7 @@
 %token OP_ASSIGN OP_ADD_ASSIGN OP_SUB_ASSIGN OP_MUL_ASSIGN OP_DIV_ASSIGN OP_MOD_ASSIGN
 %token OP_SHL_ASSIGN OP_SHR_ASSIGN OP_AND_ASSIGN OP_OR_ASSIGN OP_XOR_ASSIGN
 %token LP RP LBR RBR SEM COMMA QUEST COLON
-%token IF ELSE WHILE FOR BREAK CONTINUE RETURN
+%token IF ELSE DO WHILE FOR BREAK CONTINUE RETURN
 
 %type <node> externdef function item inititem declaration
 
@@ -231,7 +231,7 @@
 
        ctrlstmt : IF LP expr RP statement %prec IFX { $$ = new IfStatementNode($3, $5, new ExpressionStatementNode(new EmptyExpressionNode())); }
                 | IF LP expr RP statement ELSE statement { $$ = new IfStatementNode($3, $5, $7); }
-                // | DO statement WHILE LP expr RP {  }
+                | DO statement WHILE LP expr RP { $$ = new DoWhileStatementNode($2, $5); }
                 | WHILE LP expr RP statement { $$ = new WhileStatementNode($3, $5); }
                 | FOR LP inititem optexpr SEM optexpr RP statement { $$ = new ForStatementNode($3, $4, $6, $8); }
                 ;

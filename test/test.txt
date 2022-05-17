@@ -1,0 +1,6 @@
+int a;
+int main() {
+	do {
+	  ++a;
+	} while(a < 5);
+}

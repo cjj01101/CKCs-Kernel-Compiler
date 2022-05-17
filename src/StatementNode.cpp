@@ -47,6 +47,18 @@ WhileStatementNode::~WhileStatementNode() {
 	delete body;
 }
 
+DoWhileStatementNode::DoWhileStatementNode(StatementNode *body, ExpressionNode *condition)
+	: StatementNode(), body(body), condition(condition)
+{
+	assert(NOT_NULL(body));
+	assert(NOT_NULL(condition));
+}
+
+DoWhileStatementNode::~DoWhileStatementNode() {
+	delete body;
+	delete condition;
+}
+
 ForStatementNode::ForStatementNode(ASTNode *init, ExpressionNode *cond, ExpressionNode *loop, StatementNode *body)
 	: StatementNode(), init(init), condition(cond), loop(loop), body(body)
 {
@@ -119,7 +131,22 @@ void WhileStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	}
 
 	analyzer->LeaveControlBlock();
+}
 
+void DoWhileStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
+		
+	analyzer->EnterControlBlock();
+
+	body->AnalyzeSemantic(analyzer);
+	condition->AnalyzeSemantic(analyzer);
+
+	/* Verify Condition Expression Type */
+	Type condType = condition->GetValueType();
+	if(!CanConvert(condType, Type::BOOLEAN)) {
+		throw ASTException("cannot convert '" + std::string(GetTypeName(condType)) + "' to 'BOOL'.");
+	}
+
+	analyzer->LeaveControlBlock();
 }
 
 void ForStatementNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
@@ -218,6 +245,13 @@ void WhileStatementNode::PrintContentInLevel(int level) const {
 	PRINT_CHILD_WITH_HINT(body, "THEN");
 }
 
+void DoWhileStatementNode::PrintContentInLevel(int level) const {
+	printf("Do-While Statement\n");
+
+	PRINT_CHILD_WITH_HINT(body, "DO");
+	PRINT_CHILD_WITH_HINT(condition, "WHILE");
+}
+
 void ForStatementNode::PrintContentInLevel(int level) const {
 	printf("For Statement\n");
 
@@ -314,6 +348,37 @@ llvm::Value *WhileStatementNode::GenerateIR(CodeGenerator *generator) {
     generator->JumpToBlock(loopBlock);
     body->GenerateIR(generator);
     generator->builder.CreateBr(condBlock);
+
+    // Finish up
+    generator->PopLoopTargets();
+    generator->JumpToBlock(afterBlock);
+
+    return nullptr;
+}
+
+llvm::Value *DoWhileStatementNode::GenerateIR(CodeGenerator *generator) {
+    
+    // Create Basic Blocks
+    llvm::BasicBlock *loopBlock = generator->CreateBasicBlock("do-loop");
+    llvm::BasicBlock *condBlock = generator->CreateBasicBlock("whlie-cond");
+    llvm::BasicBlock *afterBlock = generator->CreateBasicBlock("after-while");
+
+    // Record Blocks for Control Statement
+    generator->PushLoopTargets(condBlock, afterBlock);
+
+    // Enter While Process
+    generator->builder.CreateBr(loopBlock);
+
+    // Complete Loop Body
+    generator->JumpToBlock(loopBlock);
+    body->GenerateIR(generator);
+    generator->builder.CreateBr(condBlock);
+
+    // Complete Loop Condition Branch
+    generator->JumpToBlock(condBlock);
+    llvm::Value *condValue = condition->GenerateIR(generator);
+    condValue = generator->CastValueType(condValue, condition->GetValueType(), Type::BOOLEAN);
+    generator->builder.CreateCondBr(condValue, loopBlock, afterBlock);
 
     // Finish up
     generator->PopLoopTargets();

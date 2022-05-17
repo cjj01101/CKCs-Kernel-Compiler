@@ -21,7 +21,7 @@ int main(int argc, char ** argv){
         SemanticAnalyzer analyzer;
         synTree.AnalyzeSemantic(&analyzer);
 
-        //synTree.Print();
+        synTree.Print();
 
         CodeGenerator::InitializeLLVM();
         CodeGenerator generator;

@@ -105,12 +105,13 @@ extern int yydebug;
     COLON = 306,                   /* COLON  */
     IF = 307,                      /* IF  */
     ELSE = 308,                    /* ELSE  */
-    WHILE = 309,                   /* WHILE  */
-    FOR = 310,                     /* FOR  */
-    BREAK = 311,                   /* BREAK  */
-    CONTINUE = 312,                /* CONTINUE  */
-    RETURN = 313,                  /* RETURN  */
-    IFX = 314                      /* IFX  */
+    DO = 309,                      /* DO  */
+    WHILE = 310,                   /* WHILE  */
+    FOR = 311,                     /* FOR  */
+    BREAK = 312,                   /* BREAK  */
+    CONTINUE = 313,                /* CONTINUE  */
+    RETURN = 314,                  /* RETURN  */
+    IFX = 315                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -170,12 +171,13 @@ extern int yydebug;
 #define COLON 306
 #define IF 307
 #define ELSE 308
-#define WHILE 309
-#define FOR 310
-#define BREAK 311
-#define CONTINUE 312
-#define RETURN 313
-#define IFX 314
+#define DO 309
+#define WHILE 310
+#define FOR 311
+#define BREAK 312
+#define CONTINUE 313
+#define RETURN 314
+#define IFX 315
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -200,7 +202,7 @@ union YYSTYPE
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
 
-#line 204 "./include/y.tab.h"
+#line 206 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

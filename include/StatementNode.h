@@ -85,6 +85,23 @@ private:
 
 };
 
+class DoWhileStatementNode : public StatementNode {
+
+public:
+	DoWhileStatementNode(StatementNode *body, ExpressionNode *condition);
+	~DoWhileStatementNode();
+
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+	StatementNode *body;
+	ExpressionNode *condition;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
 class ForStatementNode : public StatementNode {
 
 public:

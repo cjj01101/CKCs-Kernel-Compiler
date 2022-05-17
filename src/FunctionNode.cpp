@@ -141,11 +141,15 @@ llvm::Value *FunctionNode::GenerateIR(CodeGenerator *generator) {
     body->GenerateIR(generator);
 
     /* Generate Default Return Instruction */
+    generator->builder.CreateRetVoid();
+
+    /* This doesn't work
     if(retType == Type::VOID) {
         generator->builder.CreateRetVoid();
     } else {
         generator->builder.CreateRet(generator->GetTypeDefaultValue(retType));
     }
+    */
 
     /* Finish up */
     generator->JumpToVoid();

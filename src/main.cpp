@@ -21,13 +21,15 @@ int main(int argc, char ** argv){
         SemanticAnalyzer analyzer;
         synTree.AnalyzeSemantic(&analyzer);
 
-        synTree.Print();
+        //synTree.Print();
 
         CodeGenerator::InitializeLLVM();
         CodeGenerator generator;
         synTree.GenerateIR(&generator);
 
         generator.PrintIR();
+        generator.GenerateTarget();
+
     } catch (ASTException &e) {
         e.PrintMessage();
     }

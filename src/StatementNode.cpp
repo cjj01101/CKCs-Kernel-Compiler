@@ -301,6 +301,9 @@ llvm::Value *WhileStatementNode::GenerateIR(CodeGenerator *generator) {
     // Record Blocks for Control Statement
     generator->PushLoopTargets(condBlock, afterBlock);
 
+    // Enter While Process
+    generator->builder.CreateBr(condBlock);
+
     // Complete Loop Condition Branch
     generator->JumpToBlock(condBlock);
     llvm::Value *condValue = condition->GenerateIR(generator);
@@ -333,6 +336,9 @@ llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
     // Record Blocks for Control Statement
     generator->PushLoopTargets(condBlock, afterBlock);
 
+    // Enter For Process
+    generator->builder.CreateBr(condBlock);
+
     // Complete Loop Condition Branch
     generator->JumpToBlock(condBlock);
     llvm::Value *condValue = condition->GenerateIR(generator);
@@ -343,8 +349,8 @@ llvm::Value *ForStatementNode::GenerateIR(CodeGenerator *generator) {
     // Complete Loop Body
     generator->JumpToBlock(loopBlock);
     body->GenerateIR(generator);
-    generator->builder.CreateBr(condBlock);
     loop->GenerateIR(generator);
+    generator->builder.CreateBr(condBlock);
 
     // Finish up
     generator->PopLoopTargets();

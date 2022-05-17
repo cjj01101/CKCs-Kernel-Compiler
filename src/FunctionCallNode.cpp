@@ -105,10 +105,14 @@ void ArgumentListNode::PrintContentInLevel(int level) const {
 llvm::Value *FunctionCallNode::GenerateIR(CodeGenerator *generator) {
 
     llvm::Function *function = generator->module.getFunction(std::string(name->GetName()));
+    const std::vector<llvm::Type*> paramTypes = function->getFunctionType()->params();
 
     std::vector<llvm::Value *> args;
-    for(auto arg : arguments->arguments) {
-        args.push_back(arg->GenerateIR(generator));
+    for(int i = 0; i < arguments->arguments.size(); i++) {
+    	auto arg = arguments->arguments[i];
+    	llvm::Value *argValue = arg->GenerateIR(generator);
+    	argValue = generator->CastValueType(argValue, arg->GetValueType(), paramTypes[i]);
+        args.push_back(argValue);
     }
 
     return generator->builder.CreateCall(function, args, "calltmp");

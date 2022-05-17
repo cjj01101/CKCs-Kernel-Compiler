@@ -18,12 +18,15 @@ public:
 
 	static void InitializeLLVM();
 	void PrintIR();
+	void GenerateTarget();
 
 	llvm::Type *ConvertToLLVMType(Type type);
 	llvm::Type *ConvertToLLVMPtrType(Type type);
-	llvm::Constant *GetTypeDefaultValue(Type type);
+	llvm::Constant *GetTypeDefaultValue(Type type)
+		{ return llvm::Constant::getNullValue(ConvertToLLVMType(type)); }
 
 	llvm::Value *CastValueType(llvm::Value *origin, Type from, Type to);
+	llvm::Value *CastValueType(llvm::Value *origin, Type from, llvm::Type *to);
 
 	llvm::Function *GetCurrentFunction() { return builder.GetInsertBlock()->getParent(); }
 	llvm::BasicBlock *CreateBasicBlock(const char *name, llvm::Function *function = nullptr)

@@ -68,6 +68,7 @@ blank [ \f\n\r\t\v]+
 "float"         return TYPE_FLOAT;
 "bool"          return TYPE_BOOL;
 "void"          return TYPE_VOID;
+"puti"          return FUNC_PUTI;
 {integer}       { yylval.intNum = atoi(yytext); return NUM_INT; }
 {real}          { yylval.floatNum = atof(yytext); return NUM_FLOAT; }
 {boolean}       { yylval.boolNum = (yytext[0] == 't'); return NUM_BOOL;  }

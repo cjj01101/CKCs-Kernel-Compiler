@@ -40,4 +40,20 @@ private:
 
 };
 
+class PutiCallNode : public ExpressionNode {
+
+public:
+	PutiCallNode(ExpressionNode *num);
+	~PutiCallNode();
+
+	virtual void AnalyzeSemantic(SemanticAnalyzer *analyzer) override;
+	virtual llvm::Value *GenerateIR(CodeGenerator *generator) override;
+
+private:
+	ExpressionNode *num;
+
+	virtual void PrintContentInLevel(int level) const override;
+
+};
+
 #endif

@@ -12,13 +12,12 @@ class CodeGenerator {
 public:
 	using ValueTable = std::unordered_map<std::string, llvm::Value*>;
 
-	CodeGenerator() : context(), module("CKC IR Code", context), builder(context), initializer(nullptr),
-		tables(), breakTargets(), continueTargets() {}
+	CodeGenerator();
 	~CodeGenerator() {}
 
 	static void InitializeLLVM();
 	void PrintIR();
-	void GenerateTarget();
+	void GenerateTarget(const char *filename = "cc.o");
 
 	llvm::Type *ConvertToLLVMType(Type type);
 	llvm::Type *ConvertToLLVMPtrType(Type type);
@@ -48,7 +47,7 @@ public:
 	llvm::BasicBlock* GetBreakTarget() { return breakTargets.back(); }
 	llvm::BasicBlock* GetContinueTarget() { return continueTargets.back(); }
 
-private:
+public:
 
 	llvm::LLVMContext context;
 

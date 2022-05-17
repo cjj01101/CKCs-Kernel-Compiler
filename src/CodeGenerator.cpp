@@ -8,8 +8,24 @@
 #include "llvm/Target/TargetOptions.h"
 #include "llvm/IR/LegacyPassManager.h"
 
+CodeGenerator::CodeGenerator() 
+    : context(), module("CKC IR Code", context), builder(context), initializer(nullptr),
+    tables(), breakTargets(), continueTargets()
+{
+    llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(context),
+                                                            {llvm::Type::getInt32Ty(context)},
+                                                            false);
+    llvm::Function *function = llvm::Function::Create(funcType,
+                                                      llvm::Function::ExternalLinkage,
+                                                      "printf",
+                                                      &module);
+    function->setCallingConv(llvm::CallingConv::C);
+}
+
 void CodeGenerator::InitializeLLVM() {
+    llvm::InitializeAllTargetInfos();
     llvm::InitializeNativeTarget();
+    llvm::InitializeAllTargetMCs();
     llvm::InitializeNativeTargetAsmPrinter();
     llvm::InitializeNativeTargetAsmParser();
 }
@@ -18,13 +34,7 @@ void CodeGenerator::PrintIR() {
     module.print(llvm::outs(), nullptr);
 }
 
-void CodeGenerator::GenerateTarget() {
-    // Initialize the target registry etc.
-    llvm::InitializeAllTargetInfos();
-    llvm::InitializeAllTargets();
-    llvm::InitializeAllTargetMCs();
-    llvm::InitializeAllAsmParsers();
-    llvm::InitializeAllAsmPrinters();
+void CodeGenerator::GenerateTarget(const char *filename) {
 
     auto targetTriple = llvm::sys::getDefaultTargetTriple();
     module.setTargetTriple(targetTriple);
@@ -33,7 +43,6 @@ void CodeGenerator::GenerateTarget() {
     auto target = llvm::TargetRegistry::lookupTarget(targetTriple, error);
     if (!target) {
         llvm::errs() << error;
-        // return 1;
         return;
     }
 
@@ -43,7 +52,6 @@ void CodeGenerator::GenerateTarget() {
 
     module.setDataLayout(targetMachine->createDataLayout());
 
-    auto filename = "cc.o";
     std::error_code errorCode;
     llvm::raw_fd_ostream dest(filename, errorCode, llvm::sys::fs::OF_None);
 
@@ -53,17 +61,13 @@ void CodeGenerator::GenerateTarget() {
     }
 
     llvm::legacy::PassManager pass;
-    auto fileType = llvm::CGFT_ObjectFile;
-
-    if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, fileType)) {
+    if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, llvm::CGFT_ObjectFile)) {
         llvm::errs() << "Target Machine can't emit a file of this type";
         return;
     }
 
     pass.run(module);
     dest.flush();
-
-    return;
 }
 
 llvm::Type *CodeGenerator::ConvertToLLVMType(Type type) {

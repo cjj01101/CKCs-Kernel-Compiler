@@ -1,6 +1,11 @@
 int a;
+
+int fibb(int n) {
+	int res = 1;
+	if(n != 1 && n != 2) res = fibb(n-1) + fibb(n-2);
+	return res;
+}
+
 int main() {
-	do {
-	  ++a;
-	} while(a < 5);
+	puti(fibb(10));
 }

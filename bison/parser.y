@@ -41,6 +41,7 @@
 %token <boolNum> NUM_BOOL
 %token <str> ID
 %token TYPE_INT TYPE_FLOAT TYPE_BOOL TYPE_VOID
+%token FUNC_PUTI
 %token OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD
 %token OP_DADD OP_DSUB
 %token OP_SHL OP_SHR
@@ -211,6 +212,7 @@
                 | constant { $$ = $1; }
                 | LP expr RP { $$ = $2; }
                 | identifier LP arguments RP { $$ = new FunctionCallNode($1, $3); }
+                | FUNC_PUTI LP expr RP { $$ = new PutiCallNode($3); }
                 | OP_ADD primaryexpr { $$ = $2; }
                 | OP_SUB primaryexpr { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
                 | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }

@@ -44,18 +44,6 @@ void FunctionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 		throw ASTException("Redeclaration of symbol '" + sym + "'.");
 	}
 
-	/* Create Symbol Table in Function Scope */
-	analyzer->EnterFunction(returnType->GetType());
-	analyzer->AddNewTable();
-	parameters->AnalyzeSemantic(analyzer);
-
-	/* Move into Function Body */
-	body->AnalyzeSemantic(analyzer);
-
-	/* Leave Function */
-	analyzer->RemoveTable();
-	analyzer->LeaveFunction();
-
 	/* Add Function Definition */
 	std::vector<Type> paramTypes;
 	for(auto param : parameters->parameters) {
@@ -68,6 +56,18 @@ void FunctionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 			SymbolType(returnType->GetType(), paramTypes)
 		)
 	);
+
+	/* Create Symbol Table in Function Scope */
+	analyzer->EnterFunction(returnType->GetType());
+	analyzer->AddNewTable();
+	parameters->AnalyzeSemantic(analyzer);
+
+	/* Move into Function Body */
+	body->AnalyzeSemantic(analyzer);
+
+	/* Leave Function */
+	analyzer->RemoveTable();
+	analyzer->LeaveFunction();
 }
 
 void ParameterListNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {

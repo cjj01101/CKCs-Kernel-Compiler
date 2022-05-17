@@ -62,56 +62,57 @@ extern int yydebug;
     TYPE_FLOAT = 263,              /* TYPE_FLOAT  */
     TYPE_BOOL = 264,               /* TYPE_BOOL  */
     TYPE_VOID = 265,               /* TYPE_VOID  */
-    OP_ADD = 266,                  /* OP_ADD  */
-    OP_SUB = 267,                  /* OP_SUB  */
-    OP_MUL = 268,                  /* OP_MUL  */
-    OP_DIV = 269,                  /* OP_DIV  */
-    OP_MOD = 270,                  /* OP_MOD  */
-    OP_DADD = 271,                 /* OP_DADD  */
-    OP_DSUB = 272,                 /* OP_DSUB  */
-    OP_SHL = 273,                  /* OP_SHL  */
-    OP_SHR = 274,                  /* OP_SHR  */
-    OP_GT = 275,                   /* OP_GT  */
-    OP_LT = 276,                   /* OP_LT  */
-    OP_GTE = 277,                  /* OP_GTE  */
-    OP_LTE = 278,                  /* OP_LTE  */
-    OP_EQ = 279,                   /* OP_EQ  */
-    OP_NEQ = 280,                  /* OP_NEQ  */
-    OP_AND = 281,                  /* OP_AND  */
-    OP_XOR = 282,                  /* OP_XOR  */
-    OP_OR = 283,                   /* OP_OR  */
-    OP_NOT = 284,                  /* OP_NOT  */
-    OP_LOGAND = 285,               /* OP_LOGAND  */
-    OP_LOGOR = 286,                /* OP_LOGOR  */
-    OP_LOGNOT = 287,               /* OP_LOGNOT  */
-    OP_ASSIGN = 288,               /* OP_ASSIGN  */
-    OP_ADD_ASSIGN = 289,           /* OP_ADD_ASSIGN  */
-    OP_SUB_ASSIGN = 290,           /* OP_SUB_ASSIGN  */
-    OP_MUL_ASSIGN = 291,           /* OP_MUL_ASSIGN  */
-    OP_DIV_ASSIGN = 292,           /* OP_DIV_ASSIGN  */
-    OP_MOD_ASSIGN = 293,           /* OP_MOD_ASSIGN  */
-    OP_SHL_ASSIGN = 294,           /* OP_SHL_ASSIGN  */
-    OP_SHR_ASSIGN = 295,           /* OP_SHR_ASSIGN  */
-    OP_AND_ASSIGN = 296,           /* OP_AND_ASSIGN  */
-    OP_OR_ASSIGN = 297,            /* OP_OR_ASSIGN  */
-    OP_XOR_ASSIGN = 298,           /* OP_XOR_ASSIGN  */
-    LP = 299,                      /* LP  */
-    RP = 300,                      /* RP  */
-    LBR = 301,                     /* LBR  */
-    RBR = 302,                     /* RBR  */
-    SEM = 303,                     /* SEM  */
-    COMMA = 304,                   /* COMMA  */
-    QUEST = 305,                   /* QUEST  */
-    COLON = 306,                   /* COLON  */
-    IF = 307,                      /* IF  */
-    ELSE = 308,                    /* ELSE  */
-    DO = 309,                      /* DO  */
-    WHILE = 310,                   /* WHILE  */
-    FOR = 311,                     /* FOR  */
-    BREAK = 312,                   /* BREAK  */
-    CONTINUE = 313,                /* CONTINUE  */
-    RETURN = 314,                  /* RETURN  */
-    IFX = 315                      /* IFX  */
+    FUNC_PUTI = 266,               /* FUNC_PUTI  */
+    OP_ADD = 267,                  /* OP_ADD  */
+    OP_SUB = 268,                  /* OP_SUB  */
+    OP_MUL = 269,                  /* OP_MUL  */
+    OP_DIV = 270,                  /* OP_DIV  */
+    OP_MOD = 271,                  /* OP_MOD  */
+    OP_DADD = 272,                 /* OP_DADD  */
+    OP_DSUB = 273,                 /* OP_DSUB  */
+    OP_SHL = 274,                  /* OP_SHL  */
+    OP_SHR = 275,                  /* OP_SHR  */
+    OP_GT = 276,                   /* OP_GT  */
+    OP_LT = 277,                   /* OP_LT  */
+    OP_GTE = 278,                  /* OP_GTE  */
+    OP_LTE = 279,                  /* OP_LTE  */
+    OP_EQ = 280,                   /* OP_EQ  */
+    OP_NEQ = 281,                  /* OP_NEQ  */
+    OP_AND = 282,                  /* OP_AND  */
+    OP_XOR = 283,                  /* OP_XOR  */
+    OP_OR = 284,                   /* OP_OR  */
+    OP_NOT = 285,                  /* OP_NOT  */
+    OP_LOGAND = 286,               /* OP_LOGAND  */
+    OP_LOGOR = 287,                /* OP_LOGOR  */
+    OP_LOGNOT = 288,               /* OP_LOGNOT  */
+    OP_ASSIGN = 289,               /* OP_ASSIGN  */
+    OP_ADD_ASSIGN = 290,           /* OP_ADD_ASSIGN  */
+    OP_SUB_ASSIGN = 291,           /* OP_SUB_ASSIGN  */
+    OP_MUL_ASSIGN = 292,           /* OP_MUL_ASSIGN  */
+    OP_DIV_ASSIGN = 293,           /* OP_DIV_ASSIGN  */
+    OP_MOD_ASSIGN = 294,           /* OP_MOD_ASSIGN  */
+    OP_SHL_ASSIGN = 295,           /* OP_SHL_ASSIGN  */
+    OP_SHR_ASSIGN = 296,           /* OP_SHR_ASSIGN  */
+    OP_AND_ASSIGN = 297,           /* OP_AND_ASSIGN  */
+    OP_OR_ASSIGN = 298,            /* OP_OR_ASSIGN  */
+    OP_XOR_ASSIGN = 299,           /* OP_XOR_ASSIGN  */
+    LP = 300,                      /* LP  */
+    RP = 301,                      /* RP  */
+    LBR = 302,                     /* LBR  */
+    RBR = 303,                     /* RBR  */
+    SEM = 304,                     /* SEM  */
+    COMMA = 305,                   /* COMMA  */
+    QUEST = 306,                   /* QUEST  */
+    COLON = 307,                   /* COLON  */
+    IF = 308,                      /* IF  */
+    ELSE = 309,                    /* ELSE  */
+    DO = 310,                      /* DO  */
+    WHILE = 311,                   /* WHILE  */
+    FOR = 312,                     /* FOR  */
+    BREAK = 313,                   /* BREAK  */
+    CONTINUE = 314,                /* CONTINUE  */
+    RETURN = 315,                  /* RETURN  */
+    IFX = 316                      /* IFX  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -128,56 +129,57 @@ extern int yydebug;
 #define TYPE_FLOAT 263
 #define TYPE_BOOL 264
 #define TYPE_VOID 265
-#define OP_ADD 266
-#define OP_SUB 267
-#define OP_MUL 268
-#define OP_DIV 269
-#define OP_MOD 270
-#define OP_DADD 271
-#define OP_DSUB 272
-#define OP_SHL 273
-#define OP_SHR 274
-#define OP_GT 275
-#define OP_LT 276
-#define OP_GTE 277
-#define OP_LTE 278
-#define OP_EQ 279
-#define OP_NEQ 280
-#define OP_AND 281
-#define OP_XOR 282
-#define OP_OR 283
-#define OP_NOT 284
-#define OP_LOGAND 285
-#define OP_LOGOR 286
-#define OP_LOGNOT 287
-#define OP_ASSIGN 288
-#define OP_ADD_ASSIGN 289
-#define OP_SUB_ASSIGN 290
-#define OP_MUL_ASSIGN 291
-#define OP_DIV_ASSIGN 292
-#define OP_MOD_ASSIGN 293
-#define OP_SHL_ASSIGN 294
-#define OP_SHR_ASSIGN 295
-#define OP_AND_ASSIGN 296
-#define OP_OR_ASSIGN 297
-#define OP_XOR_ASSIGN 298
-#define LP 299
-#define RP 300
-#define LBR 301
-#define RBR 302
-#define SEM 303
-#define COMMA 304
-#define QUEST 305
-#define COLON 306
-#define IF 307
-#define ELSE 308
-#define DO 309
-#define WHILE 310
-#define FOR 311
-#define BREAK 312
-#define CONTINUE 313
-#define RETURN 314
-#define IFX 315
+#define FUNC_PUTI 266
+#define OP_ADD 267
+#define OP_SUB 268
+#define OP_MUL 269
+#define OP_DIV 270
+#define OP_MOD 271
+#define OP_DADD 272
+#define OP_DSUB 273
+#define OP_SHL 274
+#define OP_SHR 275
+#define OP_GT 276
+#define OP_LT 277
+#define OP_GTE 278
+#define OP_LTE 279
+#define OP_EQ 280
+#define OP_NEQ 281
+#define OP_AND 282
+#define OP_XOR 283
+#define OP_OR 284
+#define OP_NOT 285
+#define OP_LOGAND 286
+#define OP_LOGOR 287
+#define OP_LOGNOT 288
+#define OP_ASSIGN 289
+#define OP_ADD_ASSIGN 290
+#define OP_SUB_ASSIGN 291
+#define OP_MUL_ASSIGN 292
+#define OP_DIV_ASSIGN 293
+#define OP_MOD_ASSIGN 294
+#define OP_SHL_ASSIGN 295
+#define OP_SHR_ASSIGN 296
+#define OP_AND_ASSIGN 297
+#define OP_OR_ASSIGN 298
+#define OP_XOR_ASSIGN 299
+#define LP 300
+#define RP 301
+#define LBR 302
+#define RBR 303
+#define SEM 304
+#define COMMA 305
+#define QUEST 306
+#define COLON 307
+#define IF 308
+#define ELSE 309
+#define DO 310
+#define WHILE 311
+#define FOR 312
+#define BREAK 313
+#define CONTINUE 314
+#define RETURN 315
+#define IFX 316
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -202,7 +204,7 @@ union YYSTYPE
     ArgumentListNode *arguments;
     TranslationUnitNode *unit;
 
-#line 206 "./include/y.tab.h"
+#line 208 "./include/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -430,7 +430,9 @@ llvm::Value *ReturnStatementNode::GenerateIR(CodeGenerator *generator) {
 	if(NOT_NULL_OF_TYPE(expression, EmptyExpressionNode*)) {
         generator->builder.CreateRetVoid();
     } else {
-        generator->builder.CreateRet(expression->GenerateIR(generator));
+    	llvm::Value *retval = expression->GenerateIR(generator);
+    	retval = generator->CastValueType(retval, expression->GetValueType(), generator->GetCurrentFunction()->getReturnType());
+        generator->builder.CreateRet(retval);
     }
 
     return nullptr;

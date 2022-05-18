@@ -215,7 +215,7 @@
                 | FUNC_PUTI LP expr RP { $$ = new PutiCallNode($3); }
                 | OP_ADD primaryexpr { $$ = $2; }
                 | OP_SUB primaryexpr { $$ = new BinaryOpNode(Operator::SUB, new IntegerNode(0), $2); }
-                | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(0), $2); }
+                | OP_NOT primaryexpr { $$ = new BinaryOpNode(Operator::XOR, new IntegerNode(-1), $2); }
                 | OP_LOGNOT primaryexpr { $$ = new BinaryOpNode(Operator::EQ, new IntegerNode(0), $2); }
                 | OP_DADD identifier { $$ = new AssignOpNode($2, new BinaryOpNode(Operator::ADD, $2, new IntegerNode(1))); }
                 | OP_DSUB identifier { $$ = new AssignOpNode($2, new BinaryOpNode(Operator::SUB, $2, new IntegerNode(1))); }

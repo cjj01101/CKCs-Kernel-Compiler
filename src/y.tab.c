@@ -1820,7 +1820,7 @@ yyreduce:
 
   case 85: /* primaryexpr: OP_NOT primaryexpr  */
 #line 218 "./bison/parser.y"
-                                     { (yyval.expression) = new BinaryOpNode(Operator::XOR, new IntegerNode(0), (yyvsp[0].expression)); }
+                                     { (yyval.expression) = new BinaryOpNode(Operator::XOR, new IntegerNode(-1), (yyvsp[0].expression)); }
 #line 1825 "./src/y.tab.c"
     break;
 

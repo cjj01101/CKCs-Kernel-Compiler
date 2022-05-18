@@ -73,7 +73,6 @@ void FunctionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 void ParameterListNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 	for(auto param : parameters) param->AnalyzeSemantic(analyzer);
-	for(auto &it : analyzer->GetCurrentTable()) it.second.kind = SymbolKind::ARGUMENT;
 }
 
 /*       SEMANTIC ANALYZE END       */

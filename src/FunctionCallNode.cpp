@@ -40,7 +40,6 @@ PutiCallNode::~PutiCallNode() {
 
 void FunctionCallNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-	name->AnalyzeSemantic(analyzer);
 	arguments->AnalyzeSemantic(analyzer);
 
 	/* Start Type Checking */
@@ -49,7 +48,13 @@ void FunctionCallNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	/* Check Symbol Kind */
 	char *fname = name->GetName();
 	std::string sym(fname);
-	const auto &symbolContent = analyzer->FindSymbolOccurrence(sym)->at(sym);
+
+	auto occtab = analyzer->FindSymbolOccurrence(sym);
+	if(occtab == analyzer->NoTable()) {
+		throw ASTException("'" + sym + "' was not declared in this scope.");
+	} 
+
+	const auto &symbolContent = occtab->at(sym);
 	if(symbolContent.kind != SymbolKind::FUNCTION) {
 		sprintf(message, "'%s' is not a function.", fname);
 		throw ASTException(message);
@@ -81,7 +86,7 @@ void FunctionCallNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 	}
 
 	/* Determine Value Type */
-	valueType = name->GetValueType();
+	valueType = symbolContent.type.type;
 }
 
 void ArgumentListNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {

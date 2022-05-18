@@ -128,7 +128,6 @@ void AssignOpNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
     /* Determine Value Type */
 	valueType = leftType;
-
 }
 
 /*       SEMANTIC ANALYZE END       */

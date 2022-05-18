@@ -23,15 +23,18 @@ void EmptyExpressionNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
 void IdentifierNode::AnalyzeSemantic(SemanticAnalyzer *analyzer) {
 
-	std::string sym = std::string(id);
-	//SymbolTable *occtab = intab->FindSymbolOccurrence(sym);
+	std::string sym(id);
 	auto occtab = analyzer->FindSymbolOccurrence(sym);
 	if(occtab == analyzer->NoTable()) {
 		throw ASTException("'" + sym + "' was not declared in this scope.");
-	} else {
-		valueType = occtab->at(sym).type.type;
+	} 
+
+	const auto &symbolContent = occtab->at(sym);
+	if(symbolContent.kind != SymbolKind::VARIABLE) {
+		throw ASTException("'" + sym + "' is not a variable.");
 	}
 	
+	valueType = symbolContent.type.type;
 }
 
 /*       SEMANTIC ANALYZE END       */

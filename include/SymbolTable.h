@@ -7,7 +7,7 @@
 #include "common.h"
 
 enum class SymbolKind {
-	FUNCTION, ARGUMENT, VARIABLE
+	FUNCTION, VARIABLE
 };
 
 struct SymbolType {

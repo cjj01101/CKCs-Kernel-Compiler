@@ -12,7 +12,6 @@ int bar(){
         if(i < 5) a *= b/c;
         else if ( i < 8 ) {
             a ^= b&c;
-            break;
         }
         while( --a > 0 );
         for(; false; a <<= 1) {

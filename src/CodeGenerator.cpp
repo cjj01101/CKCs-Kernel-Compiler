@@ -1,5 +1,6 @@
 #include "CodeGenerator.h"
 
+#include "llvm/IR/LegacyPassManager.h"
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/FileSystem.h"
@@ -11,15 +12,9 @@
 #include "llvm/Transforms/Scalar/GVN.h"
 
 CodeGenerator::CodeGenerator() 
-    : context(), module("CKC IR Code", context), builder(context), functionOptimizer(&module),
+    : context(), module("CKC IR Code", context), builder(context),
     initializer(nullptr), tables(), breakTargets(), continueTargets()
 {
-    functionOptimizer.add(llvm::createInstructionCombiningPass());
-    functionOptimizer.add(llvm::createReassociatePass());
-    functionOptimizer.add(llvm::createGVNPass());
-    functionOptimizer.add(llvm::createCFGSimplificationPass());
-    functionOptimizer.doInitialization();
-
     llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(context),
                                                             {llvm::Type::getInt32Ty(context)},
                                                             false);
@@ -37,10 +32,32 @@ void CodeGenerator::InitializeLLVM() {
     llvm::InitializeNativeTargetAsmParser();
 }
 
-void CodeGenerator::PrintIR() {
+void CodeGenerator::OptimizeIR() {
+    llvm::legacy::FunctionPassManager funcOpter(&module);
+
+    funcOpter.add(llvm::createInstructionCombiningPass());
+    funcOpter.add(llvm::createReassociatePass());
+    funcOpter.add(llvm::createGVNPass());
+    funcOpter.add(llvm::createCFGSimplificationPass());
+    funcOpter.doInitialization();
+    
     for(llvm::Function &func : module) {
-        if (!func.isIntrinsic()) functionOptimizer.run(func);
+
+        for(llvm::BasicBlock &block : func) {
+            for(auto inst = block.begin(); inst != block.end(); inst++) {
+                if(llvm::isa<llvm::BranchInst>(inst) || llvm::isa<llvm::ReturnInst>(inst)) {
+                    if(inst != block.end()) inst++;
+                    while(inst != block.end()) inst = inst->eraseFromParent();
+                    break;
+                }
+            }
+        }
+
+        if (!func.isIntrinsic()) funcOpter.run(func);
     }
+}
+
+void CodeGenerator::PrintIR() {
     module.print(llvm::outs(), nullptr);
 }
 

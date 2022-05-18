@@ -5,7 +5,6 @@
 #include <string>
 
 #include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/LegacyPassManager.h"
 #include "common.h"
 
 class CodeGenerator {
@@ -18,6 +17,7 @@ public:
 
 	static void InitializeLLVM();
 	void PrintIR();
+	void OptimizeIR();
 	void GenerateTarget(const char *filename = "cc.o");
 
 	llvm::Type *ConvertToLLVMType(Type type);
@@ -56,8 +56,6 @@ public:
 
 	llvm::Module module;
 	llvm::IRBuilder<> builder;
-
-	llvm::legacy::FunctionPassManager functionOptimizer;
 
 private:
 

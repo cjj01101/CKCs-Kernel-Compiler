@@ -166,7 +166,7 @@ llvm::Value *PutiCallNode::GenerateIR(CodeGenerator *generator) {
     auto formatArg = new llvm::GlobalVariable(generator->module, llvm::ArrayType::get(generator->builder.getInt8Ty(), format.size() + 1), true, llvm::GlobalValue::ExternalLinkage, formatConst, ".str");
     auto zero = generator->GetTypeDefaultValue(Type::INTEGER);
     llvm::Constant* indices[] = {zero, zero};
-    auto varRef = llvm::ConstantExpr::getGetElementPtr(formatArg->getType()->getPointerElementType(), formatArg, indices);
+    static auto varRef = llvm::ConstantExpr::getGetElementPtr(formatArg->getType()->getPointerElementType(), formatArg, indices);
 
     return generator->builder.CreateCall(function, {varRef, argValue}, "puti");
 }

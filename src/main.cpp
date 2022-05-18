@@ -27,6 +27,7 @@ int main(int argc, char ** argv){
         CodeGenerator generator;
         synTree.GenerateIR(&generator);
 
+        generator.OptimizeIR();
         generator.PrintIR();
         generator.GenerateTarget();
 

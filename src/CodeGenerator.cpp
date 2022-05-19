@@ -80,13 +80,13 @@ void CodeGenerator::OptimizeIR() {
             if(block != func.begin() && !block->hasNPredecessorsOrMore(1)) {
                 block = block->eraseFromParent();
             }
-            
+
         }
     }
 
     // Function Level Optimization
     for(llvm::Function &func : module) {
-        //if (!func.isIntrinsic()) funcOpter.run(func);
+        if (!func.isIntrinsic()) funcOpter.run(func);
     }
 
         

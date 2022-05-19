@@ -11,6 +11,12 @@
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 
+using llvm::BranchInst;
+using llvm::ReturnInst;
+using llvm::BasicBlock;
+using llvm::isa;
+using llvm::dyn_cast;
+
 CodeGenerator::CodeGenerator() 
     : context(), module("CKC IR Code", context), builder(context),
     initializer(nullptr), tables(), breakTargets(), continueTargets()
@@ -41,20 +47,49 @@ void CodeGenerator::OptimizeIR() {
     funcOpter.add(llvm::createCFGSimplificationPass());
     funcOpter.doInitialization();
     
+    // Instruction Level Optimization
     for(llvm::Function &func : module) {
-
-        for(llvm::BasicBlock &block : func) {
+        for(BasicBlock &block : func) {
             for(auto inst = block.begin(); inst != block.end(); inst++) {
-                if(llvm::isa<llvm::BranchInst>(inst) || llvm::isa<llvm::ReturnInst>(inst)) {
+
+                /* Convert Constant-conditional Branch to Unconditional Branch) */
+                if(auto *brInst = dyn_cast<BranchInst>(inst)) {
+                    if(brInst->isConditional()) {
+                        if(auto *constCond = dyn_cast<llvm::Constant>(brInst->getCondition())) {
+                            BranchInst::Create(brInst->getSuccessor(constCond->isZeroValue()), &*inst);
+                            inst = inst->eraseFromParent();
+                        }
+                    }
+                }
+
+                /* Eliminate Dead Instructions after Terminator */
+                if(isa<BranchInst>(inst) || isa<ReturnInst>(inst)) {
                     if(inst != block.end()) inst++;
                     while(inst != block.end()) inst = inst->eraseFromParent();
                     break;
                 }
             }
         }
-
-        if (!func.isIntrinsic()) funcOpter.run(func);
     }
+
+    // Basic Block Level Optimization
+    for(llvm::Function &func : module) {
+        for(auto block = func.begin(); block != func.end(); block++) {
+
+            /* Eliminate Dead Block */
+            if(block != func.begin() && !block->hasNPredecessorsOrMore(1)) {
+                block = block->eraseFromParent();
+            }
+            
+        }
+    }
+
+    // Function Level Optimization
+    for(llvm::Function &func : module) {
+        //if (!func.isIntrinsic()) funcOpter.run(func);
+    }
+
+        
 }
 
 void CodeGenerator::PrintIR() {

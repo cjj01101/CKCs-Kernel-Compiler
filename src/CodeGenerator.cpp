@@ -50,7 +50,8 @@ void CodeGenerator::OptimizeIR() {
     // Instruction Level Optimization
     for(llvm::Function &func : module) {
         for(BasicBlock &block : func) {
-            for(auto inst = block.begin(); inst != block.end(); inst++) {
+            auto inst = block.begin();
+            while(inst != block.end()) {
 
                 /* Convert Constant-conditional Branch to Unconditional Branch) */
                 if(auto *brInst = dyn_cast<BranchInst>(inst)) {
@@ -58,6 +59,7 @@ void CodeGenerator::OptimizeIR() {
                         if(auto *constCond = dyn_cast<llvm::Constant>(brInst->getCondition())) {
                             BranchInst::Create(brInst->getSuccessor(constCond->isZeroValue()), &*inst);
                             inst = inst->eraseFromParent();
+                            continue;
                         }
                     }
                 }
@@ -68,27 +70,45 @@ void CodeGenerator::OptimizeIR() {
                     while(inst != block.end()) inst = inst->eraseFromParent();
                     break;
                 }
+
+                inst++;
             }
         }
     }
 
     // Basic Block Level Optimization
     for(llvm::Function &func : module) {
-        for(auto block = func.begin(); block != func.end(); block++) {
+        auto block = func.begin();
+        while(block != func.end()) {
 
             /* Eliminate Dead Block */
             if(block != func.begin() && !block->hasNPredecessorsOrMore(1)) {
                 block = block->eraseFromParent();
+                continue;
             }
 
+            block++;
         }
     }
 
     // Function Level Optimization
-    for(llvm::Function &func : module) {
-        if (!func.isIntrinsic()) funcOpter.run(func);
-    }
+    {
+        auto func = module.begin();
+        while(func != module.end()) {
 
+            /* Eliminate Useless Function */
+            if(func->use_empty() && func->getName() != ENTRANCE) {
+                auto f = func++;
+                f->eraseFromParent();
+                continue;
+            }
+
+            /* LLVM Optimization Pass */
+            if (!func->isIntrinsic()) funcOpter.run(*func);
+
+            func++;
+        }
+    }
         
 }
 
